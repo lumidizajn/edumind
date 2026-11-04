@@ -516,7 +516,7 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
   </div>
   <div class="actions">
     <button class="btn" id="st-name" type="button">Zmeniť meno a farbu</button>
-    <button class="btn" id="st-reset" type="button">Vymazať štatistiky</button>
+    <button class="btn" id="st-reset" type="button">Vymazať výsledky</button>
   </div>
   <p class="note" id="st-ver"></p>
   <p class="note">Štatistiky sa ukladajú v tomto tablete. Čas sa počíta len pri práci: keď sa s tabletom minútu nič nerobí alebo sa prepne do inej aplikácie, čas sa zastaví. Najviac 3 minúty na jednu úlohu. Čas čítania v časti Nauč sa sa počíta zvlášť.</p>
@@ -2477,6 +2477,12 @@ var store={
   get:function(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
   set:function(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 };
+/* výsledky (meno, farba, nastavenie tém a písomky zostávajú) */
+var RESULT_KEYS=['s5.stats','s5.best','s5.err','s5.errok','s5.seen','s5.gen','s5.srs','s5.plan','s5.stars','s5.dstars'];
+function clearResults(){ RESULT_KEYS.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} }); }
+/* jednorazové vymazanie na všetkých tabletoch – nový začiatok od 5. 11. 2026 */
+var RESET_ID='2026-11-05-start';
+try{ if(localStorage.getItem('s5.reset')!==RESET_ID){ clearResults(); localStorage.setItem('s5.reset',RESET_ID); } }catch(e){}
 var best=store.get('s5.best',{}), errs=store.get('s5.err',[]);
 if(!best||typeof best!=='object') best={};
 if(!Array.isArray(errs)) errs=[];
@@ -2711,7 +2717,7 @@ function renderStats(){
   if(!dk.length){ var tr=el('tr'), c=el('td',null,'Zatiaľ žiadne učenie v tomto období.'); c.colSpan=6; tr.appendChild(c); td.appendChild(tr); }
   dk.forEach(function(k){ var s=sumRows([k]), dt=k.split('-'), names=SUBJ.filter(function(x){return s.bySub[x.id];}).map(function(x){return x.name;}).join(', ');
     td.appendChild(row([(+dt[2])+'. '+(+dt[1])+'. '+dt[0],fmtTime(s.tot.ms),String(s.tot.n),pctEl(s.tot),String(DST[k]||0),names])); });
-  var rb=$('#st-reset'); rb.dataset.sure=''; rb.textContent='Vymazať štatistiky';
+  var rb=$('#st-reset'); rb.dataset.sure=''; rb.textContent='Vymazať výsledky';
   $('#st-ver').textContent='Verzia aplikácie: '+(window.EDU_VER||'vývojová');
 }
 $('#b-stats').onclick=function(){ stPeriod=7; show('stats'); renderStats(); };
@@ -2743,8 +2749,8 @@ $('#st-file').onchange=function(){ var f=this.files&&this.files[0], msg=$('#st-m
   };
   rd.readAsText(f); };
 $('#st-reset').onclick=function(){ var b=this;
-  if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Naozaj vymazať všetko?'; return; }
-  stats={}; store.set('s5.stats',stats); renderStats(); };
+  if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Naozaj vymazať štatistiky, testy aj hviezdičky?'; return; }
+  clearResults(); location.reload(); };
 document.addEventListener('visibilitychange',function(){ if(document.hidden) flushTime(); });
 
 /* ---------- kolo otázok ---------- */
@@ -3530,6 +3536,6 @@ initShared();
 })();
 </script>
 
-<script>window.EDU_VER="4. 11. 2026 23:41";if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(function(){});});}</script>
+<script>window.EDU_VER="4. 11. 2026 23:45";if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(function(){});});}</script>
 </body>
 </html>
