@@ -13,7 +13,7 @@ const head='<!doctype html>\n<html lang="sk">\n<head>\n<meta charset="utf-8">\n<
  +'<link rel="manifest" href="manifest.webmanifest">\n<link rel="icon" href="icons/icon-192.png">\n<link rel="apple-touch-icon" href="icons/icon-180.png">\n'
  +'<style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>\n';
 const d=new Date(+pkg.version||Date.now()), verLabel=d.getDate()+'. '+(d.getMonth()+1)+'. '+d.getFullYear()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-const reg='\n<script>window.EDU_VER='+JSON.stringify(verLabel)+';if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}</script>\n';
+const reg='\n<script>window.EDU_VER='+JSON.stringify(verLabel)+';if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(function(){});});}</script>\n';
 fs.writeFileSync(path.join(root,'index.html'),head+src.slice(0,i)+'</head>\n<body>\n'+src.slice(i)+reg+'</body>\n</html>\n');
 fs.writeFileSync(path.join(root,'manifest.webmanifest'),JSON.stringify({name:pkg.name,short_name:pkg.short,lang:'sk',start_url:'./',scope:'./',display:'standalone',
   background_color:'#F1F4FF',theme_color:'#7C4DFF',icons:[{src:'icons/icon-192.png',sizes:'192x192',type:'image/png',purpose:'any maskable'},
@@ -28,7 +28,7 @@ self.addEventListener('fetch',e=>{
   const u=new URL(r.url);
   if(u.origin===location.origin){
     // najprv internet (nová verzia hneď), bez internetu uložená kópia
-    e.respondWith(fetch(r).then(res=>{if(res.ok){const cp=res.clone();caches.open(C).then(c=>c.put(r,cp));}return res;})
+    e.respondWith(fetch(r,{cache:'no-cache'}).then(res=>{if(res.ok){const cp=res.clone();caches.open(C).then(c=>c.put(r,cp));}return res;})
       .catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match('index.html'))));
   }else if(/fonts\\.(googleapis|gstatic)\\.com$/.test(u.hostname)){
     e.respondWith(caches.match(r).then(m=>m||fetch(r).then(res=>{const cp=res.clone();caches.open(C).then(c=>c.put(r,cp));return res;})));
