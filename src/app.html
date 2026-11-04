@@ -502,6 +502,7 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <button class="btn" id="st-name" type="button">Zmeniť meno a farbu</button>
     <button class="btn" id="st-reset" type="button">Vymazať štatistiky</button>
   </div>
+  <p class="note" id="st-ver"></p>
   <p class="note">Štatistiky sa ukladajú v tomto tablete. Čas sa počíta len pri práci: keď sa s tabletom minútu nič nerobí alebo sa prepne do inej aplikácie, čas sa zastaví. Najviac 3 minúty na jednu úlohu. Čas čítania v časti Nauč sa sa počíta zvlášť.</p>
 </section>
 
@@ -2695,6 +2696,7 @@ function renderStats(){
   dk.forEach(function(k){ var s=sumRows([k]), dt=k.split('-'), names=SUBJ.filter(function(x){return s.bySub[x.id];}).map(function(x){return x.name;}).join(', ');
     td.appendChild(row([(+dt[2])+'. '+(+dt[1])+'. '+dt[0],fmtTime(s.tot.ms),String(s.tot.n),pctEl(s.tot),String(DST[k]||0),names])); });
   var rb=$('#st-reset'); rb.dataset.sure=''; rb.textContent='Vymazať štatistiky';
+  $('#st-ver').textContent='Verzia aplikácie: '+(window.EDU_VER||'vývojová');
 }
 $('#b-stats').onclick=function(){ stPeriod=7; show('stats'); renderStats(); };
 $('#st-back').onclick=function(){ show('home'); };
