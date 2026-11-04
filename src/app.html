@@ -408,11 +408,18 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <h3 class="sth">Deň po dni</h3>
     <div class="tbl"><table id="st-days"></table></div>
   </div>
+  <div class="card">
+    <h3 class="sth">Poslať štatistiky a záloha</h3>
+    <p class="note">Pošle súbor so štatistikami (napr. cez WhatsApp alebo e-mail). Ten istý súbor slúži aj ako záloha – ak by sa tablet vymazal alebo vymenil, dá sa z neho všetko obnoviť.</p>
+    <div class="actions"><button class="btn primary" id="st-send" type="button">📤 Poslať štatistiky</button>
+    <button class="btn" id="st-restore" type="button">📥 Obnoviť zo zálohy</button><input type="file" id="st-file" accept=".json,application/json" hidden></div>
+    <p class="note" id="st-msg" role="status"></p>
+  </div>
   <div class="actions">
     <button class="btn" id="st-name" type="button">Zmeniť meno a farbu</button>
     <button class="btn" id="st-reset" type="button">Vymazať štatistiky</button>
   </div>
-  <p class="note">Štatistiky sa ukladajú len v tomto tablete. Čas sa počíta od zobrazenia úlohy po prechod na ďalšiu, najviac 3 minúty na jednu úlohu.</p>
+  <p class="note">Štatistiky sa ukladajú v tomto tablete. Čas sa počíta od zobrazenia úlohy po prechod na ďalšiu, najviac 3 minúty na jednu úlohu.</p>
 </section>
 
 <section id="dictate" class="stack" hidden>
@@ -2008,6 +2015,204 @@ function genRound(t,n){
 }
 
 var D=R_DIKT.concat(R_DIKT2).map(function(r){ return {id:r[0],name:r[1],items:r[2].map(function(s){return {k:'gaps',s:s};}),sentences:r[2].map(plain)}; });
+/* ---------- pripravené dopredu podľa osnov 5. ročníka (geografia, biológia, dejepis) ---------- */
+(function(){
+  function add(id,sub,name,desc,rows){ T.push({id:id,sub:sub,name:name,desc:desc,n:10,later:true,items:rows.map(mc)}); }
+  add('g-pasma','geo','Časové pásma','Prečo nie je všade na Zemi rovnaký čas.',[
+   ['Prečo nie je na celej Zemi v tej istej chvíli rovnaký čas?','lebo sa Zem otáča a Slnko vychádza na rôznych miestach v rôznom čase',['lebo každý štát má iné hodinky','lebo Mesiac zakrýva Slnko','lebo je Zem plochá']],
+   ['Koľko časových pásiem je na Zemi?','24',['12','7','360']],
+   ['O koľko hodín sa líši čas v dvoch susedných časových pásmach?','o 1 hodinu',['o 15 minút','o 12 hodín','o 24 hodín']],
+   ['Koľko stupňov zemepisnej dĺžky má jedno časové pásmo?','15°',['1°','24°','90°']],
+   ['Od ktorého poludníka sa počítajú časové pásma?','od nultého poludníka (Greenwich)',['od rovníka','od obratníka Raka','od poludníka cez Bratislavu']],
+   ['Kde je o rovnakej chvíli viac hodín ako na Slovensku?','v Japonsku',['v USA','v Mexiku','v Brazílii'],'Japonsko leží na východ od nás, Slnko tam vychádza skôr.'],
+   ['Kde je o rovnakej chvíli menej hodín ako na Slovensku?','v USA',['v Japonsku','v Číne','v Austrálii'],'USA ležia na západ od nás, Slnko tam vychádza neskôr.'],
+   ['V Bratislave je 12.00. Koľko je hodín v Londýne?','11.00',['13.00','12.00','6.00']],
+   ['Cestuješ na východ cez niekoľko časových pásiem. Ako si posunieš hodinky?','dopredu',['dozadu','vôbec','o deň späť']],
+   ['Ako sa volá čiara, pri ktorej prekročení sa mení dátum?','dátumová hranica',['rovník','nultý poludník','obratník Kozorožca']],
+   ['Ako sa volá čas, ktorý platí na Slovensku?','stredoeurópsky čas',['greenwichský čas','východoeurópsky čas','americký čas']],
+   ['Ako posúvame hodinky, keď v marci začína letný čas?','o hodinu dopredu',['o hodinu dozadu','o dve hodiny dopredu','neposúvame ich']]]);
+  add('g-hory','geo','Pohoria, sopky a zemetrasenia','Ako vznikajú pohoria, sopky a zemetrasenia.',[
+   ['Ako vznikajú pohoria?','posúvaním a narážaním litosférických dosiek',['dažďom','vetrom, ktorý nafúka piesok','pádom meteoritov']],
+   ['Čo postupne zarovnáva (rozrušuje) pohoria?','voda, vietor, mráz a ľad',['slnečné svetlo','zemetrasenie','Mesiac']],
+   ['Ako sa volá roztavená hornina pod zemským povrchom?','magma',['láva','kráter','sopečný popol']],
+   ['Ako sa volá roztavená hornina, ktorá vyteká zo sopky na povrch?','láva',['magma','ľadovec','bahno']],
+   ['Ako sa volá priehlbina na vrchole sopky?','kráter',['prameň','kaňon','pleso']],
+   ['Kde je na Zemi najviac sopiek a zemetrasení?','na okrajoch litosférických dosiek',['v strede púští','pri póloch','vo všetkých nížinách']],
+   ['Ako sa volá oblasť okolo Tichého oceánu s množstvom sopiek?','Tichomorský ohnivý kruh',['Sopečný pás Európy','Rovníkový pás','Ohnivá púšť']],
+   ['Ktorým prístrojom sa zaznamenávajú zemetrasenia?','seizmografom',['teplomerom','kompasom','barometrom']],
+   ['Ako sa volá obrovská vlna, ktorú môže spôsobiť zemetrasenie pod morom?','cunami',['príliv','odliv','tornádo']],
+   ['Ktorá činná sopka leží v Taliansku na Sicílii?','Etna',['Mount Everest','Kilimandžáro','Gerlachovský štít']],
+   ['Ako voláme územie s nadmorskou výškou do 300 metrov?','nížina',['pohorie','vrchovina','planina']],
+   ['Ktoré pohorie je najdlhšie na súši?','Andy',['Alpy','Tatry','Himaláje']],
+   ['Od čoho meriame nadmorskú výšku?','od hladiny mora',['od stredu Zeme','od úpätia hory','od najbližšej rieky']]]);
+  add('g-voda','geo','Rieky, jazerá, vodopády a kaňony','Cesta rieky od prameňa po ústie.',[
+   ['Ako sa volá miesto, kde rieka začína?','prameň',['ústie','delta','koryto']],
+   ['Ako sa volá miesto, kde sa rieka vlieva do inej rieky, jazera alebo mora?','ústie',['prameň','povodie','prítok']],
+   ['Ako určíme ľavý a pravý breh rieky?','pri pohľade po prúde rieky',['pri pohľade proti prúdu','podľa svetových strán','podľa toho, ktorý breh je vyšší']],
+   ['Ako sa volá rieka, ktorá sa vlieva do väčšej rieky?','prítok',['prameň','ústie','kaňon']],
+   ['Ako sa volá územie, z ktorého steká voda do jednej rieky?','povodie',['koryto','delta','pleso']],
+   ['Ako sa volá hlboká a úzka dolina so strmými stenami?','kaňon',['nížina','planina','delta']],
+   ['Ako vzniká kaňon?','rieka dlhé roky vymieľa horninu',['vybuchne sopka','vykopú ho ľudia','vznikne pri zemetrasení za jeden deň']],
+   ['Ktorý známy kaňon je v USA?','Grand Canyon',['Mariánska priekopa','Sahara','Bajkal']],
+   ['Kde vzniká vodopád?','kde voda padá cez strmý stupeň v koryte',['kde sa rieka vlieva do mora','v strede jazera','na rovnej nížine']],
+   ['Ako sa volá najvyšší vodopád na svete?','Angelov vodopád (Salto Ángel)',['Niagarské vodopády','Viktóriine vodopády','Kmeťov vodopád']],
+   ['Ktorá rieka je najvodnatejšia na svete?','Amazonka',['Dunaj','Váh','Temža']],
+   ['Ktoré jazero je najhlbšie na svete?','Bajkal',['Štrbské pleso','Balaton','Mŕtve more']],
+   ['Ako voláme jazerá v Tatrách?','plesá',['priehrady','rybníky','lagúny']],
+   ['Ako sa volá umelá vodná nádrž, ktorú postavili ľudia?','priehrada',['pleso','prameň','kaňon']],
+   ['Do ktorého mora odteká väčšina vody zo Slovenska?','do Čierneho mora',['do Baltského mora','do Severného mora','do Jadranského mora'],'Väčšina našich riek sa vlieva do Dunaja a ten tečie do Čierneho mora.']]);
+  add('g-ovzd','geo','Ovzdušie, oblaky a výšková stupňovitosť','Čo sa mení, keď stúpame do výšky.',[
+   ['Ako sa mení teplota vzduchu, keď stúpame vyššie do hôr?','klesá',['stúpa','nemení sa','najprv stúpa, potom klesá']],
+   ['O koľko približne klesne teplota na každých 100 metrov výšky?','asi o 0,6 °C',['asi o 6 °C','asi o 20 °C','vôbec neklesne']],
+   ['Aký je vzduch vysoko v horách?','redší, je v ňom menej kyslíka',['hustejší, viac kyslíka','teplejší ako v nížine','rovnaký ako pri mori']],
+   ['Z čoho sú oblaky?','z drobných kvapôčok vody alebo ľadových kryštálikov',['z dymu','z prachu z púští','z pary zo sopiek']],
+   ['Ako sa volá oblak, ktorý leží pri zemi?','hmla',['dúha','rosa','námraza']],
+   ['Ktorého plynu je vo vzduchu najviac?','dusíka',['kyslíka','oxidu uhličitého','vodnej pary']],
+   ['Čím meriame teplotu vzduchu?','teplomerom',['zrážkomerom','kompasom','seizmografom']],
+   ['Čím meriame množstvo zrážok?','zrážkomerom',['teplomerom','barometrom','pravítkom']],
+   ['Čo je výšková stupňovitosť?','so stúpajúcou nadmorskou výškou sa menia rastliny a živočíchy',['striedanie dňa a noci','krajiny sa menia od rovníka k pólom','rieky tečú z hôr do nížin']],
+   ['Čo je šírková pásmovitosť?','krajiny sa menia od rovníka smerom k pólom',['rastliny sa menia s výškou','striedanie ročných období','zmena času v pásmach']],
+   ['Čo rastie v Tatrách vyššie: listnaté lesy alebo kosodrevina?','kosodrevina',['listnaté lesy','obe rovnako vysoko','ani jedno']],
+   ['Aké je správne poradie od úpätia hory k vrcholu?','listnatý les – ihličnatý les – kosodrevina – hole – skaly',['skaly – hole – kosodrevina – ihličnatý les – listnatý les','ihličnatý les – listnatý les – skaly – kosodrevina','kosodrevina – listnatý les – skaly – hole']],
+   ['Prečo je pri rovníku teplejšie ako pri póloch?','slnečné lúče tam dopadajú kolmejšie',['je tam viac sopiek','je bližšie k Mesiacu','je tam menej vody']]]);
+  add('g-unesco','geo','Mesto, vidiek a pamiatky UNESCO','Kde ľudia žijú a čo chránime.',[
+   ['Čo je Zoznam svetového dedičstva UNESCO?','zoznam najvzácnejších prírodných a kultúrnych pamiatok sveta',['zoznam najväčších miest','zoznam najvyšších hôr','zoznam štátov Európy']],
+   ['Ktorý hrad na Slovensku je zapísaný v zozname UNESCO?','Spišský hrad',['Bratislavský hrad','Trenčiansky hrad','Oravský hrad']],
+   ['Ktoré banské mesto na Slovensku je zapísané v zozname UNESCO?','Banská Štiavnica',['Žilina','Nitra','Trnava']],
+   ['Ktorá dedina s ľudovou architektúrou je v zozname UNESCO?','Vlkolínec',['Čičmany','Ždiar','Terchová']],
+   ['Ktorá prírodná pamiatka Slovenska je v zozname UNESCO?','jaskyne Slovenského krasu',['Štrbské pleso','Gerlachovský štít','Oravská priehrada']],
+   ['Je Veľký čínsky múr prírodná alebo kultúrna pamiatka?','kultúrna',['prírodná','ani jedna','obe naraz']],
+   ['Ktorá prírodná pamiatka UNESCO leží pri Austrálii?','Veľká koralová bariéra',['pyramídy v Gíze','Veľký čínsky múr','Eiffelova veža']],
+   ['V ktorej krajine sú pyramídy v Gíze?','v Egypte',['v Mexiku','v Číne','v Taliansku']],
+   ['Prečo chránime pamiatky UNESCO?','sú jedinečné a nesmú sa zničiť pre ďalšie generácie',['lebo sú nové','lebo sa tam nesmie chodiť','lebo patria jednej rodine']],
+   ['Ktoré sídlo je vidiecke?','dedina',['veľkomesto','hlavné mesto','sídlisko v meste']],
+   ['Čo je typické pre život v meste?','veľa obchodov, škôl a dopravy, ale aj viac hluku',['ticho a veľa polí','žiadne školy','chov dobytka pri každom dome']],
+   ['Čo je typické pre život na vidieku?','pokoj, príroda a poľnohospodárstvo',['veľa mrakodrapov','metro','veľa tovární']],
+   ['Prečo žije najviac ľudí v nížinách a pri riekach?','je tam voda, úrodná pôda a ľahšia doprava',['je tam najviac snehu','je tam najmenej svetla','sú tam najvyššie hory']]]);
+  add('g-turist','geo','Turistika, mapa a GPS','Turistické značky, mierka, vrstevnice a GPS.',[
+   ['Akými farbami sú značené turistické chodníky na Slovensku?','červenou, modrou, zelenou a žltou',['čiernou a bielou','iba červenou','fialovou a oranžovou']],
+   ['Ako vyzerá turistická značka?','farebný pás medzi dvoma bielymi pásmi',['červený krížik','žltý kruh','čierna šípka']],
+   ['Ktorou farbou sú zvyčajne značené hlavné hrebeňové trasy?','červenou',['zelenou','žltou','modrou']],
+   ['Čo je smerovník?','tabuľa s názvami cieľov a časom chôdze',['prístroj na meranie výšky','druh mapy','turistická obuv']],
+   ['Čo spájajú vrstevnice na mape?','miesta s rovnakou nadmorskou výškou',['rovnako veľké mestá','rieky a jazerá','turistické chaty']],
+   ['Čo znamená, keď sú vrstevnice na mape veľmi husto pri sebe?','svah je strmý',['je tam rovina','je tam jazero','je tam les']],
+   ['Mierka mapy je 1 : 100 000. Koľko je v skutočnosti 1 cm na mape?','1 km',['100 m','10 km','1 m']],
+   ['Mierka mapy je 1 : 50 000. Koľko je v skutočnosti 1 cm na mape?','500 m',['50 m','5 km','50 km']],
+   ['Čo je GPS?','systém, ktorý pomocou satelitov určí, kde sa nachádzaš',['druh kompasu','turistická značka','mapa v knihe']],
+   ['Čo je geocaching?','hra, pri ktorej pomocou GPS hľadáš ukryté schránky',['lezenie po skalách','meranie teploty','kreslenie máp']],
+   ['Ako zorientuješ mapu v teréne?','otočíš ju tak, aby sever na mape smeroval na sever (podľa kompasu)',['otočíš ju hore nohami','položíš ju na zem','podľa toho, kde je cesta']],
+   ['Čo by si si mal(a) zbaliť na túru do hôr?','pevnú obuv, vodu, pláštenku a mapu',['iba mobil','sandále a deku','nič, stačí ísť']]]);
+
+  add('b-rastl','bio','Chránené, liečivé a jedovaté rastliny','Ktoré rastliny chránime, ktoré liečia a ktoré sú jedovaté.',[
+   ['Prečo sú niektoré rastliny chránené?','je ich v prírode málo a mohli by vyhynúť',['sú jedovaté','sú najkrajšie','rastú len v záhradách']],
+   ['Ktorá vzácna orchidea je u nás chránená?','črievičník papučkový',['púpava lekárska','sedmokráska','žihľava dvojdomá']],
+   ['Ktorá rastlina je liečivá a robí sa z nej čaj na upokojenie a pri zápaloch?','harmanček kamilkový',['konvalinka voňavá','vranie oko','rulík zlomocný']],
+   ['Ktorá liečivá rastlina pomáha pri kašli a jej list sa dáva aj na drobné rany?','skorocel kopijovitý',['náprstník','bolehlav','konvalinka']],
+   ['Z ktorého stromu zbierame kvety na čaj?','z lipy',['zo smreka','z buka','z duba']],
+   ['Ktorý plod je bohatý na vitamín C a robí sa z neho čaj?','šípka',['žaluď','bukvica','šiška']],
+   ['Ktorá rastlina je jedovatá, hoci krásne vonia?','konvalinka voňavá',['harmanček kamilkový','mäta pieporná','materina dúška']],
+   ['Ktorá lesná rastlina má jednu čiernu jedovatú bobuľu medzi štyrmi listami?','vranie oko štvorlisté',['jahoda obyčajná','čučoriedka','brusnica']],
+   ['Ktorá rastlina má jedovaté čierne lesklé bobule?','rulík zlomocný',['čučoriedka','ostružina','čierna ríbezľa']],
+   ['Čo platí pri zbere liečivých rastlín?','zbierame len rastliny, ktoré poznáme, a nie chránené ani pri cestách',['zbierame všetko, čo rastie','trháme rastliny aj s koreňom','najlepšie pri diaľnici']],
+   ['Čo platí pri zbere húb?','zbierame len huby, ktoré bezpečne poznáme',['ochutnáme ich v lese','zbierame všetky huby','kopeme podhubie']],
+   ['Ako sa volá podzemný zásobný orgán zemiaka?','hľuza',['cibuľa','koreň','šiška']],
+   ['Aký podzemný zásobný orgán má snežienka?','cibuľu',['hľuzu','šišku','plodnicu']],
+   ['Ktorá výtrusná rastlina má článkovanú stonku?','praslička',['papraď','mach','lipa']]]);
+  add('b-vtaky','bio','Vtáky a stavba tela živočíchov','Stále a sťahovavé vtáky, perie, šupiny, srsť.',[
+   ['Ktorý vták je sťahovavý (na zimu odlieta do teplých krajín)?','bocian biely',['vrabec domový','sýkorka veľká','ďateľ veľký']],
+   ['Ktorý vták je stály (zostáva u nás aj v zime)?','sýkorka veľká',['lastovička domová','bocian biely','kukučka jarabá']],
+   ['Prečo sťahovavé vtáky na zimu odlietajú?','v zime by u nás nenašli dosť potravy',['lebo sa boja snehu','lebo idú na dovolenku','lebo sú veľmi veľké']],
+   ['Aké sú mláďatá kŕmivých vtákov (napr. sýkorky)?','holé a slepé, rodičia ich v hniezde kŕmia',['hneď behajú a samy hľadajú potravu','majú srsť','vyliahnu sa vo vode']],
+   ['Ktorý vták má nekŕmivé mláďatá, ktoré hneď po vyliahnutí behajú?','kačica divá',['sýkorka veľká','vrabec domový','lastovička domová']],
+   ['Ktorý vták je dravec?','jastrab',['vrabec','holub','kačica']],
+   ['Ktorý vták je sova?','výr skalný',['drozd čierny','bocian biely','sýkorka veľká']],
+   ['Prečo kačiciam perie vo vode nepremokne?','je mastné, natierajú ho tukom',['je veľmi hrubé','kačice sa sušia na slnku','majú ho z plastu']],
+   ['Čo je pohlavná dvojtvarosť?','samec a samica toho istého druhu vyzerajú inak',['zviera má dve hlavy','zviera mení farbu v zime','mláďa vyzerá ako rodičia']],
+   ['Pri ktorom vtákovi vyzerá samec výrazne pestrejšie ako samica?','bažant obyčajný',['vrana túlavá','sova lesná','holub hrivnák']],
+   ['Čím je pokryté telo ryby?','šupinami',['perím','srsťou','holou kožou']],
+   ['Čím je pokryté telo cicavca?','srsťou',['šupinami','perím','pancierom']],
+   ['Aká je koža obojživelníkov (napr. žaby)?','holá a vlhká',['pokrytá perím','pokrytá srsťou','suchá so šupinami']],
+   ['Čo majú stavovce, čo bezstavovce nemajú?','chrbticu',['nohy','oči','kožu']],
+   ['Ktorý živočích je bezstavovec?','dážďovka',['jašterica','žaba','kapor']],
+   ['Čo je parazit?','organizmus, ktorý žije na úkor iného organizmu',['bylinožravec','spevavý vták','druh huby na jedenie']],
+   ['Čo je inštinkt?','vrodené správanie, ktoré sa živočích nemusí učiť',['naučený trik','choroba','druh potravy']],
+   ['Čím je bobor prispôsobený životu vo vode?','hustou srsťou, silným plochým chvostom a plávacími blanami',['dlhým krkom','krídlami','šupinami']]]);
+  addTo('b-voda',[
+   ['Čo je planktón?','drobné organizmy, ktoré sa vznášajú vo vode',['veľké ryby','vodné rastliny pri brehu','piesok na dne']],
+   ['Aké môžu byť riasy?','jednobunkové aj mnohobunkové',['iba stromové','iba jedovaté','iba suchozemské']],
+   ['Čo môžu v lete spôsobiť premnožené sinice?','zelené „kvitnutie“ vody',['zamrznutie rybníka','vyschnutie rieky','zvýšenie kyslíka']],
+   ['V ktorej vode je viac kyslíka?','v studenej tečúcej vode',['v teplej stojatej vode','v znečistenej vode','v slanej mláke']],
+   ['Prečo je kyslík rozpustený vo vode dôležitý?','dýchajú ho ryby a ďalšie vodné živočíchy',['farbí vodu na modro','ohrieva vodu','nie je dôležitý']],
+   ['Ktorá voda je stojatá?','rybník',['potok','rieka','bystrina']]].map(mc));
+  addTo('b-pole',[
+   ['Ktoré plodiny sú obilniny?','pšenica, jačmeň, raž, ovos a kukurica',['zemiaky a repa','repka a slnečnica','ďatelina a lucerna']],
+   ['Ktoré plodiny sú okopaniny?','zemiak a cukrová repa',['pšenica a raž','repka a slnečnica','ďatelina a lucerna']],
+   ['Ktoré plodiny sú olejniny?','repka olejná a slnečnica',['ovos a jačmeň','zemiak a repa','ďatelina a lucerna']],
+   ['Ktoré plodiny sú krmoviny (pestujú sa pre hospodárske zvieratá)?','ďatelina a lucerna',['pšenica a raž','repka a slnečnica','zemiak a mrkva']],
+   ['Čo je medza?','pás neobrábanej zeme s trávou a kríkmi medzi poliami',['cesta pre traktory','druh obilia','kôpka hliny od krta']],
+   ['Čo je remízka?','malý porast stromov a kríkov uprostred polí, úkryt pre zvieratá',['nástroj na kosenie','pole s kukuricou','hniezdo škovránka']],
+   ['Čo je pasienok?','lúka, na ktorej sa pasú zvieratá',['pole s obilím','les v horách','rybník']],
+   ['Prečo je premnožený hraboš poľný škodca?','zožerie veľa úrody na poliach',['opeľuje kvety','loví myši','kyprí pôdu']]].map(mc));
+
+  add('d-obec','dej','Obec, región a sťahovanie ľudí','Bydlisko, obec, región, vysťahovalectvo.',[
+   ['Čo je obec?','mesto alebo dedina, kde ľudia žijú a spoločne sa starajú o svoje okolie',['iba veľké hlavné mesto','druh školy','časť lesa']],
+   ['Kto stojí na čele dediny (obce)?','starosta',['primátor','prezident','riaditeľ školy']],
+   ['Kto stojí na čele mesta?','primátor',['starosta','kráľ','kronikár']],
+   ['Čo je región?','väčšie územie s podobnou prírodou, zvykmi a históriou',['jedna ulica','jedna rodina','iba jedno mesto']],
+   ['V ktorom regióne leží Čadca?','na Kysuciach',['na Orave','na Spiši','na Záhorí']],
+   ['Kde sa zapisujú dôležité udalosti obce alebo školy?','v kronike',['v kuchárskej knihe','v slovníku','v atlase']],
+   ['Čo je vysťahovalectvo?','keď ľudia odchádzajú žiť do inej krajiny',['keď ľudia prichádzajú žiť k nám','sťahovanie nábytku','cestovanie na dovolenku']],
+   ['Čo je prisťahovalectvo?','keď ľudia z inej krajiny prichádzajú žiť k nám',['keď ľudia od nás odchádzajú','keď sa vtáky sťahujú na juh','návšteva u babky']],
+   ['Kam odchádzalo najviac Slovákov za prácou koncom 19. a začiatkom 20. storočia?','do Ameriky (USA)',['do Austrálie','do Japonska','do Antarktídy']],
+   ['Prečo ľudia v minulosti odchádzali za more?','hľadali prácu a lepší život',['chceli vidieť more','bola to povinnosť','išli na výlet']],
+   ['Čo zobrazuje zemepisná mapa?','krajinu, ako vyzerá dnes (rieky, pohoria, mestá)',['bitky z minulosti','iba staré hrady','rodokmeň']],
+   ['Kde si môžeme požičať knihy?','v knižnici',['v archíve','v múzeu','na pošte']]]);
+  add('d-pram2','dej','Ako skúmame historický prameň','Kto, kedy, čo, komu a prečo.',[
+   ['Ktorú otázku si kladieme pri skúmaní historického prameňa?','Kto je autorom prameňa?',['Koľko stojí prameň?','Akej farby je prameň?','Je prameň ťažký?']],
+   ['Prečo zisťujeme, kedy prameň vznikol?','aby sme ho vedeli zaradiť do správneho času',['aby sme ho mohli predať','aby sme vedeli jeho váhu','nie je to dôležité']],
+   ['Čo zisťujeme otázkou „Komu bol prameň určený?“','pre koho autor prameň vytvoril',['kto prameň našiel','kde je prameň uložený','koľko má prameň strán']],
+   ['Čo zisťujeme otázkou „Aký bol zámer autora?“','prečo autor prameň vytvoril',['ako sa autor volal','kedy autor zomrel','akým perom písal']],
+   ['Starý otec napísal list z vojny babke. Kto je autor prameňa?','starý otec',['babka','vnuk, ktorý list našiel','múzeum']],
+   ['V školskej kronike je zápis z roku 1960. Komu bol zápis určený?','budúcim generáciám žiakov a učiteľov',['iba kronikárovi','pánovi starostovi na nákup','nikomu']],
+   ['Prečo treba porovnávať viac prameňov o tej istej udalosti?','autor mohol niečo vynechať alebo vidieť inak',['aby bolo viac papierov','lebo jeden prameň je vždy falošný','nie je to potrebné']]]);
+  add('d-kom','dej','Jazyk, písmo, kniha a médiá','Ako si ľudia odovzdávali správy.',[
+   ['Ako sa ľudia dorozumievali najskôr, ešte pred písmom?','rečou a gestami',['listami','e-mailom','telefónom']],
+   ['Prečo ľudia vymysleli písmo?','aby mohli zaznamenať a uchovať informácie',['aby mohli kresliť','aby nemuseli rozprávať','pre zábavu kráľov']],
+   ['Ako sa volá obrázkové písmo starých Egypťanov?','hieroglyfy',['klinové písmo','latinka','azbuka']],
+   ['Na čo písali starí Egypťania?','na papyrus',['na papier z továrne','na tablet','na plast']],
+   ['Z čoho sa vyrábal pergamen?','zo zvieracej kože',['z dreva','z kameňa','zo skla']],
+   ['Ako sa volá najstaršie slovanské písmo, ktoré vytvoril Konštantín?','hlaholika',['latinka','hieroglyfy','klinové písmo']],
+   ['Kto vynašiel v Európe kníhtlač s pohyblivými písmenami?','Johannes Gutenberg',['Konštantín','Ľudovít Štúr','Thomas Edison']],
+   ['Ako sa volá kniha, ktorú niekto napísal ručne?','rukopis',['výtlačok','noviny','atlas']],
+   ['Ktoré médium je najmladšie?','internet',['noviny','rozhlas','televízia']],
+   ['Čo sú masmédiá?','noviny, rozhlas, televízia a internet, ktoré šíria správy medzi veľa ľudí',['iba listy rodine','pohľadnice','knihy v knižnici']],
+   ['Prečo si treba overovať správy z internetu?','môžu byť nepravdivé (hoax)',['internet sa vždy mýli','sú príliš krátke','lebo sú platené']],
+   ['Akým písmom píšeme dnes po slovensky?','latinkou',['azbukou','hlaholikou','hieroglyfmi']]]);
+  add('d-nab','dej','Náboženstvo, mýty, legendy a povesti','Príbehy, ktoré si ľudia odovzdávali.',[
+   ['Čo je mýtus?','príbeh o bohoch, hrdinoch a vzniku sveta',['správa v novinách','recept','príbeh zo školy']],
+   ['Čo je legenda?','príbeh zo života svätca',['príbeh o zvieratách s ponaučením','vtip','pranostika o počasí']],
+   ['Čo je povesť?','príbeh viazaný ku skutočnému miestu alebo osobe, často s pravdivým jadrom',['úplne vymyslená rozprávka bez miesta','príbeh o bohoch Olympu','báseň o láske']],
+   ['O ktorej skutočnej osobe zo Slovenska vzniklo veľa povestí?','o zbojníkovi Jánošíkovi',['o Mickey Mousovi','o Zeusovi','o Harrym Potterovi']],
+   ['Ktoré náboženstvo je na Slovensku najrozšírenejšie?','kresťanstvo',['islam','budhizmus','hinduizmus']],
+   ['Ako sa volá svätá kniha kresťanov?','Biblia',['Korán','Tóra','Véda']],
+   ['Kto priniesol kresťanstvo v slovanskom jazyku na Veľkú Moravu?','Konštantín a Metod',['Jánošík a Kráľ','Zeus a Héra','Gutenberg a Štúr']],
+   ['Ako sa volal najvyšší boh starých Grékov?','Zeus',['Jupiter','Perún','Odin']],
+   ['Čo je mnohobožstvo?','viera vo viacerých bohov',['viera v jedného boha','neviera v nič','viera v rozprávky']],
+   ['Prečo ľudia v minulosti vymýšľali mýty?','chceli si vysvetliť prírodu a svet okolo seba',['aby sa nudili','aby ich mohli predávať','pre televíziu']]]);
+  add('d-vojna','dej','Vojna, mier a detská práca','Dôsledky vojen a práva detí.',[
+   ['Čo je konflikt?','spor medzi ľuďmi, skupinami alebo štátmi',['oslava','športový zápas','obchod']],
+   ['Aké dôsledky má vojna?','obete na životoch, zničené domy a ľudia na úteku',['viac jedla pre všetkých','nové školy','dlhšie prázdniny']],
+   ['Kto je utečenec?','človek, ktorý musí opustiť domov pre vojnu alebo prenasledovanie',['turista na dovolenke','športovec na pretekoch','človek, ktorý uteká na vlak']],
+   ['Kto je detský vojak?','dieťa, ktoré je nútené bojovať vo vojne',['dieťa, ktoré sa hrá na vojakov','hračka','syn generála']],
+   ['Čo je detská práca?','ťažká práca detí namiesto chodenia do školy',['pomoc s riadom doma','domáca úloha','krúžok v škole']],
+   ['Prečo je detská práca zakázaná?','poškodzuje zdravie detí a nemôžu chodiť do školy',['lebo deti pracujú zle','lebo deti sú lenivé','nie je zakázaná nikde']],
+   ['Ktorá organizácia pomáha deťom na celom svete?','UNICEF',['NATO','UEFA','NASA']],
+   ['Ktorá organizácia sa snaží udržiavať mier vo svete?','OSN (Organizácia Spojených národov)',['FIFA','NASA','UEFA']],
+   ['Čo je symbolom mieru?','biela holubica',['čierny havran','meč','štít']],
+   ['V ktorom roku sa skončila druhá svetová vojna?','1945',['1918','1989','2000']],
+   ['Kedy prebiehala prvá svetová vojna?','1914 – 1918',['1939 – 1945','1848 – 1849','1993 – 1995']],
+   ['Kto pomáha raneným počas vojen a katastrof?','Červený kríž',['UNESCO','FIFA','NASA']]]);
+})();
 T.concat(D).forEach(function(t){ t.items.forEach(function(it,i){ it.id=t.id+'#'+i; }); });
 
 if(typeof document==='undefined'){ module.exports={buildTest2:buildTest2,buildMathTest:buildMathTest,genAbc:genAbc,skCmp:skCmp,GEN:GEN,genRound:genRound,roman:roman,fmt:fmt,SUBJ:SUBJ,tagTokens:tagTokens,typedOk:typedOk,buildTest:buildTest,T:T,D:D,SD:SD,DET:DET,PAD:PAD,parseGaps:parseGaps,autoGap:autoGap,splitSentences:splitSentences,pickTokens:pickTokens,answerText:answerText,promptText:promptText,normItem:normItem,norm:norm,bare:bare,hlWord:hlWord,plain:plain,grade:grade}; return; }
@@ -2236,6 +2441,26 @@ function renderStats(){
 }
 $('#b-stats').onclick=function(){ stPeriod=7; show('stats'); renderStats(); };
 $('#st-back').onclick=function(){ show('home'); };
+function backupData(){ flushTime(); var d={}; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('s5.')===0) d[k]=localStorage.getItem(k); }
+  return {app:'EduMind',v:1,meno:store.get('s5.name',''),datum:new Date().toISOString(),data:d}; }
+function shortSummary(){ var keys=[], i; for(i=0;i<7;i++) keys.push(dayKey(new Date(Date.now()-i*864e5)));
+  var r=sumRows(keys).tot; return (store.get('s5.name','')||'Dieťa')+' – posledných 7 dní: '+Math.round(r.ms/60000)+' min, '+r.n+' úloh'+(r.n?', '+Math.round(r.ok/r.n*100)+' % správne':'')+'.'; }
+$('#st-send').onclick=function(){
+  var b=backupData(), name='EduMind-'+(b.meno||'tablet').replace(/[^\w\u00C0-\u017F-]+/g,'_')+'-'+dayKey()+'.json', txt=JSON.stringify(b), msg=$('#st-msg');
+  var file=null; try{ file=new File([txt],name,{type:'application/json'}); }catch(e){}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    navigator.share({files:[file],title:'EduMind štatistiky',text:shortSummary()}).then(function(){ msg.textContent='Odoslané.'; }).catch(function(){ msg.textContent=''; });
+    return; }
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  msg.textContent='Súbor '+name+' sa uložil do Stiahnutých súborov.';
+};
+$('#st-restore').onclick=function(){ $('#st-file').click(); };
+$('#st-file').onchange=function(){ var f=this.files&&this.files[0], msg=$('#st-msg'), inp=this; if(!f) return;
+  var rd=new FileReader(); rd.onload=function(){ try{ var b=JSON.parse(rd.result); if(!b||b.app!=='EduMind'||!b.data) throw 0;
+      Object.keys(b.data).forEach(function(k){ if(k.indexOf('s5.')===0) localStorage.setItem(k,b.data[k]); });
+      msg.textContent='Obnovené zo zálohy ('+(b.meno||'')+', '+String(b.datum).slice(0,10)+'). Načítavam…'; setTimeout(function(){ location.reload(); },800);
+    }catch(e){ msg.textContent='Tento súbor nie je záloha z EduMind.'; } inp.value=''; };
+  rd.readAsText(f); };
 $('#st-reset').onclick=function(){ var b=this;
   if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Naozaj vymazať všetko?'; return; }
   stats={}; store.set('s5.stats',stats); renderStats(); };
