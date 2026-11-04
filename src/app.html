@@ -119,6 +119,7 @@ h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15}
 .tgroup{grid-column:1/-1;margin:14px 2px 0;font-family:var(--font-display);font-size:1.1rem}
 .tgroup:first-child{margin-top:0}
 .tpdesc{margin:0;font-size:1.05rem}
+.starsum{margin:10px 0 0;font-weight:600;opacity:.95}
 .match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .match .mcol{display:grid;gap:10px;align-content:start}
 .match button{min-height:52px;padding:8px 12px;border:2px solid var(--rule);border-radius:14px;background:var(--surface);color:var(--ink);font-size:1.02rem;font-weight:600;box-shadow:var(--shadow)}
@@ -332,7 +333,8 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <p class="label">EduMind · 5. ročník</p>
     <h1 id="greet">Ahoj!</h1>
     <p class="lead">Čo sa dnes naučíme?</p>
-    <div class="pills"><span class="pill" id="p-stars">⭐ 0</span><span class="pill" id="p-streak">🔥 0 dní</span></div>
+    <div class="pills"><span class="pill" id="p-stars">⭐ 0 dnes</span><span class="pill" id="p-streak">🔥 0 dní</span></div>
+    <p class="starsum" id="p-starsum"></p>
   </header>
   <div class="goal" id="goal">
     <div class="gtxt"><b id="g-title">Dnes sa učím</b><small id="g-sub"></small><div class="gbar"><i id="g-bar"></i></div></div>
@@ -2687,11 +2689,11 @@ function renderStats(){
   list($('#st-good'),good,tops.length?'Zatiaľ žiadna téma nad 80 %.':'Zatiaľ málo odpovedí.');
   // deň po dni
   var td=$('#st-days'); td.textContent='';
-  td.appendChild(row(['Dátum','Čas','Úlohy','Úspešnosť','Predmety'],true));
+  td.appendChild(row(['Dátum','Čas','Úlohy','Úspešnosť','⭐','Predmety'],true));
   var dk=active.slice().reverse();
-  if(!dk.length){ var tr=el('tr'), c=el('td',null,'Zatiaľ žiadne učenie v tomto období.'); c.colSpan=5; tr.appendChild(c); td.appendChild(tr); }
+  if(!dk.length){ var tr=el('tr'), c=el('td',null,'Zatiaľ žiadne učenie v tomto období.'); c.colSpan=6; tr.appendChild(c); td.appendChild(tr); }
   dk.forEach(function(k){ var s=sumRows([k]), dt=k.split('-'), names=SUBJ.filter(function(x){return s.bySub[x.id];}).map(function(x){return x.name;}).join(', ');
-    td.appendChild(row([(+dt[2])+'. '+(+dt[1])+'. '+dt[0],fmtTime(s.tot.ms),String(s.tot.n),pctEl(s.tot),names])); });
+    td.appendChild(row([(+dt[2])+'. '+(+dt[1])+'. '+dt[0],fmtTime(s.tot.ms),String(s.tot.n),pctEl(s.tot),String(DST[k]||0),names])); });
   var rb=$('#st-reset'); rb.dataset.sure=''; rb.textContent='Vymazať štatistiky';
 }
 $('#b-stats').onclick=function(){ stPeriod=7; show('stats'); renderStats(); };
@@ -2941,12 +2943,21 @@ function showLearn(t){
   show('learn'); learnT={t:t.id,t0:Date.now(),i0:idleNow()};
 }
 
+var DST=store.get('s5.dstars',{}); if(!DST||typeof DST!=='object') DST={};
+function todayStars(){ return DST[dayKey()]||0; }
+function addStar(n){ n=n||1; stars+=n; store.set('s5.stars',stars); var k=dayKey(); DST[k]=(DST[k]||0)+n; store.set('s5.dstars',DST); }
+function starSummary(){ var today=dayKey(), ks=Object.keys(DST).filter(function(k){ return k<today&&DST[k]>0; }).sort(), out=[];
+  if(ks.length){ var last=ks[ks.length-1], d=daysTo(last), dt=last.split('-');
+    out.push((d===-1?'Včera':'Naposledy ('+(+dt[2])+'. '+(+dt[1])+'.)')+' si nazbierala '+DST[last]+' ⭐'); }
+  var rec=0; Object.keys(DST).forEach(function(k){ if(DST[k]>rec) rec=DST[k]; });
+  if(rec) out.push(todayStars()>=rec&&todayStars()>0?'🏆 Dnes máš nový rekord!':'Rekord: '+rec+' ⭐ za deň');
+  return out.join(' · '); }
 var round=null, errOk=store.get('s5.errok',{}); if(!errOk||typeof errOk!=='object') errOk={};
 function startTopic(t,mode){ mode=mode||'cvik'; startRound(t.name+(mode==='test'?' · test':''),t.gen?genRound(t,t.n):pickItems(t.items,t.n),mode==='test'?t.id+'|test':t.id,function(){ startTopic(t,mode); },mode); }
 function startRound(title,items,key,again,mode){
   if(!items.length) return;
   round={title:title,items:items,i:0,score:0,stars:0,wrong:[],fixed:0,key:key,again:again,mode:mode||'cvik'};
-  $('#q-title').textContent=title; $('#q-stars').textContent='⭐ '+stars;
+  $('#q-title').textContent=title; $('#q-stars').textContent='⭐ '+todayStars();
   show('quiz'); showItem();
 }
 function showItem(retry){
@@ -2981,15 +2992,15 @@ function showItem(retry){
       return;
     }
     if(isTest){
-      if(ok){ round.score++; round.stars=(round.stars||0)+1; stars++; store.set('s5.stars',stars); } else round.wrong.push(it);
+      if(ok){ round.score++; round.stars=(round.stars||0)+1; addStar(1); } else round.wrong.push(it);
       body.textContent=''; fb.className='fb neutral'; fb.hidden=false;
       fb.appendChild(el('strong',null,'Odpoveď je uložená ✓')); fb.appendChild(el('p',null,'Výsledok uvidíš na konci testu.'));
       check.hidden=true; next.hidden=false; next.focus();
       $('#q-bar').style.width=((round.i+1)/round.items.length*100)+'%';
       return;
     }
-    if(!first){ if(ok){ round.fixed++; round.stars=(round.stars||0)+1; stars++; store.set('s5.stars',stars); $('#q-stars').textContent='⭐ '+stars; } round.wrong.push(it); }
-    else if(ok){ round.score++; round.stars=(round.stars||0)+1; stars++; store.set('s5.stars',stars); var pl=el('span','plus','+1 ⭐'); fb.parentNode.appendChild(pl); setTimeout(function(){ if(pl.parentNode) pl.parentNode.removeChild(pl); },1100); $('#q-stars').textContent='⭐ '+stars; }
+    if(!first){ if(ok){ round.fixed++; round.stars=(round.stars||0)+1; addStar(1); $('#q-stars').textContent='⭐ '+todayStars(); } round.wrong.push(it); }
+    else if(ok){ round.score++; round.stars=(round.stars||0)+1; addStar(1); var pl=el('span','plus','+1 ⭐'); fb.parentNode.appendChild(pl); setTimeout(function(){ if(pl.parentNode) pl.parentNode.removeChild(pl); },1100); $('#q-stars').textContent='⭐ '+todayStars(); }
     else round.wrong.push(it);
     fb.className='fb '+(ok?'ok':'no'); fb.hidden=false;
     fb.appendChild(el('strong',null,ok?(first?'Správne!':'Správne na druhý pokus! 👍'):'Nie celkom.'));
@@ -3233,7 +3244,7 @@ function startPexeso(){
       b.classList.add('up'); b.textContent=c.t; if(c.en&&canSay) sayEn(c.t); PX.open.push(b);
       if(PX.open.length===2){ PX.moves++; $('#px-moves').textContent=PX.moves+' ťahov'; var a=PX.open[0], z=PX.open[1];
         if(a._c.i===z._c.i){ a.classList.add('got'); z.classList.add('got'); PX.open=[]; PX.got++;
-          if(PX.got===PX.n){ $('#px-again').hidden=false; confetti(); stars+=3; store.set('s5.stars',stars); $('#px-moves').textContent='Hotovo za '+PX.moves+' ťahov · +3 ⭐'; } }
+          if(PX.got===PX.n){ $('#px-again').hidden=false; confetti(); addStar(3); $('#px-moves').textContent='Hotovo za '+PX.moves+' ťahov · +3 ⭐'; } }
         else setTimeout(function(){ [a,z].forEach(function(x){ x.classList.remove('up'); x.textContent='?'; }); PX.open=[]; },900); } };
     g.appendChild(b); });
   show('pexeso'); }
@@ -3447,7 +3458,8 @@ function renderPlan(){ var p=curPlan(), ol=$('#plan'); ol.textContent='';
   return {done:dn,total:p.blocks.length};
 }
 function renderTop(){
-  $('#p-stars').textContent='⭐ '+stars;
+  $('#p-stars').textContent='⭐ '+todayStars()+' dnes';
+  $('#p-starsum').textContent=starSummary();
   var st=streak(); $('#p-streak').textContent='🔥 '+st+' '+(st===1?'deň':st>=2&&st<=4?'dni':'dní')+' v rade';
   var t=sumRows([dayKey()]).tot, pr=renderPlan();
   $('#g-sub').textContent=pr.done+' z '+pr.total+' hotové · dnes '+t.n+' úloh'+(t.n?' · '+pctOf(t)+' % správne':'');
