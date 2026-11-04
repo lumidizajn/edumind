@@ -1,5 +1,6 @@
 // Zostaví zverejniteľnú aplikáciu z src/app.html do koreňa projektu (index.html, manifest, sw.js).
 // Spustenie: node tools/build.js   (bez ďalších závislostí)
+process.env.TZ=process.env.TZ||'Europe/Bratislava';
 const fs=require('fs'), path=require('path');
 const root=path.join(__dirname,'..');
 const pkg={name:'EduMind',short:'EduMind',version:process.argv[2]||String(Date.now())};
