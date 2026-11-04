@@ -70,6 +70,19 @@ h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15}
 .gbar{height:14px;background:var(--pen-soft);border-radius:99px;overflow:hidden;margin-top:8px}
 .gbar i{display:block;height:100%;width:0;background:var(--pen);border-radius:99px}
 .goal.done{border-color:var(--good);background:var(--good-bg)}
+.plan{list-style:none;margin:0;padding:0;display:grid;gap:10px;width:100%}
+.plan li button{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;border:2px solid var(--rule);border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.plan .pic{font-size:1.6rem;line-height:1;flex:none}
+.plan .ptx{flex:1;min-width:0;display:flex;flex-direction:column}
+.plan .ptx b{font-size:1.05rem;font-family:var(--font-display)}
+.plan .ptx small{color:var(--ink-soft)}
+.plan .pst{flex:none;font-weight:700;color:var(--pen)}
+.plan li.done button{border-color:var(--good);background:var(--good-bg)}
+.plan li.done .pst{color:var(--good)}
+.plan li.exam button{border-color:var(--warn,#F5A400)}
+.plan-more{display:flex;flex-wrap:wrap;align-items:center;gap:10px;width:100%}
+.exam-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.exam-row input{min-height:46px;padding:6px 10px;border:2px solid var(--rule);border-radius:12px;font:inherit;background:var(--surface);color:var(--ink)}
 .goal.done .gbar i{background:var(--good)}
 
 /* dlaždice predmetov */
@@ -106,6 +119,24 @@ h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15}
 .tgroup{grid-column:1/-1;margin:14px 2px 0;font-family:var(--font-display);font-size:1.1rem}
 .tgroup:first-child{margin-top:0}
 .tpdesc{margin:0;font-size:1.05rem}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .mcol{display:grid;gap:10px;align-content:start}
+.match button{min-height:52px;padding:8px 12px;border:2px solid var(--rule);border-radius:14px;background:var(--surface);color:var(--ink);font-size:1.02rem;font-weight:600;box-shadow:var(--shadow)}
+.match button[aria-pressed=true]{border-color:var(--pen);background:var(--pen-bg,#EEE7FF)}
+.match button.is-good{border-color:var(--good);background:var(--good-bg);color:var(--ink)}
+.match button.flash{border-color:var(--bad,#D64545);background:var(--bad-bg,#FDE8E8)}
+.pxgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:10px}
+.pxgrid button{aspect-ratio:4/3;border:2px solid var(--rule);border-radius:16px;background:var(--pen);color:var(--pen-ink);font-size:1.05rem;font-weight:700;padding:6px;box-shadow:var(--shadow)}
+.pxgrid button.up{background:var(--surface);color:var(--ink)}
+.pxgrid button.got{background:var(--good-bg);border-color:var(--good);color:var(--ink)}
+.mapsub{margin:10px 0 4px;font-weight:700}
+.mapchips{display:flex;flex-wrap:wrap;gap:6px}
+.mchip{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.85rem;font-weight:600;border:2px solid transparent}
+.mchip.m3{background:var(--good-bg);border-color:var(--good)}
+.mchip.m2{background:#FFF4D6;border-color:#E0A800}
+.mchip.m1{background:#FDE8E8;border-color:#D64545}
+.mchip.m0{background:var(--surface);border-color:var(--rule);color:var(--ink-soft)}
+.nline{width:100%;max-width:560px;height:auto;display:block;margin:6px 0 4px;color:var(--ink)}
 .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:12px;margin-top:14px}
 .mode{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px 18px;border:2px solid var(--rule);border-radius:20px;background:var(--surface);text-align:left;box-shadow:var(--shadow);color:var(--ink)}
 .mode[hidden]{display:none}
@@ -304,8 +335,9 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <div class="pills"><span class="pill" id="p-stars">⭐ 0</span><span class="pill" id="p-streak">🔥 0 dní</span></div>
   </header>
   <div class="goal" id="goal">
-    <div class="gtxt"><b id="g-title">Denný cieľ</b><small id="g-sub"></small><div class="gbar"><i id="g-bar"></i></div></div>
-    <button class="btn primary" id="b-daily" type="button">Dnešná výzva ▶</button>
+    <div class="gtxt"><b id="g-title">Dnes sa učím</b><small id="g-sub"></small><div class="gbar"><i id="g-bar"></i></div></div>
+    <ol class="plan" id="plan"></ol>
+    <div class="plan-more"><button class="btn small primary" id="b-pexeso" type="button" hidden>🧩 Odmena: pexeso</button><button class="btn small" id="b-daily" type="button">🎲 Náhodná výzva</button><span class="note" id="plan-exams"></span></div>
   </div>
   <div class="subjects" id="l-subj" role="group" aria-label="Predmet"></div>
   <div class="quick">
@@ -365,6 +397,8 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
       <button class="mode" id="tp-cvik" type="button"><span aria-hidden="true">✏️</span><b>Cvičenie</b><small>Pri chybe máš ešte jeden pokus</small></button>
       <button class="mode" id="tp-test" type="button"><span aria-hidden="true">📝</span><b>Otestuj sa</b><small>Jeden pokus, bez nápovedy, výsledok na konci</small></button>
     </div>
+    <div class="exam-row"><label for="tp-exam">📅 Písomka z tejto témy:</label><input type="date" id="tp-exam"><button class="btn small" id="tp-exam-save" type="button">Uložiť</button><button class="btn small" id="tp-exam-del" type="button" hidden>Zrušiť písomku</button></div>
+    <p class="note" id="tp-exam-info"></p>
   </div>
 </section>
 
@@ -372,6 +406,13 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
   <div class="qhead"><button class="btn small link" id="ln-back" type="button">← Späť</button><span class="ttl" id="ln-title"></span></div>
   <div id="ln-body" class="stack"></div>
   <div class="actions"><button class="btn primary" id="ln-cvik" type="button">✏️ Teraz si to precvič</button></div>
+</section>
+
+<section id="pexeso" class="stack" hidden>
+  <div class="qhead"><button class="btn small link" id="px-back" type="button">← Späť</button><span class="ttl">🧩 Pexeso – angličtina</span><span class="cnt" id="px-moves"></span></div>
+  <p class="note">Nájdi dvojice: anglické slovo a jeho slovenský význam.</p>
+  <div class="pxgrid" id="px-grid"></div>
+  <div class="actions"><button class="btn primary" id="px-again" type="button" hidden>Hrať znova</button></div>
 </section>
 
 <section id="quiz" class="stack" hidden>
@@ -431,6 +472,12 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <h3 class="sth">Predmety</h3>
     <div class="tbl"><table id="st-subj"></table></div>
   </div>
+  <div class="card">
+    <h3 class="sth">Mapa učiva</h3>
+    <p class="note mlegend"><span class="mchip m3">zvládnuté</span> <span class="mchip m2">ide to</span> <span class="mchip m1">treba precvičiť</span> <span class="mchip m0">ešte nezačaté</span></p>
+    <div id="st-map"></div>
+    <p class="note">Zvládnuté = za posledných 30 dní aspoň 20 odpovedí a viac ako 90 % správne.</p>
+  </div>
   <div class="card" id="st-topics-card">
     <h3 class="sth">Čo ešte nejde</h3>
     <p class="note">Témy s najnižšou úspešnosťou (aspoň 5 odpovedí).</p>
@@ -453,7 +500,7 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <button class="btn" id="st-name" type="button">Zmeniť meno a farbu</button>
     <button class="btn" id="st-reset" type="button">Vymazať štatistiky</button>
   </div>
-  <p class="note">Štatistiky sa ukladajú v tomto tablete. Čas sa počíta od zobrazenia úlohy po prechod na ďalšiu, najviac 3 minúty na jednu úlohu.</p>
+  <p class="note">Štatistiky sa ukladajú v tomto tablete. Čas sa počíta len pri práci: keď sa s tabletom minútu nič nerobí alebo sa prepne do inej aplikácie, čas sa zastaví. Najviac 3 minúty na jednu úlohu. Čas čítania v časti Nauč sa sa počíta zvlášť.</p>
 </section>
 
 <section id="dictate" class="stack" hidden>
@@ -790,6 +837,17 @@ function gapSpec(p){
   var pair={'i':['i','y'],'y':['i','y'],'í':['í','ý'],'ý':['í','ý']}[p];
   return {correct:p,opts:pair||[p]};
 }
+var IY_TVRDE='kgh', IY_DTNL='dtnl', IY_MAKKE='ďťňľcčšžj', IY_OBO='bmprsvzf';
+function iyRule(prev2,chosen,correct){
+  var c=prev2.slice(-1), base=function(x){ return x==='í'?'i':x==='ý'?'y':x; };
+  if(base(chosen)===base(correct)) return 'Pozor na dĺžku: správne je '+(correct==='í'||correct==='ý'?'dlhé':'krátke')+' „'+correct+'“.';
+  if(prev2==='dz') return 'Po mäkkej spoluhláske dz píšeme i, í.';
+  if(IY_MAKKE.indexOf(c)>-1) return 'Po mäkkej spoluhláske „'+c+'“ píšeme i, í.';
+  if(IY_TVRDE.indexOf(c)>-1) return 'Po tvrdej spoluhláske „'+(prev2==='ch'?'ch':c)+'“ píšeme v domácich slovách y, ý (výnimkou sú cudzie slová).';
+  if(IY_DTNL.indexOf(c)>-1) return 'Po „'+c+'“ rozhoduje výslovnosť: keď znie mäkko, píšeme i, keď tvrdo, píšeme y.';
+  if(IY_OBO.indexOf(c)>-1) return 'Po obojakej spoluhláske „'+c+'“ rozhodujú vybrané slová: vo vybraných a príbuzných slovách y, inak i.';
+  return '';
+}
 function parseGaps(s){ return s.split(' ').map(function(w){ return w.split(/\{([^}]+)\}/).map(function(p,i){ return i%2?gapSpec(p):p; }); }); }
 var CONS='bcčdďfghjklĺľmnňpqrŕsštťvwxzž';
 function autoGap(s){
@@ -814,6 +872,7 @@ function norm(s){ return String(s).trim().toLowerCase().replace(/\s+/g,' ').repl
 function bare(s){ return norm(s).normalize('NFD').replace(/[̀-ͯ]/g,''); }
 function optLabel(kind,gi,val){ var o=DET[kind][gi].opts.filter(function(x){return String(x[0])===String(val);})[0]; return o?o[1]:''; }
 function answerText(it){
+  if(it.k==='match') return it.a;
   if(it.k==='sd') return '„'+hlWord(it.s)+'“ je '+it.a+' ('+(SD.indexOf(it.a)+1)+').';
   if(it.k==='tag') return tagTokens(it.s).map(function(t){return t.w+' '+t.n;}).join(' · ');
   if(it.k==='mc') return it.a;
@@ -827,6 +886,7 @@ function answerText(it){
   return '';
 }
 function promptText(it){
+  if(it.k==='match') return it.q||'Spoj dvojice';
   if(it.k==='tag') return it.s.replace(/\/\d+/g,'');
   if(it.k==='sd'||it.k==='det'||it.k==='pick') return plain(it.s);
   if(it.k==='mc') return it.q+(it.s?' '+plain(it.s):'');
@@ -1710,8 +1770,8 @@ var GEO={
   ['Čo znázorňuje na glóbuse zelená a hnedá farba?','súš (pevninu)',['vodu','ľad','oblaky']],
   ['Čo znázorňuje na glóbuse biela farba?','oblaky, ľad a sneh',['moria','lesy','pohoria']],
   ['Prečo voláme Zem modrá planéta?','väčšinu jej povrchu zaberajú oceány',['lebo je obloha modrá','lebo je studená','lebo svieti na modro']],
-  ['Koľko percent povrchu Zeme zaberajú oceány?','asi 69 %',['asi 31 %','asi 50 %','asi 10 %']],
-  ['Koľko percent povrchu Zeme zaberá pevnina?','asi 31 %',['asi 69 %','asi 50 %','asi 90 %']],
+  ['Koľko percent povrchu Zeme zaberajú oceány?','asi 71 %',['asi 29 %','asi 50 %','asi 10 %'],'Presnejšie je to asi 71 %. V niektorých zošitoch a učebniciach nájdeš zaokrúhlene 69 až 70 %.'],
+  ['Koľko percent povrchu Zeme zaberá pevnina?','asi 29 %',['asi 71 %','asi 50 %','asi 90 %'],'Presnejšie je to asi 29 %. V niektorých zošitoch nájdeš 30 až 31 %.'],
   ['Na ktorej pologuli je viac oceánov?','na južnej',['na severnej','na oboch rovnako','na východnej']],
   ['Ako sa volajú všetky oceány spolu?','svetový oceán',['Tichý oceán','veľké more','pevnina']],
   ['Ktorý oceán je najväčší?','Tichý oceán',['Atlantický oceán','Indický oceán','Severný ľadový oceán']],
@@ -2355,10 +2415,17 @@ var D=R_DIKT.concat(R_DIKT2).map(function(r){ return {id:r[0],name:r[1],items:r[
    ['Aký je to prameň: staré drevené hračky?','hmotný',['obrazový','písomný']],
    ['Na aké tri skupiny delíme historické pramene?','písomné, obrazové a hmotné',['staré, nové a moderné','krátke, dlhé a stredné','veselé, smutné a vážne']]].map(mc));
 })();
+function nlineSvg(a,b,d){ var x0=30, x1=530, y=40, w=(x1-x0)/10, t='';
+  for(var i=0;i<=10;i++){ var x=x0+i*w; t+='<line x1="'+x+'" y1="'+(y-(i%5?7:11))+'" x2="'+x+'" y2="'+(y+(i%5?7:11))+'" stroke="currentColor" stroke-width="2"/>'; }
+  var xa=x0+d*w;
+  return '<svg class="nline" viewBox="0 0 560 96" role="img" aria-label="Číselná os od '+fmt(a)+' po '+fmt(b)+' s bodom A"><line x1="'+(x0-14)+'" y1="'+y+'" x2="'+(x1+20)+'" y2="'+y+'" stroke="currentColor" stroke-width="2.5"/><path d="M'+(x1+20)+' '+(y-6)+' L'+(x1+30)+' '+y+' L'+(x1+20)+' '+(y+6)+'" fill="currentColor"/>'+t+
+   '<text x="'+x0+'" y="'+(y+34)+'" text-anchor="middle" font-size="16" fill="currentColor">'+fmt(a)+'</text><text x="'+x1+'" y="'+(y+34)+'" text-anchor="middle" font-size="16" fill="currentColor">'+fmt(b)+'</text>'+
+   '<circle cx="'+xa+'" cy="'+y+'" r="8" fill="#E0457B"/><text x="'+xa+'" y="'+(y-18)+'" text-anchor="middle" font-size="18" font-weight="700" fill="#E0457B">A</text></svg>'; }
 GEN.os=function(){
   var k=rnd(1,5), n, a, b;
   if(k===1){ n=rnd(10001,999998); return Math.random()<.5?numQ('Napíš nasledovníka čísla (číslo hneď za ním).',fmt(n),n+1):numQ('Napíš predchodcu čísla (číslo tesne pred ním).',fmt(n),n-1); }
   if(k===2){ var st=pick([1,10,100,1000]), s0=rnd(1,90)*st*10, d=rnd(1,9);
+    if(Math.random()<.6){ var q=numQ('Aké číslo je na číselnej osi označené písmenom A?','Úsek od '+fmt(s0)+' po '+fmt(s0+10*st)+' je rozdelený na 10 rovnakých dielikov.',s0+d*st,'najprv zisti, koľko je jeden dielik'); q.svg=nlineSvg(s0,s0+10*st,d); return q; }
     return numQ('Číselná os','Úsek od '+fmt(s0)+' po '+fmt(s0+10*st)+' je rozdelený na 10 rovnakých dielikov. Aké číslo je na '+d+'. dieliku od '+fmt(s0)+'?',s0+d*st,'najprv zisti, koľko je jeden dielik'); }
   if(k===3){ a=rnd(1000,90000); b=a+2*rnd(5,5000); return numQ('Aké číslo leží na číselnej osi presne v strede medzi číslami?',fmt(a)+' a '+fmt(b),(a+b)/2); }
   if(k===4){ a=rnd(10000,90000); b=a+rnd(10,9000); return numQ('Ako ďaleko sú od seba na číselnej osi čísla? (rozdiel)',fmt(a)+' a '+fmt(b),b-a); }
@@ -2367,6 +2434,18 @@ GEN.os=function(){
 };
 T.push({id:'m-os',sub:'mat',name:'Číselná os',desc:'Predchodca, nasledovník, dieliky a vzdialenosť na osi.',n:10,gen:GEN.os,items:[]});
 topicById('b-zivoc').later=true; /* stavovce lesa ešte len budú */
+(function(){
+  function ph(x){ return /[ ?.!']/.test(x); }
+  [1,2,3,4,5,6].forEach(function(u){ var t=topicById('a-u'+u); if(!t) return;
+    var pairs=[]; t.items.forEach(function(it){ var m=(it.q||'').match(/^Čo znamená „(.+)“\?$/); if(m&&!ph(m[1])) pairs.push([m[1],it.a.replace(/\s*\(.*?\)/g,'')]); });
+    t.items=t.items.concat(matchItems(pairs,'Spoj anglické slovo s jeho významom.')); });
+  addTo('s-anto',matchItems(R_ANTO.map(function(r){ return [r[0],r[1]]; }),'Spoj slová s opačným významom.').concat(matchItems(R_SYNO.map(function(r){ return [r[0],r[1]]; }),'Spoj slová s podobným významom.')));
+  addTo('a-pokyn',matchItems(R_POKYN.map(function(r){ return [r[0],r[1]]; }),'Spoj pokyn s jeho významom.'));
+  addTo('g-povrch',[{k:'match',q:'Spoj oceán s tým, čo o ňom platí.',pairs:[['Tichý oceán','najväčší'],['Severný ľadový oceán','najmenší a najchladnejší'],['Atlantický oceán','medzi Európou a Amerikou'],['Južný oceán','okolo Antarktídy']],a:'Tichý – najväčší, Severný ľadový – najmenší, Atlantický – medzi Európou a Amerikou, Južný – okolo Antarktídy'}]);
+  addTo('d-pram',[{k:'match',q:'Spoj prameň s jeho druhom.',pairs:[['kronika','písomný prameň'],['stará fotografia','obrazový prameň'],['hlinená nádoba','hmotný prameň']],a:'kronika – písomný, fotografia – obrazový, nádoba – hmotný'}]);
+  addTo('b-bezst',[{k:'match',q:'Spoj živočícha so skupinou.',pairs:[['mravec','hmyz'],['križiak','pavúkovce'],['slimák','mäkkýše'],['dážďovka','obrúčkavce']],a:'mravec – hmyz, križiak – pavúkovce, slimák – mäkkýše, dážďovka – obrúčkavce'}]);
+  addTo('pm',[{k:'match',q:'Spoj pád s pádovou otázkou.',pairs:[['nominatív','kto? čo?'],['genitív','(z) koho? (z) čoho?'],['datív','(ku) komu? (k) čomu?'],['inštrumentál','(s) kým? (s) čím?']],a:'nominatív – kto? čo?, genitív – (z) koho? čoho?, datív – (ku) komu? čomu?, inštrumentál – (s) kým? čím?'}]);
+})();
 T.concat(D).forEach(function(t){ t.items.forEach(function(it,i){ it.id=t.id+'#'+i; }); });
 
 if(typeof document==='undefined'){ module.exports={buildTest2:buildTest2,buildMathTest:buildMathTest,genAbc:genAbc,skCmp:skCmp,GEN:GEN,genRound:genRound,roman:roman,fmt:fmt,SUBJ:SUBJ,tagTokens:tagTokens,typedOk:typedOk,buildTest:buildTest,T:T,D:D,SD:SD,DET:DET,PAD:PAD,parseGaps:parseGaps,autoGap:autoGap,splitSentences:splitSentences,pickTokens:pickTokens,answerText:answerText,promptText:promptText,normItem:normItem,norm:norm,bare:bare,hlWord:hlWord,plain:plain,grade:grade}; return; }
@@ -2386,8 +2465,8 @@ var CUSTOM=[], customDocs=[], db=null, canWrite=false;
 
 function allItems(){ var m={}; T.concat(D,CUSTOM).forEach(function(t){ t.items.forEach(function(it){ m[it.id]=it; }); }); return m; }
 function show(id){
-  flushTime();
-  ['welcome','home','topic','learn','quiz','result','dictate','stats'].forEach(function(s){ $('#'+s).hidden=(s!==id); });
+  flushTime(); flushLearn();
+  ['welcome','home','topic','learn','pexeso','quiz','result','dictate','stats'].forEach(function(s){ $('#'+s).hidden=(s!==id); });
   try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
   if(id==='home') renderHome();
   window.scrollTo(0,0);
@@ -2511,20 +2590,30 @@ function freshCount(t){ if(t.gen) return null; return t.items.filter(function(it
 
 /* ---------- štatistiky (len v tomto zariadení) ---------- */
 var stats=store.get('s5.stats',{}); if(!stats||typeof stats!=='object') stats={};
-var pend=null, CAP=180000;
+var pend=null, CAP=180000, IDLE=60000, idleSum=0, lastAct=Date.now(), hidAt=0;
+function idleNow(){ var n=Date.now(); return idleSum+(hidAt?n-hidAt:Math.max(0,n-lastAct-IDLE)); }
+function activity(){ var n=Date.now(); if(!hidAt){ var g=n-lastAct; if(g>IDLE) idleSum+=g-IDLE; } lastAct=n; }
+['pointerdown','keydown','input','scroll','touchstart'].forEach(function(e){ try{ document.addEventListener(e,activity,{passive:true,capture:true}); }catch(x){} });
+document.addEventListener('visibilitychange',function(){ var n=Date.now();
+  if(document.hidden){ if(!hidAt){ var g=n-lastAct; if(g>IDLE) idleSum+=g-IDLE; hidAt=n; } }
+  else if(hidAt){ idleSum+=n-hidAt; hidAt=0; lastAct=n; } });
+var learnT=null;
+function flushLearn(){ if(!learnT) return; var ms=Math.max(0,Date.now()-learnT.t0-(idleNow()-learnT.i0)); ms=Math.min(ms,15*60000);
+  var r=rec(dayKey(),learnT.t); r.lm=(r.lm||0)+ms; learnT=null; store.set('s5.stats',stats); }
 function dayKey(d){ d=d||new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function tidOf(it){ return it.tid||String(it.id||'').split('#')[0]||'ine'; }
 function rec(d,t){ var day=stats[d]||(stats[d]={}); return day[t]||(day[t]={n:0,ok:0,ms:0}); }
 function logAnswer(it,ok,ms,isTest){
+  ms=ms-(idleNow()-(round&&round.i0!=null?round.i0:idleNow()));
   var d=dayKey(), t=tidOf(it), r=rec(d,t), m=Math.min(Math.max(ms,0),CAP);
   r.n++; if(ok) r.ok++; r.ms+=m;
   if(isTest){ r.tn=(r.tn||0)+1; if(ok) r.tok=(r.tok||0)+1; }
-  pend={d:d,t:t,since:Date.now(),left:CAP-m};
+  pend={d:d,t:t,since:Date.now(),i0:idleNow(),left:CAP-m};
   store.set('s5.stats',stats);
 }
 function flushTime(){
   if(!pend) return;
-  var add=Math.min(Math.max(Date.now()-pend.since,0),pend.left); rec(pend.d,pend.t).ms+=add; pend=null;
+  var add=Math.min(Math.max(Date.now()-pend.since-(idleNow()-pend.i0),0),pend.left); rec(pend.d,pend.t).ms+=add; pend=null;
   store.set('s5.stats',stats);
 }
 function topicInfo(tid){
@@ -2545,7 +2634,7 @@ function tsPct(r){ return r.tn?Math.round(r.tok/r.tn*100)+' %':'–'; }
 function sumRows(keys){ var tot={n:0,ok:0,ms:0}, bySub={}, byTop={};
   keys.forEach(function(k){ var day=stats[k]; if(!day) return;
     Object.keys(day).forEach(function(t){ var r=day[t], inf=topicInfo(t);
-      [tot,bySub[inf.sub]||(bySub[inf.sub]={n:0,ok:0,ms:0}),byTop[t]||(byTop[t]={n:0,ok:0,ms:0})].forEach(function(a){ a.n+=r.n; a.ok+=r.ok; a.ms+=r.ms; a.tn=(a.tn||0)+(r.tn||0); a.tok=(a.tok||0)+(r.tok||0); });
+      [tot,bySub[inf.sub]||(bySub[inf.sub]={n:0,ok:0,ms:0}),byTop[t]||(byTop[t]={n:0,ok:0,ms:0})].forEach(function(a){ a.n+=r.n; a.ok+=r.ok; a.ms+=r.ms+(r.lm||0); a.lm=(a.lm||0)+(r.lm||0); a.tn=(a.tn||0)+(r.tn||0); a.tok=(a.tok||0)+(r.tok||0); });
     }); });
   return {tot:tot,bySub:bySub,byTop:byTop};
 }
@@ -2561,7 +2650,7 @@ function renderStats(){
   var S=sumRows(keys), today=sumRows([dayKey()]).tot, active=keys.filter(function(k){ return stats[k]&&Object.keys(stats[k]).length; });
   var tl=$('#st-tiles'); tl.textContent='';
   tl.appendChild(tile('Dnes',fmtTime(today.ms),today.n+' úloh · '+(today.n?pctOf(today)+' % správne':'zatiaľ nič')));
-  tl.appendChild(tile('Spolu za obdobie',fmtTime(S.tot.ms),S.tot.n+' úloh'));
+  tl.appendChild(tile('Spolu za obdobie',fmtTime(S.tot.ms),S.tot.n+' úloh'+(S.tot.lm?' · z toho čítanie učiva '+fmtTime(S.tot.lm):'')));
   var cvN=S.tot.n-(S.tot.tn||0);
   tl.appendChild(tile('Cvičenie',cvPct(S.tot),cvN?cvN+' úloh · '+(S.tot.ok-(S.tot.tok||0))+' správne na prvý pokus':'zatiaľ nič'));
   tl.appendChild(tile('Testy',tsPct(S.tot),S.tot.tn?S.tot.tn+' úloh · '+S.tot.tok+' správne':'zatiaľ žiadny test'));
@@ -2580,6 +2669,13 @@ function renderStats(){
   SUBJ.forEach(function(s){ var r=S.bySub[s.id]||{n:0,ok:0,ms:0}; var p=el('span'); p.appendChild(pctEl(r));
     var mb=el('span','mini'), mi=el('i'); mi.style.width=pctOf(r)+'%'; mb.appendChild(mi); p.appendChild(mb);
     ts.appendChild(row([s.name,fmtTime(r.ms)||'0 min',String(r.n),p,cvPct(r),r.tn?tsPct(r)+' ('+r.tn+')':'–'])); });
+  // mapa učiva
+  var mp=$('#st-map'); mp.textContent='';
+  SUBJ.forEach(function(sb){ var ts2=T.filter(function(t){ return t.sub===sb.id&&stav(t)!=='dopredu'; }); if(!ts2.length) return;
+    mp.appendChild(el('div','mapsub',ICON[sb.id]+' '+sb.name)); var w=el('div','mapchips');
+    ts2.forEach(function(t){ var p=topicPct(t.id,30), lvl=mastered(t)?3:p.n>=5?(p.p>=0.7?2:1):p.n?2:0; if(p.n&&p.n<5) lvl=0;
+      var c=el('span','mchip m'+lvl,t.name); c.title=p.n?Math.round(p.p*100)+' % z '+p.n+' odpovedí':'zatiaľ bez odpovedí'; w.appendChild(c); });
+    mp.appendChild(w); });
   // témy
   var tops=Object.keys(S.byTop).filter(function(t){ return S.byTop[t].n>=5; }).map(function(t){ return {t:t,r:S.byTop[t],inf:topicInfo(t)}; });
   function list(ul,arr,empty){ ul.textContent=''; if(!arr.length){ ul.appendChild(el('li',null,empty)); return; }
@@ -2615,10 +2711,16 @@ $('#st-send').onclick=function(){
 };
 $('#st-restore').onclick=function(){ $('#st-file').click(); };
 $('#st-file').onchange=function(){ var f=this.files&&this.files[0], msg=$('#st-msg'), inp=this; if(!f) return;
-  var rd=new FileReader(); rd.onload=function(){ try{ var b=JSON.parse(rd.result); if(!b||b.app!=='EduMind'||!b.data) throw 0;
-      Object.keys(b.data).forEach(function(k){ if(k.indexOf('s5.')===0) localStorage.setItem(k,b.data[k]); });
-      msg.textContent='Obnovené zo zálohy ('+(b.meno||'')+', '+String(b.datum).slice(0,10)+'). Načítavam…'; setTimeout(function(){ location.reload(); },800);
-    }catch(e){ msg.textContent='Tento súbor nie je záloha z EduMind.'; } inp.value=''; };
+  var rd=new FileReader(); rd.onload=function(){ inp.value=''; var b;
+    try{ b=JSON.parse(rd.result); }catch(e){ b=null; }
+    var okData=b&&b.app==='EduMind'&&b.data&&typeof b.data==='object'&&Object.keys(b.data).every(function(k){ if(k.indexOf('s5.')!==0||typeof b.data[k]!=='string') return false; try{ JSON.parse(b.data[k]); return true; }catch(e){ return false; } });
+    if(!okData){ msg.textContent='Tento súbor nie je platná záloha z EduMind.'; return; }
+    msg.textContent='Záloha: '+(b.meno||'bez mena')+', '+String(b.datum).slice(0,10)+'. Obnova PREPÍŠE súčasné výsledky v tomto tablete. ';
+    var yes=el('button','btn small primary','Áno, obnoviť'), no=el('button','btn small','Zrušiť'); yes.type=no.type='button';
+    yes.onclick=function(){ Object.keys(b.data).forEach(function(k){ localStorage.setItem(k,b.data[k]); }); msg.textContent='Obnovené. Načítavam…'; setTimeout(function(){ location.reload(); },600); };
+    no.onclick=function(){ msg.textContent='Obnova zrušená.'; };
+    msg.appendChild(yes); msg.appendChild(document.createTextNode(' ')); msg.appendChild(no);
+  };
   rd.readAsText(f); };
 $('#st-reset').onclick=function(){ var b=this;
   if(b.dataset.sure!=='1'){ b.dataset.sure='1'; b.textContent='Naozaj vymazať všetko?'; return; }
@@ -2678,7 +2780,7 @@ var LEARN={
   ['Obeh okolo Slnka','Jeden obeh trvá 365 dní a 6 hodín. Spolu so sklonom zemskej osi spôsobuje striedanie ročných období. Zo 6 hodín sa za 4 roky nazbiera celý deň – preto je priestupný rok (366 dní, február má 29 dní).',[]],
   ['Slnovraty a rovnodennosti','',['jarná rovnodennosť – 20. marca, deň = noc','letný slnovrat – 21. júna, najdlhší deň','jesenná rovnodennosť – 21. septembra, deň = noc','zimný slnovrat – 21. decembra, najkratší deň']]],
  'g-povrch':[
-  ['Voda a pevnina','Oceány zaberajú asi 69 % povrchu Zeme, pevnina asi 31 %. Preto Zem voláme modrá planéta.',[]],
+  ['Voda a pevnina','Oceány zaberajú asi 71 % povrchu Zeme, pevnina asi 29 %. Preto Zem voláme modrá planéta. (V niektorých zošitoch je zaokrúhlene 69 % a 31 %.)',[]],
   ['Oceány','Všetky oceány spolu tvoria svetový oceán.',['Tichý – najväčší','Atlantický – medzi Európou a Amerikou, najslanší','Indický','Severný ľadový – najmenší a najchladnejší','Južný – okolo Antarktídy']],
   ['Kontinenty','Na Zemi je 6 kontinentov. Európa a Ázia sú dva svetadiely, ale spolu tvoria jeden kontinent – Euráziu.',['Eurázia – najväčší','Afrika, Severná Amerika, Južná Amerika','Austrália – najmenší','Antarktída – pokrytá ľadom']],
   ['Pangea','Kedysi bola všetka pevnina spojená v prakontinente Pangea. Rozpadla sa na Lauráziu a Gondwanu. Kontinenty sa pomaly pohybujú dodnes.',[]]],
@@ -2713,6 +2815,89 @@ var LEARN={
   ['Pozdravy','',['Hello. / Hi. – Ahoj.','Good morning. – Dobré ráno.','Good afternoon. – Dobrý deň (poobede).','Good evening. – Dobrý večer.','Good night. – Dobrú noc.','Goodbye. / Bye. – Dovidenia. / Ahoj.','See you later. – Uvidíme sa neskôr.']],
   ['Predstavovanie','',['What\'s your name? – My name\'s Natali.','How are you? – I\'m fine, thanks. And you?','How do you spell that? – N – A – T – A – L – I.']]]
 };
+
+Object.assign(LEARN,{
+ 'vs':[
+  ['Kedy i a kedy y','O tom, či píšeme i alebo y, rozhoduje spoluhláska pred ním.',['po tvrdých k, g, h, ch píšeme v domácich slovách y: ruky, nohy, suchý','po mäkkých ď, ť, ň, ľ, c, č, dz, dž, š, ž, j píšeme i: čistý, žiak, cibuľa','po d, t, n, l rozhoduje výslovnosť: mäkko znie → i (ticho), tvrdo → y (tyčka)','po obojakých b, m, p, r, s, v, z, f rozhodujú vybrané slová']],
+  ['Vybrané slová','Po obojakých spoluhláskach píšeme y len vo vybraných slovách a v slovách od nich odvodených. Inak píšeme i.',['b: by, byť, bylina, býk','m: my, myš, myslieť, mýliť sa','p: pýtať sa, pysk, pýcha','r: ryba, rýchly, ryža','s: syn, syr, sýty, sýkorka','v: vysoký, výr, vydra','z: jazyk, nazývať sa']],
+  ['Príbuzné slová','Aj slová príbuzné s vybraným slovom píšeme s y.',['ryba → rybník, rybár','myš → myška, myšací','syn → synovec']],
+  ['Pozor na rovnako znejúce slová','',['byť (existovať) – biť (udierať): Chcem byť doma. Brat bije bubon.','my (zámeno) – mi (mne): My ideme von. Daj mi to.']]],
+ 'pady':[
+  ['Skloňovanie','Podstatné mená meníme podľa pádu a čísla. Tomu hovoríme skloňovanie. Pád zistíme pádovou otázkou.',['žena – (bez) ženy – (k) žene – (vidím) ženu – (o) žene – (so) ženou','dub – (bez) duba – (k) dubu – (vidím) dub – (o) dube – (s) dubom','mesto – (z) mesta – (k) mestu – (vidím) mesto – (o) meste – (s) mestom']],
+  ['Predložky pomáhajú','Niektoré predložky sa spájajú vždy s tým istým pádom.',['bez, do, od, z, u → genitív: bez mamy, zo školy','k, ku → datív: k mame','pre, cez → akuzatív: pre brata','o, pri, po → lokál: o lese, pri dome','s, so → inštrumentál: s otcom','na, v môžu byť v rôznych pádoch: na stôl (kam?), na stole (kde?)']]],
+ 'sl':[
+  ['Slovesá','Slovesá vyjadrujú činnosť alebo stav. Pýtame sa: čo robí? čo sa s ním deje?',['beží, píše, spí, rastie']],
+  ['Osoba a číslo','',['1. osoba: ja píšem – my píšeme','2. osoba: ty píšeš – vy píšete','3. osoba: on, ona, ono píše – oni, ony píšu']],
+  ['Čas','',['minulý: písal (už sa stalo)','prítomný: píše (deje sa teraz)','budúci: bude písať, napíše (ešte sa stane)']]],
+ 'neurc':[
+  ['Neurčitok','Neurčitok je základný tvar slovesa. Neurčuje osobu, číslo ani čas. Pýtame sa: čo robiť? Končí sa na -ť (alebo -cť).',['robiť, písať, čítať, niesť','môcť, piecť, tiecť']],
+  ['Ako ho nájdem','Zo slovesa v určitom tvare urobíme tvar, ktorý odpovedá na otázku čo robiť?',['píšem → písať','beží → bežať','napiekla → napiecť']]],
+ 's-spod':[
+  ['Spodobovanie','Párová spoluhláska sa pri vyslovovaní prispôsobí susednej. Píšeme však podľa pravopisu, preto si pomáhame príbuzným slovom.',['na konci slova vyslovujeme neznelo: dub [dup] – lebo duby','pred neznelou neznelo: ťažký [ťaškí] – lebo ťažoba','pred znelou znelo: kosba [kozba], prosba [prozba]']]],
+ 'm-rovn':[
+  ['Rovnica','V rovnici hľadáme neznáme číslo x tak, aby platila rovnosť. Pomáha opačný počtový výkon.',['x + 5 = 12 → x = 12 − 5 = 7','x − 8 = 20 → x = 20 + 8 = 28','4 · x = 24 → x = 24 : 4 = 6','x : 3 = 9 → x = 9 · 3 = 27']],
+  ['Skúška','Výsledok dosadíme do rovnice a overíme, či platí.',['x = 7: 7 + 5 = 12 ✓']]],
+ 'm-nerov':[
+  ['Nerovnica','V nerovnici je znak < (menší ako) alebo > (väčší ako). Riešením môže byť viac čísel.',['5 · x < 30: vyhovuje 1, 2, 3, 4, 5 – najväčšie je 5, lebo 5 · 6 = 30 už nie je menej ako 30','x + 3 > 7: vyhovuje 5, 6, 7 … – najmenšie je 5']],
+  ['Ako na to','Najprv nájdi číslo, pri ktorom by platila rovnosť, a potom rozhodni, či ideš nižšie alebo vyššie.',[]]],
+ 'm-zaok':[
+  ['Zaokrúhľovanie','Pozrieme sa na cifru hneď vpravo od rádu, na ktorý zaokrúhľujeme. Ak je 0 – 4, zaokrúhlime nadol. Ak je 5 – 9, zaokrúhlime nahor.',['3 462 na desiatky → 3 460','3 462 na stovky → 3 500','3 462 na tisícky → 3 000','34 994 na stovky → 35 000']]],
+ 'm-rim':[
+  ['Rímske číslice','',['I = 1, V = 5, X = 10, L = 50','C = 100, D = 500, M = 1 000']],
+  ['Pravidlá','Číslice sčítame. Menšia číslica pred väčšou sa odčíta. Rovnaká číslica môže byť za sebou najviac trikrát.',['XII = 12, XXX = 30','IV = 4, IX = 9, XL = 40, XC = 90, CD = 400, CM = 900','MMXXVI = 2026']]],
+ 'm-jedn':[
+  ['Jednotky','',['dĺžka: 1 km = 1 000 m, 1 m = 10 dm = 100 cm, 1 dm = 10 cm, 1 cm = 10 mm','hmotnosť: 1 t = 1 000 kg, 1 kg = 1 000 g','objem: 1 hl = 100 l, 1 l = 10 dl = 1 000 ml','čas: 1 h = 60 min, 1 min = 60 s','peniaze: 1 € = 100 centov']],
+  ['Ako premieňať','Z väčšej jednotky na menšiu násobíme, z menšej na väčšiu delíme.',['3 m = 3 · 100 = 300 cm','4 000 g = 4 000 : 1 000 = 4 kg']]],
+ 'm-obvod':[
+  ['Obvod','Obvod je súčet dĺžok všetkých strán útvaru.',['štvorec: o = 4 · a','obdĺžnik: o = 2 · a + 2 · b','trojuholník: o = a + b + c']],
+  ['Príklad','Obdĺžnik má strany 5 cm a 3 cm.',['o = 2 · 5 + 2 · 3 = 16 cm']]],
+ 'g-vesmir':[
+  ['Vesmír','Vesmír sa skladá z galaxií. Naša galaxia sa volá Mliečna cesta.',[]],
+  ['Slnečná sústava','V strede je Slnko – hviezda. Okolo neho obieha 8 planét.',['poradie od Slnka: Merkúr, Venuša, Zem, Mars, Jupiter, Saturn, Urán, Neptún','najväčšia planéta: Jupiter','Zem je tretia planéta od Slnka']]],
+ 'g-tvar':[
+  ['Tvar Zeme','Zem má tvar gule, na póloch je mierne sploštená. Jej polomer je asi 6 378 km.',[]],
+  ['Dôkazy guľatosti','',['loď na obzore mizne postupne – najprv trup, potom sťažeň','tieň Zeme na Mesiaci pri zatmení je okrúhly','fotografie Zeme z vesmíru','Zem sa dá oboplávať dookola']]],
+ 'g-mesiac':[
+  ['Mesiac','Mesiac je prirodzená družica Zeme. Sám nesvieti, odráža svetlo Slnka. Okolo Zeme obehne asi za 27 dní a 8 hodín.',[]],
+  ['Fázy Mesiaca','',['nov – Mesiac nevidno','prvá štvrť','spln – celý okrúhly Mesiac','posledná štvrť']],
+  ['Zatmenia a príliv','',['zatmenie Slnka: Mesiac je medzi Slnkom a Zemou','zatmenie Mesiaca: Zem je medzi Slnkom a Mesiacom','príliv a odliv spôsobuje hlavne príťažlivosť Mesiaca']]],
+ 'b-skum':[
+  ['Živá a neživá príroda','',['živá: rastliny, živočíchy, huby – dýchajú, prijímajú potravu, rastú, rozmnožujú sa','neživá: voda, vzduch, pôda, horniny']],
+  ['Pomôcky','',['lupa – zväčší drobné predmety','mikroskop – veľmi malé organizmy (okulár, objektív, stolček, preparát)','ďalekohľad – pozorovanie z diaľky','zväčšenie mikroskopu = zväčšenie okulára · zväčšenie objektívu, napr. 10 · 4 = 40']]],
+ 'b-les':[
+  ['Poschodia lesa','Od najvyššieho:',['stromové','krovité','bylinné','machové (pri zemi)']],
+  ['Dreviny','',['ihličnaté: smrek (šišky visia), jedľa (šišky stoja), borovica, smrekovec (na zimu opadáva)','listnaté: buk (bukvica), dub (žaluď), lipa, javor']]],
+ 'b-huby':[
+  ['Huby','Huby nemajú zelené farbivo chlorofyl. Rozmnožujú sa výtrusmi. V pôde je podhubie, nad zemou plodnica (klobúk a hlúbik).',['jedlé: hríb smrekový, kuriatko, bedľa','smrteľne jedovatá: muchotrávka zelená']],
+  ['Lišajníky, machy a paprade','',['lišajník = huba + riasa, rastie tam, kde je čisté ovzdušie','machy, paprade a prasličky sa rozmnožujú výtrusmi','machy zadržiavajú v lese vodu']]],
+ 'd-cas':[
+  ['Čas','',['minulosť – čo už bolo','prítomnosť – čo je teraz','budúcnosť – čo ešte bude']],
+  ['Časová priamka','Na časovej priamke zoradíme udalosti podľa toho, kedy sa stali – od starších po novšie.',[]]],
+ 'd-cas2':[
+  ['Časové úseky','',['desaťročie = 10 rokov','storočie = 100 rokov','tisícročie = 1 000 rokov']],
+  ['Letopočet','Náš letopočet počítame od narodenia Ježiša Krista. Roky pred ním píšeme s „pred Kr.“ a čím je číslo väčšie, tým je rok starší.',['300 pred Kr. je starší ako 100 pred Kr.']],
+  ['Ktoré storočie','Roky 1901 – 2000 sú 20. storočie, roky 2001 – 2100 sú 21. storočie.',['rok 1945 → 20. storočie','rok 2026 → 21. storočie']]],
+ 'a-pokyn':[
+  ['Pokyny','Pokyn (rozkaz) začína slovesom.',['Sit down. – Sadni si.','Stand up. – Postav sa.','Open your exercise book. – Otvor si zošit.','Look at the picture. – Pozri sa na obrázok.','Give me your book, please. – Daj mi, prosím, svoju knihu.']],
+  ['Zápor','Pred sloveso dáme Don\'t.',['Don\'t listen. – Nepočúvaj.','Don\'t stand up. – Nevstávaj.']]],
+ 'a-cisla':[
+  ['Čísla 13 – 19 a desiatky','Čísla 13 až 19 končia na -teen, desiatky na -ty.',['thirteen – thirty','fourteen – forty (bez u!)','fifteen – fifty','twenty-one, thirty-five (so spojovníkom)','a hundred – 100']],
+  ['Telefónne čísla','Číslice čítame po jednej. 0 čítame oh, dve rovnaké za sebou double.',['0 7 7 → oh double seven']],
+  ['Počítanie','',['plus, minus, times (krát), divided by (deleno), equals (rovná sa)','Seven times five equals thirty-five.']]],
+ 'a-zam':[
+  ['Osobné zámená','',['I – ja, you – ty, he – on, she – ona, it – ono (vec, zviera)','we – my, you – vy, they – oni']],
+  ['Privlastňovacie zámená','',['my – môj, your – tvoj, his – jeho, her – jej, its – jeho (vec)','our – náš, your – váš, their – ich']]],
+ 'a-have':[
+  ['Have got','',['I, you, we, they have got (I\'ve got)','he, she, it has got (she\'s got)']],
+  ['Zápor a otázka','',['I haven\'t got a sister. He hasn\'t got a dog.','Have you got a pet? – Yes, I have. / No, I haven\'t.','Has she got a cat? – Yes, she has. / No, she hasn\'t.']]],
+ 'a-ps':[
+  ['Prítomný čas (present simple)','Hovoríme o tom, čo robíme pravidelne. Pri he, she, it pridáme -s.',['I play – she plays','po -ch, -sh, -s, -o pridáme -es: watches, goes','spoluhláska + y → -ies: fly – flies']],
+  ['Zápor a otázka','',['I don\'t like fish. She doesn\'t like fish.','Do you like pizza? – Yes, I do.','Does he play football? – No, he doesn\'t.']]],
+ 'a-otaz':[
+  ['Opytovacie slová','',['What – čo','Who – kto','Where – kde','When – kedy','How – ako','How old – koľko rokov','How many – koľko','Why – prečo']]],
+ 'a-abc':[
+  ['Pozor na tieto písmená','Niektoré písmená sa po anglicky čítajú inak, ako by sme čakali.',['A – ej, E – í, I – aj','G – dží, J – džej','R – ár, W – dabl jú, Y – vaj']]]
+});
 function isEn(s){ return /[A-Za-z]/.test(s)&&!/[áäčďéíĺľňóôŕšťúýžÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽ]/.test(s); }
 var enVoice=null;
 function findEn(){ try{ var vs=speechSynthesis.getVoices(); enVoice=vs.filter(function(v){return /^en[-_]GB/i.test(v.lang);})[0]||vs.filter(function(v){return /^en/i.test(v.lang);})[0]||null; }catch(e){ enVoice=null; } }
@@ -2738,6 +2923,8 @@ function openTopic(t){
   var bc=best[t.id], bt=best[t.id+'|test'];
   $('#tp-meta').textContent=[bc?'Najlepšie cvičenie: '+bc.p+' %':'',bt?'Najlepší test: '+bt.p+' %':''].filter(Boolean).join(' · ');
   $('#tp-learn').hidden=!LEARN[t.id];
+  var ex=examOf(t.id); $('#tp-exam').value=ex?ex.date:''; $('#tp-exam').min=dayKey(); $('#tp-exam-del').hidden=!ex;
+  $('#tp-exam-info').textContent=ex?'Do písomky sa táto téma bude každý deň objavovať v pláne „Dnes sa učím“, deň pred ňou ako test nanečisto.':'';
   show('topic');
 }
 function showLearn(t){
@@ -2751,10 +2938,10 @@ function showLearn(t){
         ul.appendChild(li); }); card.appendChild(ul); }
     body.appendChild(card);
   });
-  show('learn');
+  show('learn'); learnT={t:t.id,t0:Date.now(),i0:idleNow()};
 }
 
-var round=null;
+var round=null, errOk=store.get('s5.errok',{}); if(!errOk||typeof errOk!=='object') errOk={};
 function startTopic(t,mode){ mode=mode||'cvik'; startRound(t.name+(mode==='test'?' · test':''),t.gen?genRound(t,t.n):pickItems(t.items,t.n),mode==='test'?t.id+'|test':t.id,function(){ startTopic(t,mode); },mode); }
 function startRound(title,items,key,again,mode){
   if(!items.length) return;
@@ -2766,7 +2953,7 @@ function showItem(retry){
   var it=round.items[round.i], body=$('#q-body'), fb=$('#q-fb'), check=$('#q-check'), next=$('#q-next'), rb=$('#q-retry');
   body.textContent=''; fb.hidden=true; fb.textContent=''; rb.hidden=true;
   check.hidden=false; check.disabled=true; next.hidden=true;
-  if(!retry){ round.tries=0; round.prevWrong=null; round.t0=Date.now(); }
+  if(!retry){ round.tries=0; round.prevWrong=null; round.t0=Date.now(); round.i0=idleNow(); }
   var isTest=round.mode==='test', isAj=itemSub(it)==='aj';
   next.textContent=(round.i===round.items.length-1)?'Vyhodnotiť':'Ďalej';
   $('#q-count').textContent=(round.i+1)+' / '+round.items.length;
@@ -2777,10 +2964,11 @@ function showItem(retry){
     var first=!round.tries;
     var canRetry=!ok&&first&&!isTest&&!(it.k==='mc'&&it.o&&it.o.length<=2)&&!(it.k==='mc'&&it.fixed&&it.o.length<=3);
     if(first){
-      var k0=errs.indexOf(it.id);
-      if(ok&&k0>-1) errs.splice(k0,1);
-      if(!ok&&k0<0&&it.id) errs.push(it.id);
-      store.set('s5.err',errs);
+      var k0=errs.indexOf(it.id), dk0=dayKey();
+      if(ok&&k0>-1){ var eo=errOk[it.id]||[]; if(eo.indexOf(dk0)<0) eo.push(dk0);
+        if(eo.length>=2){ errs.splice(k0,1); delete errOk[it.id]; } else errOk[it.id]=eo; }
+      if(!ok){ if(k0<0&&it.id) errs.push(it.id); delete errOk[it.id]; }
+      store.set('s5.err',errs); store.set('s5.errok',errOk);
       logAnswer(it,ok,Date.now()-t0,isTest); markSeen(it);
     }
     if(canRetry){
@@ -2824,7 +3012,28 @@ function sentenceNode(s,cls){
   s.split(/\*(.+?)\*/).forEach(function(part,i){ if(!part) return; p.appendChild(i%2?el('mark',null,part):document.createTextNode(part)); });
   return p;
 }
+function matchItems(pairs,q,size){ var out=[]; size=size||4;
+  for(var i=0;i+size<=pairs.length;i+=size){ var ch=pairs.slice(i,i+size), L={}, R={}, okc=ch.every(function(p){ if(L[p[0]]||R[p[1]]) return false; L[p[0]]=R[p[1]]=1; return true; });
+    if(okc) out.push({k:'match',q:q,pairs:ch,a:ch.map(function(p){ return p[0]+' – '+p[1]; }).join(', ')}); }
+  return out; }
 var RENDER={
+  match:function(it,body,finish){
+    body.appendChild(el('p','prompt',it.q||'Spoj dvojice. Ťukni na slovo vľavo a potom na jeho dvojicu vpravo.'));
+    var box=el('div','match'), cl=el('div','mcol'), cr=el('div','mcol'), sel=null, left=it.pairs.length, miss=0;
+    var lb=shuffle(it.pairs.map(function(p,i){ return {t:p[0],i:i}; })), rb=shuffle(it.pairs.map(function(p,i){ return {t:p[1],i:i}; }));
+    lb.forEach(function(x){ var b=el('button',null,x.t); b.type='button'; b.setAttribute('aria-pressed','false'); b._i=x.i;
+      b.onclick=function(){ if(b.disabled) return; if(sel) sel.setAttribute('aria-pressed','false'); sel=b; b.setAttribute('aria-pressed','true'); };
+      if(itemSub(it)==='aj'&&canSay&&isEn(x.t)) b.addEventListener('click',function(){ sayEn(x.t); });
+      cl.appendChild(b); });
+    rb.forEach(function(x){ var b=el('button',null,x.t); b.type='button'; b._i=x.i;
+      b.onclick=function(){ if(b.disabled||!sel) return;
+        if(sel._i===b._i){ sel.disabled=b.disabled=true; sel.classList.add('is-good'); b.classList.add('is-good'); sel.setAttribute('aria-pressed','false'); sel=null; left--;
+          if(!left) finish(miss===0,miss?['Pri spájaní si sa '+miss+'× pomýlila.']:[]); }
+        else { miss++; b.classList.add('flash'); setTimeout(function(){ b.classList.remove('flash'); },450); } };
+      cr.appendChild(b); });
+    box.appendChild(cl); box.appendChild(cr); body.appendChild(box);
+    return null;
+  },
   sd:function(it,body,finish){ return choice(it,body,finish,SD.map(function(s,i){return {v:s,num:(i+1)+'.'};}),true,'Aký slovný druh je zvýraznené slovo?',SD_HELP[SD.indexOf(it.a)]); },
   mc:function(it,body,finish){ return choice(it,body,finish,it.fixed?it.o:shuffle(it.o),!!it.fixed,it.q,it.e); },
   tag:function(it,body,finish,check){
@@ -2888,7 +3097,8 @@ var RENDER={
   typed:function(it,body,finish,check){
     body.appendChild(el('p','prompt',it.q));
     body.appendChild(el('p',it.w.length>24?'sent':'bigword',it.w));
-    if(it.hint&&!(round&&round.mode==='test')) body.appendChild(el('p','hint',it.hint));
+    if(it.svg){ var sv=el('div'); sv.innerHTML=it.svg; body.appendChild(sv); }
+    if(it.hint) body.appendChild(el('p','hint',it.hint));
     var wrap=el('div','typed'), lab=el('label',null,'Tvoja odpoveď'), inp=el('input');
     lab.htmlFor='answer'; inp.id='answer'; inp.type='text';
     inp.setAttribute('autocomplete','off'); inp.setAttribute('autocapitalize','none'); inp.setAttribute('autocorrect','off');
@@ -2910,10 +3120,10 @@ var RENDER={
     body.appendChild(el('p','prompt',it.q||(custom?'Doplň chýbajúce písmená.':'Doplň i, í, y alebo ý.')));
     var p=el('p','sent gapsent');
     words.forEach(function(w,wi){
-      var span=el('span','w');
+      var span=el('span','w'), acc='';
       w.forEach(function(part){
-        if(typeof part==='string'){ if(part) span.appendChild(document.createTextNode(part)); return; }
-        var g=el('span','gap'), state={spec:part,sel:null,node:g}; gaps.push(state);
+        if(typeof part==='string'){ if(part){ span.appendChild(document.createTextNode(part)); acc+=part; } return; }
+        var g=el('span','gap'), state={spec:part,sel:null,node:g,prev:acc.slice(-2).toLowerCase()}; gaps.push(state); acc+=part.correct;
         part.opts.forEach(function(o){
           var b=el('button',null,o); b.type='button'; b.setAttribute('aria-pressed','false');
           b.onclick=function(){ state.sel=o; Array.prototype.forEach.call(g.children,function(c){ c.setAttribute('aria-pressed',c===b?'true':'false'); });
@@ -2934,7 +3144,9 @@ var RENDER={
         f.appendChild(document.createTextNode(g.spec.correct));
         g.node.parentNode.replaceChild(f,g.node);
       });
-      finish(ok,ok?[]:['Správne: '+plain(it.s)]);
+      var why='';
+      gaps.some(function(g){ if(g.sel!==g.spec.correct&&'iíyý'.indexOf(g.spec.correct)>-1){ why=iyRule(g.prev,g.sel,g.spec.correct); return true; } return false; });
+      finish(ok,ok?[]:['Správne: '+plain(it.s),why]);
     };
   },
   pick:function(it,body,finish,check){
@@ -2987,7 +3199,9 @@ function choice(it,body,finish,opts,two,prompt,expl){
 
 function showResult(){
   var n=round.items.length, pct=Math.round(round.score/n*100), g=grade(pct);
-  if(round.key){ var b=best[round.key]||{p:0,n:0}; best[round.key]={p:Math.max(b.p,pct),n:b.n+1}; store.set('s5.best',best); }
+  if(round.key){ var b=best[round.key]||{p:0,n:0}; best[round.key]={p:Math.max(b.p,pct),n:b.n+1}; store.set('s5.best',best);
+    var tk=String(round.key).split('|')[0]; if(topicById(tk)) srsUpdate(tk,pct); }
+  if(round.planIdx!=null){ var pl=curPlan(); if(pl.blocks[round.planIdx]){ pl.blocks[round.planIdx].done=true; store.set('s5.plan',pl); } round.planIdx=null; }
   $('#r-title').textContent=round.title;
   $('#r-score').textContent=round.score+' z '+n+' správne';
   $('#r-remark').textContent=kidName?g[1].replace(/^([^,.!]+)([.!])/,'$1, '+kidName+'$2'):g[1];
@@ -3007,7 +3221,29 @@ function showResult(){
   $('#r-again').hidden=!round.again;
   show('result');
 }
+var PX=null;
+function pxWords(){ var t=topicById('a-u1'); T.forEach(function(x){ if(/^a-u\d$/.test(x.id)&&stav(x)==='teraz') t=x; });
+  var w=[]; t.items.forEach(function(it){ var m=(it.q||'').match(/^Čo znamená „(.+)“\?$/); if(m&&!/[ ?.!']/.test(m[1])) w.push([m[1],it.a.replace(/\s*\(.*?\)/g,'')]); });
+  var seen={}, out=[]; shuffle(w).forEach(function(p){ if(out.length<6&&!seen[p[0]]&&!seen[p[1]]){ seen[p[0]]=seen[p[1]]=1; out.push(p); } }); return out; }
+function startPexeso(){
+  var pairs=pxWords(), cards=[]; pairs.forEach(function(p,i){ cards.push({t:p[0],i:i,en:1}); cards.push({t:p[1],i:i}); }); cards=shuffle(cards);
+  PX={open:[],got:0,moves:0,n:pairs.length}; var g=$('#px-grid'); g.textContent=''; $('#px-again').hidden=true; $('#px-moves').textContent='0 ťahov';
+  cards.forEach(function(c){ var b=el('button',null,'?'); b.type='button'; b._c=c; b.setAttribute('aria-label','Kartička');
+    b.onclick=function(){ if(b.classList.contains('up')||b.classList.contains('got')||PX.open.length>=2) return;
+      b.classList.add('up'); b.textContent=c.t; if(c.en&&canSay) sayEn(c.t); PX.open.push(b);
+      if(PX.open.length===2){ PX.moves++; $('#px-moves').textContent=PX.moves+' ťahov'; var a=PX.open[0], z=PX.open[1];
+        if(a._c.i===z._c.i){ a.classList.add('got'); z.classList.add('got'); PX.open=[]; PX.got++;
+          if(PX.got===PX.n){ $('#px-again').hidden=false; confetti(); stars+=3; store.set('s5.stars',stars); $('#px-moves').textContent='Hotovo za '+PX.moves+' ťahov · +3 ⭐'; } }
+        else setTimeout(function(){ [a,z].forEach(function(x){ x.classList.remove('up'); x.textContent='?'; }); PX.open=[]; },900); } };
+    g.appendChild(b); });
+  show('pexeso'); }
+$('#b-pexeso').onclick=startPexeso;
+$('#px-again').onclick=startPexeso;
+$('#px-back').onclick=function(){ show('home'); };
 $('#tp-back').onclick=function(){ show('home'); };
+$('#tp-exam-save').onclick=function(){ var v=$('#tp-exam').value; if(!curTopic||!v||daysTo(v)<0) return;
+  EXAMS=EXAMS.filter(function(e){ return e.tid!==curTopic.id; }); EXAMS.push({tid:curTopic.id,date:v}); store.set('s5.exams',EXAMS); buildPlan(); openTopic(curTopic); };
+$('#tp-exam-del').onclick=function(){ if(!curTopic) return; EXAMS=EXAMS.filter(function(e){ return e.tid!==curTopic.id; }); store.set('s5.exams',EXAMS); buildPlan(); openTopic(curTopic); };
 $('#tp-learn').onclick=function(){ if(curTopic) showLearn(curTopic); };
 $('#tp-cvik').onclick=function(){ if(curTopic) startTopic(curTopic,'cvik'); };
 $('#tp-test').onclick=function(){ if(curTopic) startTopic(curTopic,'test'); };
@@ -3150,20 +3386,77 @@ function streak(){
   while(has(dayKey(d))){ n++; d.setDate(d.getDate()-1); }
   return n;
 }
+var HOURS={sj:6,mat:5,aj:3,geo:2,bio:2,dej:1};
+var EXAMS=store.get('s5.exams',[]); if(!Array.isArray(EXAMS)) EXAMS=[];
+var SRS=store.get('s5.srs',{}); if(!SRS||typeof SRS!=='object') SRS={};
+var PLAN=store.get('s5.plan',null);
+var SRS_DAYS=[1,2,4,7,14,30];
+function addDays(n){ return dayKey(new Date(Date.now()+n*864e5)); }
+function daysTo(k){ var a=new Date(k+'T12:00:00'), b=new Date(dayKey()+'T12:00:00'); return Math.round((a-b)/864e5); }
+function cleanExams(){ EXAMS=EXAMS.filter(function(e){ return e&&topicById(e.tid)&&daysTo(e.date)>=0; }); store.set('s5.exams',EXAMS); }
+function examOf(tid){ return EXAMS.filter(function(e){ return e.tid===tid; })[0]; }
+function topicPct(tid,days){ var n=0, ok=0, lim=dayKey(new Date(Date.now()-days*864e5)); Object.keys(stats).forEach(function(d){ var r=stats[d][tid]; if(d>=lim&&r){ n+=r.n; ok+=r.ok; } }); return {n:n,p:n?ok/n:null}; }
+function lastSeenDay(tid){ var ks=Object.keys(stats).filter(function(d){ return stats[d][tid]; }).sort(); return ks.length?ks[ks.length-1]:''; }
+function srsUpdate(tid,pct){ var x=SRS[tid]||{lvl:0}; if(pct>=85) x.lvl=Math.min(x.lvl+1,SRS_DAYS.length-1); else if(pct<60) x.lvl=0;
+  x.due=addDays(SRS_DAYS[x.lvl]); x.last=dayKey(); SRS[tid]=x; store.set('s5.srs',SRS); }
+function wpick(arr,w){ var tot=0; arr.forEach(function(a){ tot+=w(a); }); var r=Math.random()*tot; for(var i=0;i<arr.length;i++){ r-=w(arr[i]); if(r<=0) return arr[i]; } return arr[arr.length-1]; }
+function buildPlan(){
+  cleanExams(); var today=dayKey(), used={}, blocks=[];
+  function use(t){ used[t.id]=1; }
+  var ex=EXAMS.filter(function(e){ return daysTo(e.date)<=7; }).sort(function(a,b){ return a.date<b.date?-1:1; })[0];
+  if(ex){ var et=topicById(ex.tid); blocks.push({kind:daysTo(ex.date)<=1?'test':'pisomka',tid:et.id}); use(et); }
+  var teraz=T.filter(function(t){ return stav(t)==='teraz'&&!used[t.id]&&(t.gen||t.items.length); });
+  if(teraz.length){ var t1=wpick(teraz,function(t){ var p=topicPct(t.id,14); return (HOURS[t.sub]||1)*(p.p==null||p.p<0.75?1.6:1); }); blocks.push({kind:'teraz',tid:t1.id}); use(t1); }
+  var all=allItems(), en=errs.filter(function(id){ return all[id]; }).length;
+  if(en>=3) blocks.push({kind:'chyby'});
+  else { var weak=T.filter(function(t){ return stav(t)!=='dopredu'&&!used[t.id]; }).map(function(t){ return {t:t,p:topicPct(t.id,30)}; }).filter(function(x){ return x.p.n>=5&&x.p.p<0.8; }).sort(function(a,b){ return a.p.p-b.p.p; })[0];
+    if(weak){ blocks.push({kind:'slabe',tid:weak.t.id}); use(weak.t); } }
+  var cand=T.filter(function(t){ return stav(t)!=='dopredu'&&!used[t.id]&&(t.gen||t.items.length); });
+  var due=cand.filter(function(t){ return SRS[t.id]&&SRS[t.id].due<=today; }).sort(function(a,b){ return SRS[a.id].due<SRS[b.id].due?-1:1; })[0];
+  while(blocks.length<3){
+    var pool=cand.filter(function(t){ return !used[t.id]; }); if(!pool.length) break;
+    var t3=null;
+    if(due&&!used[due.id]){ t3=due; due=null; }
+    else { var pre=pool.filter(function(t){ return stav(t)==='prebrate'; }), src=pre.length?pre:pool;
+      t3=wpick(src,function(t){ var ls=lastSeenDay(t.id); return (HOURS[t.sub]||1)*(ls?Math.min(30,Math.max(1,-daysTo(ls))):20); }); }
+    blocks.push({kind:'upevni',tid:t3.id}); use(t3);
+  }
+  var old=PLAN&&PLAN.day===today&&Array.isArray(PLAN.blocks)?PLAN.blocks:[]; blocks.forEach(function(b){ if(old.some(function(o){ return o.done&&o.kind===b.kind&&o.tid===b.tid; })) b.done=true; });
+  PLAN={day:today,blocks:blocks}; store.set('s5.plan',PLAN); return PLAN;
+}
+function curPlan(){ if(!PLAN||PLAN.day!==dayKey()||!Array.isArray(PLAN.blocks)||PLAN.blocks.some(function(b){ return b.tid&&!topicById(b.tid); })) buildPlan(); return PLAN; }
+var PK={teraz:['📌','Práve preberáte'],chyby:['🔁','Zopakuj si chyby'],slabe:['💪','Toto ešte nejde – precvič'],upevni:['🧠','Upevni vedomosti'],pisomka:['📅','Príprava na písomku'],test:['📝','Písomka už o chvíľu – test nanečisto']};
+function blockLabel(b){ var t=b.tid?topicById(b.tid):null, k=PK[b.kind], sub=t?SUBJ.filter(function(x){return x.id===t.sub;})[0]:null, ex=t?examOf(t.id):null;
+  var extra=ex?(daysTo(ex.date)===0?' · písomka je dnes':daysTo(ex.date)===1?' · písomka je zajtra':' · písomka o '+daysTo(ex.date)+' dni'):'';
+  return {ic:k[0],title:b.kind==='chyby'?'Moje chyby':(sub?sub.name+': ':'')+t.name,sub:k[1]+extra+' · asi 6 min'}; }
+function startBlock(i){ var b=curPlan().blocks[i]; if(!b) return; var t=b.tid?topicById(b.tid):null;
+  if(b.kind==='chyby'){ var all=allItems(), items=errs.map(function(id){return all[id];}).filter(Boolean); startRound('Moje chyby',pickItems(items,8),null,null,'cvik'); }
+  else if(b.kind==='test') startRound(t.name+' · test',t.gen?genRound(t,10):pickItems(t.items,10),t.id+'|test',null,'test');
+  else startRound(t.name,t.gen?genRound(t,8):pickItems(t.items,8),t.id,function(){ startTopic(t,'cvik'); },'cvik');
+  round.planIdx=i; }
+function renderPlan(){ var p=curPlan(), ol=$('#plan'); ol.textContent='';
+  p.blocks.forEach(function(b,i){ var L=blockLabel(b), li=el('li',b.done?'done':(b.kind==='test'||b.kind==='pisomka'?'exam':'')), bt=el('button'); bt.type='button';
+    bt.appendChild(el('span','pic',L.ic)); var tx=el('span','ptx'); tx.appendChild(el('b',null,L.title)); tx.appendChild(el('small',null,L.sub)); bt.appendChild(tx);
+    bt.appendChild(el('span','pst',b.done?'✓ hotovo':'▶')); bt.onclick=function(){ startBlock(i); }; li.appendChild(bt); ol.appendChild(li); });
+  var dn=p.blocks.filter(function(b){ return b.done; }).length;
+  $('#g-title').textContent=dn===p.blocks.length&&dn?'Dnešný plán je hotový! 🎉':'Dnes sa učím';
+  $('#goal').classList.toggle('done',dn===p.blocks.length&&dn>0);
+  $('#b-pexeso').hidden=!(dn===p.blocks.length&&dn>0);
+  var up=EXAMS.filter(function(e){ return daysTo(e.date)>=0; }).sort(function(a,b){ return a.date<b.date?-1:1; });
+  $('#plan-exams').textContent=up.length?'📅 Písomky: '+up.map(function(e){ var d=daysTo(e.date); return topicById(e.tid).name+' ('+(d===0?'dnes':d===1?'zajtra':'o '+d+' dni')+')'; }).join(', '):'';
+  return {done:dn,total:p.blocks.length};
+}
 function renderTop(){
   $('#p-stars').textContent='⭐ '+stars;
   var st=streak(); $('#p-streak').textContent='🔥 '+st+' '+(st===1?'deň':st>=2&&st<=4?'dni':'dní')+' v rade';
-  var t=sumRows([dayKey()]).tot, done=t.n>=GOAL, g=$('#goal');
-  g.classList.toggle('done',done);
-  $('#g-title').textContent=done?'Denný cieľ splnený! 🎉':'Denný cieľ: '+GOAL+' úloh';
-  $('#g-sub').textContent='Dnes '+t.n+' z '+GOAL+' úloh'+(t.n?' · '+pctOf(t)+' % správne':'');
-  $('#g-bar').style.width=Math.min(100,t.n/GOAL*100)+'%';
-  $('#b-daily').textContent=done?'Ešte jedna výzva ▶':'Dnešná výzva ▶';
+  var t=sumRows([dayKey()]).tot, pr=renderPlan();
+  $('#g-sub').textContent=pr.done+' z '+pr.total+' hotové · dnes '+t.n+' úloh'+(t.n?' · '+pctOf(t)+' % správne':'');
+  $('#g-bar').style.width=(pr.total?pr.done/pr.total*100:0)+'%';
 }
 $('#b-daily').onclick=function daily(){
   var pool=[];
   SUBJ.forEach(function(sb){ pool=pool.concat(poolFor(sb.id,2)); });
-  startRound('Dnešná výzva',shuffle(pool),'daily',daily);
+  startRound('Náhodná výzva',shuffle(pool),'daily',daily);
 };
 function confetti(){
   try{ if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
