@@ -74,3 +74,7 @@ Podporuje svetlý aj tmavý režim a obmedzenie animácií.
 
 1. Inteligentné opakovanie slabých miest a vysvetlenia postupu
 2. Minihry ako odmena
+
+## Stav tém
+
+V src/app.html je zoznam TERAZ (témy, ktoré sa práve preberajú). Témy s later:true sú „Dopredu“ (viditeľné, ale nie v mixe a dennej výzve), ostatné sú „Už sme prebrali“. Mix a denná výzva berú asi 60 % úloh z tém „teraz“ a 40 % z prebratých; prebraté témy s úspešnosťou nad 90 % (aspoň 20 odpovedí za 30 dní) sa vracajú len občas.

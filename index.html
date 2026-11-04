@@ -117,6 +117,9 @@ h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15}
 
 .sec h2{font-size:1.4rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
 .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:12px}
+.tgroup{grid-column:1/-1;margin:14px 2px 0;font-family:var(--font-display);font-size:1.1rem}
+.tgroup:first-child{margin-top:0}
+.topic.ahead{border-style:dashed;box-shadow:none}
 .topic{text-align:left;display:flex;flex-direction:column;gap:2px;padding:16px 18px;border:2px solid var(--rule);border-radius:20px;background:var(--surface);min-width:0;box-shadow:var(--shadow)}
 .topic b{font-family:var(--font-display);font-weight:700;font-size:1.2rem;line-height:1.2}
 .topic span{color:var(--ink-soft);font-size:.95rem}
@@ -2041,7 +2044,31 @@ function show(id){
   if(id==='home') renderHome();
   window.scrollTo(0,0);
 }
-function meta(t){ var b=best[t.id], f=freshCount(t); return (t.later?'neskôr v roku · ':'')+(t.rev?'opakovanie zo 4. ročníka · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
+function meta(t){ var b=best[t.id], f=freshCount(t); return (t.rev?'opakovanie zo 4. ročníka · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
+/* ---------- stav tém: preberáme teraz / už sme prebrali / dopredu (spoločné pre oba tablety) ---------- */
+var TERAZ=['sd','veta','pm','pady','predl','cisl','sl','neurc','tvar',
+  'm-rovn','m-nerov','m-dopln',
+  'a-pozdrav','a-clen','a-pokyn','a-plur','a-nepr','a-abc','a-cisla','a-u1','a-there',
+  'g-pohyby','g-povrch','b-huby','b-zivoc','d-rod','d-pram'];
+function stav(t){ return t.later?'dopredu':TERAZ.indexOf(t.id)>-1?'teraz':'prebrate'; }
+var STAV_NAME={teraz:'📌 Preberáme teraz',prebrate:'✅ Už sme prebrali',dopredu:'🚀 Dopredu – ešte sme nebrali, môžeš skúsiť'};
+function mastered(t){
+  var lim=dayKey(new Date(Date.now()-30*864e5)), n=0, ok=0;
+  Object.keys(stats).forEach(function(d){ if(d>=lim&&stats[d][t.id]){ n+=stats[d][t.id].n; ok+=stats[d][t.id].ok; } });
+  return n>=20&&ok/n>=0.9;
+}
+function itemsOf(t){ return t.gen?genRound(t,2):t.items; }
+function poolFor(sub,n){
+  var now=[], old=[];
+  T.forEach(function(t){
+    if(t.sub!==sub) return; var s=stav(t);
+    if(s==='teraz') now=now.concat(itemsOf(t));
+    else if(s==='prebrate'&&(!mastered(t)||Math.random()<0.15)) old=old.concat(itemsOf(t));
+  });
+  var a=pickItems(now,old.length?Math.round(n*0.6):n), b=pickItems(old,n-a.length);
+  if(a.length+b.length<n) a=a.concat(pickItems(now.filter(function(x){return a.indexOf(x)<0;}),n-a.length-b.length));
+  return a.concat(b);
+}
 var subject=store.get('s5.sub','sj');
 if(!SUBJ.some(function(s){return s.id===subject;})) subject='sj';
 function inSubject(t){ return t.sub===subject; }
@@ -2065,15 +2092,17 @@ function renderHome(){
   $('#b-test').hidden=subject!=='sj'; $('#b-test2').hidden=subject!=='sj'; $('#b-mtest').hidden=subject!=='mat'; $('#s-dikt').hidden=subject!=='sj';
   $('#b-mix').textContent='🎲 Mix: '+SUBJ.filter(function(x){return x.id===subject;})[0].name.toLowerCase();
   var lt=$('#l-topics'); lt.textContent='';
-  T.filter(inSubject).forEach(function(t){
-    var b=el('button','topic'); b.type='button';
+  ['teraz','prebrate','dopredu'].forEach(function(g){ var ts=T.filter(function(t){ return inSubject(t)&&stav(t)===g; }); if(!ts.length) return;
+  lt.appendChild(el('h3','tgroup',STAV_NAME[g]));
+  ts.forEach(function(t){
+    var b=el('button','topic'+(g==='dopredu'?' ahead':'')); b.type='button';
     b.appendChild(el('b',null,t.name)); b.appendChild(el('span',null,t.desc));
     var sm=el('small',null,meta(t)), bs=best[t.id], st=bs?(bs.p>=90?3:bs.p>=75?2:bs.p>=50?1:0):0;
     if(st){ sm.appendChild(document.createTextNode(' ')); sm.appendChild(el('span','tstars','★★★'.slice(0,st)+'☆☆☆'.slice(st))); }
     b.appendChild(sm);
     b.onclick=function(){ startTopic(t); };
     lt.appendChild(b);
-  });
+  }); });
   var ld=$('#l-dikt'); ld.textContent='';
   D.forEach(function(d){ ld.appendChild(diktRow(d)); });
   var lc=$('#l-custom'); lc.textContent='';
@@ -2448,8 +2477,7 @@ $('#b-test2').onclick=function test2(){ startRound('Test 1. štvrťroka nanečis
 $('#b-mtest').onclick=function mtest(){ startRound('Test z matematiky nanečisto',buildMathTest(),'mtest',mtest); };
 $('#b-mix').onclick=function mix(){
   var pool=[], name=SUBJ.filter(function(s){return s.id===subject;})[0].name;
-  T.filter(inSubject).forEach(function(t){ if(!t.later) pool=pool.concat(t.gen?genRound(t,2):t.items); });
-  startRound('Mix: '+name,pickItems(pool,12),'mix-'+subject,mix);
+  startRound('Mix: '+name,poolFor(subject,12),'mix-'+subject,mix);
 };
 $('#b-err').onclick=function(){
   var all=allItems(), items=errs.map(function(id){return all[id];}).filter(Boolean);
@@ -2585,8 +2613,7 @@ function renderTop(){
 }
 $('#b-daily').onclick=function daily(){
   var pool=[];
-  SUBJ.forEach(function(sb){ var p=[]; T.filter(function(t){ return t.sub===sb.id&&!t.later; }).forEach(function(t){ p=p.concat(t.gen?genRound(t,2):t.items); });
-    pool=pool.concat(pickItems(p,2)); });
+  SUBJ.forEach(function(sb){ pool=pool.concat(poolFor(sb.id,2)); });
   startRound('Dnešná výzva',shuffle(pool),'daily',daily);
 };
 function confetti(){
