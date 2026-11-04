@@ -119,6 +119,10 @@ h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15}
 .topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:12px}
 .tgroup{grid-column:1/-1;margin:14px 2px 0;font-family:var(--font-display);font-size:1.1rem}
 .tgroup:first-child{margin-top:0}
+.editbar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 6px}
+.seg{display:flex;gap:6px;margin-top:10px}
+.seg button{flex:1;min-height:42px;padding:4px 6px;border:2px solid var(--rule);border-radius:12px;background:var(--surface);font-weight:700;font-size:.85rem;color:var(--ink)}
+.seg button[aria-pressed=true]{background:var(--pen);border-color:var(--pen);color:var(--pen-ink)}
 .topic.ahead{border-style:dashed;box-shadow:none}
 .topic{text-align:left;display:flex;flex-direction:column;gap:2px;padding:16px 18px;border:2px solid var(--rule);border-radius:20px;background:var(--surface);min-width:0;box-shadow:var(--shadow)}
 .topic b{font-family:var(--font-display);font-weight:700;font-size:1.2rem;line-height:1.2}
@@ -314,7 +318,8 @@ mark{background:var(--marker);color:var(--marker-ink);padding:.05em .3em;border-
     <button class="btn" id="b-err" type="button" hidden>Moje chyby</button>
     <button class="btn" id="b-stats" type="button">📊 Štatistiky</button>
   </div>
-  <div class="sec"><h2 id="h-topics">Témy</h2><div class="topics" id="l-topics"></div></div>
+  <div class="sec"><h2 id="h-topics">Témy</h2><div class="editbar"><button class="btn small" id="b-edit" type="button">⚙️ Upraviť, čo preberáme</button><button class="btn small" id="b-reset" type="button" hidden>↩️ Vrátiť podľa školy</button></div>
+    <div class="topics" id="l-topics"></div></div>
   <div class="sec" id="s-dikt"><h2>✍️ Diktáty</h2><div class="rows" id="l-dikt"></div></div>
   <div class="sec" id="s-custom" hidden><h2>Naše učivo</h2><div class="rows" id="l-custom"></div></div>
 
@@ -2050,7 +2055,11 @@ var TERAZ=['sd','veta','pm','pady','predl','cisl','sl','neurc','tvar',
   'm-rovn','m-nerov','m-dopln',
   'a-pozdrav','a-clen','a-pokyn','a-plur','a-nepr','a-abc','a-cisla','a-u1','a-there',
   'g-pohyby','g-povrch','b-huby','b-zivoc','d-rod','d-pram'];
-function stav(t){ return t.later?'dopredu':TERAZ.indexOf(t.id)>-1?'teraz':'prebrate'; }
+function stavDef(t){ return t.later?'dopredu':TERAZ.indexOf(t.id)>-1?'teraz':'prebrate'; }
+var OVR=store.get('s5.stav',{}); if(!OVR||typeof OVR!=='object') OVR={};
+var editing=false;
+function stav(t){ return OVR[t.id]||stavDef(t); }
+function setStav(t,g){ if(g===stavDef(t)) delete OVR[t.id]; else OVR[t.id]=g; store.set('s5.stav',OVR); }
 var STAV_NAME={teraz:'📌 Preberáme teraz',prebrate:'✅ Už sme prebrali',dopredu:'🚀 Dopredu – ešte sme nebrali, môžeš skúsiť'};
 function mastered(t){
   var lim=dayKey(new Date(Date.now()-30*864e5)), n=0, ok=0;
@@ -2095,14 +2104,20 @@ function renderHome(){
   ['teraz','prebrate','dopredu'].forEach(function(g){ var ts=T.filter(function(t){ return inSubject(t)&&stav(t)===g; }); if(!ts.length) return;
   lt.appendChild(el('h3','tgroup',STAV_NAME[g]));
   ts.forEach(function(t){
-    var b=el('button','topic'+(g==='dopredu'?' ahead':'')); b.type='button';
+    var b=el(editing?'div':'button','topic'+(g==='dopredu'?' ahead':'')+(editing?' editing':'')); if(!editing) b.type='button';
     b.appendChild(el('b',null,t.name)); b.appendChild(el('span',null,t.desc));
     var sm=el('small',null,meta(t)), bs=best[t.id], st=bs?(bs.p>=90?3:bs.p>=75?2:bs.p>=50?1:0):0;
     if(st){ sm.appendChild(document.createTextNode(' ')); sm.appendChild(el('span','tstars','★★★'.slice(0,st)+'☆☆☆'.slice(st))); }
     b.appendChild(sm);
-    b.onclick=function(){ startTopic(t); };
+    if(editing){ var seg=el('div','seg'); [['teraz','📌 Teraz'],['prebrate','✅ Prebraté'],['dopredu','🚀 Ešte nie']].forEach(function(o){
+        var x=el('button',null,o[1]); x.type='button'; x.setAttribute('aria-pressed',stav(t)===o[0]?'true':'false');
+        x.onclick=function(){ var y=window.scrollY; setStav(t,o[0]); renderHome(); window.scrollTo(0,y); }; seg.appendChild(x); });
+      b.appendChild(seg); }
+    else b.onclick=function(){ startTopic(t); };
     lt.appendChild(b);
   }); });
+  $('#b-edit').textContent=editing?'✔️ Hotovo':'⚙️ Upraviť, čo preberáme';
+  $('#b-reset').hidden=!(editing&&T.some(function(t){ return inSubject(t)&&OVR[t.id]; }));
   var ld=$('#l-dikt'); ld.textContent='';
   D.forEach(function(d){ ld.appendChild(diktRow(d)); });
   var lc=$('#l-custom'); lc.textContent='';
@@ -2475,6 +2490,8 @@ $('#b-test').onclick=function test(){
 };
 $('#b-test2').onclick=function test2(){ startRound('Test 1. štvrťroka nanečisto',buildTest2(pickItems),'test2',test2); };
 $('#b-mtest').onclick=function mtest(){ startRound('Test z matematiky nanečisto',buildMathTest(),'mtest',mtest); };
+$('#b-edit').onclick=function(){ editing=!editing; var y=window.scrollY; renderHome(); window.scrollTo(0,y); };
+$('#b-reset').onclick=function(){ T.forEach(function(t){ if(inSubject(t)) delete OVR[t.id]; }); store.set('s5.stav',OVR); var y=window.scrollY; renderHome(); window.scrollTo(0,y); };
 $('#b-mix').onclick=function mix(){
   var pool=[], name=SUBJ.filter(function(s){return s.id===subject;})[0].name;
   startRound('Mix: '+name,poolFor(subject,12),'mix-'+subject,mix);
