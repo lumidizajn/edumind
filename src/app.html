@@ -2540,6 +2540,8 @@ function pctOf(r){ return r.n?Math.round(r.ok/r.n*100):0; }
 function pctEl(r){ var p=pctOf(r), s=el('span','pct'+(r.n?(p>=80?' hi':(p<60?' lo':'')):''),r.n?p+' %':'–'); return s; }
 var stPeriod=7;
 function daysBack(n){ var out=[], d=new Date(); for(var i=0;i<n;i++){ out.unshift(dayKey(d)); d.setDate(d.getDate()-1); } return out; }
+function cvPct(r){ var n=r.n-(r.tn||0), ok=r.ok-(r.tok||0); return n?Math.round(ok/n*100)+' %':'–'; }
+function tsPct(r){ return r.tn?Math.round(r.tok/r.tn*100)+' %':'–'; }
 function sumRows(keys){ var tot={n:0,ok:0,ms:0}, bySub={}, byTop={};
   keys.forEach(function(k){ var day=stats[k]; if(!day) return;
     Object.keys(day).forEach(function(t){ var r=day[t], inf=topicInfo(t);
@@ -2560,8 +2562,9 @@ function renderStats(){
   var tl=$('#st-tiles'); tl.textContent='';
   tl.appendChild(tile('Dnes',fmtTime(today.ms),today.n+' úloh · '+(today.n?pctOf(today)+' % správne':'zatiaľ nič')));
   tl.appendChild(tile('Spolu za obdobie',fmtTime(S.tot.ms),S.tot.n+' úloh'));
-  tl.appendChild(tile('Úspešnosť',S.tot.n?pctOf(S.tot)+' %':'–',S.tot.ok+' správnych odpovedí'));
-  tl.appendChild(tile('Testy',S.tot.tn?Math.round(S.tot.tok/S.tot.tn*100)+' %':'–',S.tot.tn?S.tot.tn+' úloh v testoch':'zatiaľ žiadny test'));
+  var cvN=S.tot.n-(S.tot.tn||0);
+  tl.appendChild(tile('Cvičenie',cvPct(S.tot),cvN?cvN+' úloh · '+(S.tot.ok-(S.tot.tok||0))+' správne na prvý pokus':'zatiaľ nič'));
+  tl.appendChild(tile('Testy',tsPct(S.tot),S.tot.tn?S.tot.tn+' úloh · '+S.tot.tok+' správne':'zatiaľ žiadny test'));
   tl.appendChild(tile('Dni s učením',String(active.length),active.length?'priemerne '+fmtTime(S.tot.ms/active.length)+' denne':''));
   // graf
   var ch=$('#st-chart'); ch.textContent='';
@@ -2573,10 +2576,10 @@ function renderStats(){
     c.appendChild(el('span','d',(+dt[2])+'.'+(+dt[1])+'.')); ch.appendChild(c); });
   // predmety
   var ts=$('#st-subj'); ts.textContent='';
-  ts.appendChild(row(['Predmet','Čas','Úlohy','Úspešnosť','Testy'],true));
+  ts.appendChild(row(['Predmet','Čas','Úlohy','Spolu','Cvičenie','Testy'],true));
   SUBJ.forEach(function(s){ var r=S.bySub[s.id]||{n:0,ok:0,ms:0}; var p=el('span'); p.appendChild(pctEl(r));
     var mb=el('span','mini'), mi=el('i'); mi.style.width=pctOf(r)+'%'; mb.appendChild(mi); p.appendChild(mb);
-    ts.appendChild(row([s.name,fmtTime(r.ms)||'0 min',String(r.n),p,r.tn?Math.round(r.tok/r.tn*100)+' % ('+r.tn+')':'–'])); });
+    ts.appendChild(row([s.name,fmtTime(r.ms)||'0 min',String(r.n),p,cvPct(r),r.tn?tsPct(r)+' ('+r.tn+')':'–'])); });
   // témy
   var tops=Object.keys(S.byTop).filter(function(t){ return S.byTop[t].n>=5; }).map(function(t){ return {t:t,r:S.byTop[t],inf:topicInfo(t)}; });
   function list(ul,arr,empty){ ul.textContent=''; if(!arr.length){ ul.appendChild(el('li',null,empty)); return; }
