@@ -1155,7 +1155,7 @@ var GEN={
    if(k===18){ a=rnd(20,45); b=rnd(5,18); return numQ(Q,'Sestra má '+a+' rokov a brat je o '+b+' rokov mladší. Koľko rokov má brat?',a-b); }
    if(k===19){ a=rnd(2,6); return numQ(Q,'Film trvá '+a+' hodiny. Koľko minút trvá film?',a*60); }
    if(k===20){ a=rnd(3,9); b=rnd(3,9); return numQ(Q,'Obdĺžnikový záhon má strany '+a+' m a '+b+' m. Koľko metrov plota treba na jeho ohradenie?',2*(a+b)); }
-   if(k===21){ c=rnd(6,9); b=rnd(4,8); a=c*b+rnd(1,c-1); return numQ(Q,'Babka upiekla '+a+' koláčikov a dáva ich na tácky po '+c+'. Koľko plných tácok bude?',Math.floor(a/c)); }
+   if(k===21){ c=rnd(6,9); b=rnd(4,8); a=c*b; return numQ(Q,'Babka upiekla '+a+' koláčikov a dáva ich na tácky po '+c+'. Koľko tácok naplní?',b); }
    if(k===22){ a=rnd(3,9); b=rnd(2,4); return numQ(Q,'Malý pes váži '+a+' kg. Veľký pes je '+b+'-krát ťažší. Koľko kilogramov váži veľký pes?',a*b); }
    if(k===23){ a=rnd(400,900); b=rnd(100,a-50); return numQ(Q,'Cesta do školy má '+a+' m. '+N+' už prešiel(a) '+b+' m. Koľko metrov mu (jej) ešte zostáva?',a-b); }
    if(k===24){ a=rnd(4,9); b=rnd(3,8); c=rnd(2,6); return numQ(Q,'V triede je '+a+' lavíc a pri každej sedia 2 žiaci. Na výlet neprišli '+c+' žiaci. Koľko žiakov išlo na výlet?',a*2-c); }
@@ -1169,6 +1169,7 @@ var GEN={
  ['m-rim','Rímske číslice','Prevod medzi rímskymi a arabskými číslicami.','rim'],['m-jedn','Premena jednotiek','Dĺžka, hmotnosť, objem, čas.','jedn'],
  ['m-obvod','Obvod','Štvorec, obdĺžnik a trojuholník.','obvod'],['m-slovne','Slovné úlohy','Krátke úlohy zo života.','slovne']]
  .forEach(function(r){ T.push({id:r[0],sub:'mat',name:r[1],desc:r[2],n:10,gen:GEN[r[3]],items:[]}); });
+topicById('m-zvy').later=true; /* delenie so zvyškom ešte nebrali */
 /* ---------- matematika zo školských pracovných listov ---------- */
 function calc(expr){ return Function('return ('+expr.replace(/[\s\u00a0]/g,'').replace(/−/g,'-').replace(/·/g,'*').replace(/:/g,'/')+')')(); }
 function exprQ(e){ return numQ('Vypočítaj. Najprv zátvorky, potom násobenie a delenie, nakoniec sčítanie a odčítanie.',e,calc(e)); }
@@ -1398,6 +1399,129 @@ function enGaps(a){ return a.map(function(s){ return {k:'gaps',q:'Vyber správne
    {id:'a-there',sub:'aj',later:true,name:'There is, there are',desc:'Čo sa kde nachádza.',n:8,items:enGaps(EN.there)},
    {id:'a-otaz',sub:'aj',later:true,name:'Opytovacie slová',desc:'What, where, who, when, how.',n:8,items:enGaps(EN.otaz)}
   );
+})();
+
+/* angličtina – Project 1, Unit 1 Introduction (1A–1D, Culture, Maths: sums) */
+(function(){
+  var ONES=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'],
+      TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  function nw(n){ if(n===100) return 'a hundred'; if(n<20) return ONES[n]; return TENS[Math.floor(n/10)]+(n%10?'-'+ONES[n%10]:''); }
+  function alts(n){ var w=nw(n), a=[w]; if(w.indexOf('-')>-1) a.push(w.replace('-',' ')); if(n===100) a.push('one hundred','hundred'); return a; }
+  var seed=7; function rnd(){ seed=(seed*16807)%2147483647; return seed/2147483647; }
+  function ri(a,b){ return a+Math.floor(rnd()*(b-a+1)); }
+  function near(n){ var c=[n+1,n-1,n+10,n-10,n+2,(n%10)*10+Math.floor(n/10)], o=[];
+    c.forEach(function(x){ if(x>=1&&x<=100&&x!==n&&o.indexOf(x)<0&&o.length<3) o.push(x); }); return o; }
+  var cis=[], n;
+  for(n=1;n<=100;n++){
+    cis.push({k:'mc',q:'Ktoré číslo je to?',s:nw(n),a:String(n),o:[String(n)].concat(near(n).map(String))});
+    if(n>10) cis.push({k:'typed',q:'Napíš číslo po anglicky.',w:String(n),hint:'čísla 1 – 100',a:alts(n)});
+  }
+  // pozor: -teen a -ty
+  [[13,'thirteen','thirty'],[14,'fourteen','forty'],[15,'fifteen','fifty'],[16,'sixteen','sixty'],[17,'seventeen','seventy'],[18,'eighteen','eighty'],[19,'nineteen','ninety']].forEach(function(r){
+    cis.push({k:'mc',q:'Ktoré slovo patrí k číslu?',s:String(r[0]),a:r[1],o:[r[1],r[2],r[1].replace('teen','ten'),r[2]+'teen'],e:'Čísla 13 – 19 končia na -teen, desiatky 30 – 90 na -ty.'});
+    cis.push({k:'mc',q:'Ktoré slovo patrí k číslu?',s:String(Math.floor(r[0]%10)*10),a:r[2],o:[r[2],r[1],r[2].slice(0,-2)+'tie',r[2]+'s']});
+  });
+  cis.push({k:'mc',q:'Ktoré slovo je napísané správne?',s:'40',a:'forty',o:['forty','fourty','fourteen','for ty'],e:'Pozor: four, fourteen, ale forty – bez písmena u.'});
+  cis.push({k:'mc',q:'Ktoré slovo je napísané správne?',s:'12',a:'twelve',o:['twelve','twelf','tweleve','twoteen']});
+  cis.push({k:'mc',q:'Ktoré slovo je napísané správne?',s:'50',a:'fifty',o:['fifty','fivety','fiveteen','fifteen']});
+  cis.push({k:'mc',q:'Ktoré slovo je napísané správne?',s:'15',a:'fifteen',o:['fifteen','fiveteen','fifty','fivteen']});
+  cis.push({k:'mc',q:'Ktoré slovo je napísané správne?',s:'8',a:'eight',o:['eight','eigth','eiht','aight']});
+  // poprehadzované písmená
+  function scr(w){ var c=w.split(''), out;
+    for(var t=0;t<20;t++){ out=c.slice(); for(var i=out.length-1;i>0;i--){ var j=Math.floor(rnd()*(i+1)), x=out[i]; out[i]=out[j]; out[j]=x; }
+      out=out.join(''); if(out!==w) return out; } return out; }
+  [3,7,12,18,21,30,40,55,62,92,11,16,19,80,99,33].forEach(function(n){
+    var w=nw(n), s=w.split('-').map(scr).join('-');
+    cis.push({k:'typed',q:'Písmená sú poprehadzované. Napíš číslo správne.',w:s,hint:'číslo po anglicky',a:alts(n)});
+  });
+  // rady čísel
+  for(var t=0;t<18;t++){ var st=ri(1,96), d=[1,1,1,2,5,10][ri(0,5)]; if(st+3*d>100) st=100-3*d; var miss=ri(1,2);
+    var seq=[0,1,2,3].map(function(k){ return k===miss?'___':nw(st+k*d); }).join(', ');
+    cis.push({k:'typed',q:'Doplň chýbajúce číslo.',w:seq,hint:'napíš ho slovom',a:alts(st+miss*d)}); }
+  // telefónne čísla
+  var DIG=['oh','one','two','three','four','five','six','seven','eight','nine'];
+  function readPhone(p){ var out=[], i=0; while(i<p.length){ if(p[i+1]===p[i]){ out.push('double '+DIG[+p[i]]); i+=2; } else { out.push(DIG[+p[i]]); i++; } } return out.join(' '); }
+  for(t=0;t<14;t++){ var p='0'; for(var k=0;k<10;k++) p+=String(ri(0,9)); if(t%3===0) p=p.slice(0,4)+p[4]+p[4]+p.slice(6);
+    cis.push({k:'typed',num:true,q:'Napíš telefónne číslo číslicami.',w:readPhone(p),hint:'oh = 0, double = dve rovnaké číslice',a:[p]}); }
+  cis.push({k:'mc',q:'Ako po anglicky povieme 0 v telefónnom čísle?',a:'oh',o:['oh','on','o-zero','null']});
+  cis.push({k:'mc',q:'Ako po anglicky prečítame v telefónnom čísle 77?',a:'double seven',o:['double seven','two seven','seventy-seven','seven seven seven']});
+  cis.push({k:'mc',q:'Ako sa spýtaš na telefónne číslo?',a:"What's your phone number?",o:["What's your phone number?","How is your phone number?","Who is your phone number?","What your phone number?"]});
+  // matematika po anglicky
+  var SYM=[['+','plus'],['−','minus'],['×','times'],['÷','divided by'],['=','equals']];
+  SYM.forEach(function(r,i){ cis.push({k:'mc',q:'Ako sa po anglicky povie znamienko?',s:r[0],a:r[1],o:[r[1]].concat(SYM.filter(function(x,j){return j!==i;}).slice(0,3).map(function(x){return x[1];}))}); });
+  for(t=0;t<24;t++){ var op=t%4, a, b, res, word;
+    if(op===0){ a=ri(5,60); b=ri(2,100-a); res=a+b; word='plus'; }
+    else if(op===1){ a=ri(20,99); b=ri(2,a-1); res=a-b; word='minus'; }
+    else if(op===2){ a=ri(2,10); b=ri(2,10); res=a*b; word='times'; }
+    else { b=ri(2,10); res=ri(2,10); a=b*res; word='divided by'; }
+    cis.push({k:'typed',q:'Vypočítaj a výsledok napíš slovom.',w:nw(a)+' '+word+' '+nw(b)+' equals …',hint:'napr. forty-three',a:alts(res)}); }
+
+  var poz=[
+   ['Čo povieš ráno, keď niekoho stretneš?','Good morning.',['Good night.','Good evening.','Goodbye.']],
+   ['Čo povieš popoludní, keď niekoho stretneš?','Good afternoon.',['Good morning.','Good night.','See you later.']],
+   ['Čo povieš večer, keď niekoho stretneš?','Good evening.',['Good night.','Good morning.','Goodbye.'],'Good night hovoríme, až keď ideme spať alebo sa večer lúčime.'],
+   ['Čo povieš, keď ideš spať?','Good night.',['Good evening.','Good afternoon.','Hello.']],
+   ['Ako sa rozlúčiš?','Goodbye.',['Hello.','Good morning.','How are you?']],
+   ['Čo znamená „See you later“?','Uvidíme sa neskôr.',['Dobré ráno.','Ako sa máš?','Pozri sa na mňa.']],
+   ['Čo znamená „How are you?“','Ako sa máš?',['Ako sa voláš?','Koľko máš rokov?','Odkiaľ si?']],
+   ['Odpovedz: How are you?',"I'm fine, thanks. And you?",["I'm Hannah.","It's a book.","See you later."]],
+   ['Odpovedz: What\'s your name?',"My name's Hannah.","I'm fine, thanks.|It's an apple.|Goodbye.".split('|')],
+   ['Odpovedz: How do you spell that?','H – A – double N – A – H',["I'm fine, thanks.","It's 01734689013.","See you later."]],
+   ['Odpovedz: What\'s your phone number?',"It's 01734689013.",["I'm twelve.","My name's Toby.","It's a phone."]],
+   ['Odpovedz: What\'s this? (dáždnik)',"It's an umbrella.",["It's a umbrella.","This umbrella.","It's umbrella."]],
+   ['Odpovedz: What\'s this? (taška)',"It's a bag.",["It's an bag.","It's bag.","Is a bag."]],
+   ['Ako sa spýtaš „Kto je to?“',"Who's this?",["What's this?","How's this?","Where's this?"]],
+   ['Ako sa spýtaš „Čo je to?“',"What's this?",["Who's this?","How are you?","What's your name?"]],
+   ['Ako sa spýtaš, ako sa niečo hláskuje?','How do you spell that?',['How are you?','What do you spell?','How is that spell?']],
+   ['Andrew Martin Fletcher – ktoré je jeho first name (krstné meno)?','Andrew',['Martin','Fletcher','Andy']],
+   ['Andrew Martin Fletcher – ktoré je jeho middle name (druhé meno)?','Martin',['Andrew','Fletcher','Fletch']],
+   ['Andrew Martin Fletcher – ktoré je jeho surname (priezvisko)?','Fletcher',['Andrew','Martin','Andy']],
+   ['Čo znamená nickname?','prezývka',['priezvisko','krstné meno','skratka slova']],
+   ['Čo znamená surname?','priezvisko',['krstné meno','prezývka','druhé meno']],
+   ['Ktorá je skrátená forma mena Christopher?','Chris',['Tom','Mike','Andy']],
+   ['Ktorá je skrátená forma mena Thomas?','Tom',['Tim','Chris','Mike']],
+   ['Ktorá je skrátená forma mena Michael?','Mike',['Meg','Tom','Kate']],
+   ['Ktorá je skrátená forma mena Andrew?','Andy',['Abbie','Tom','Chris']],
+   ['Ktorá je skrátená forma mena Elizabeth?','Liz',['Kate','Meg','Abbie']],
+   ['Ktorá je skrátená forma mena Catherine?','Kate',['Liz','Meg','Jo']],
+   ['Ktorá je skrátená forma mena Megan?','Meg',['Kate','Liz','Mike']],
+   ['Ktorá je skrátená forma mena Abigail?','Abbie',['Andy','Liz','Kate']]
+  ].map(mc).concat(enGaps([
+   "Good {morning/night}, Mr Walker. How are you?","I'm {fine/five}, thanks. And you?","How do you {spell/say} that?","{What's/Who's} your name?",
+   "My {name's/name} Molly.","{Who's/What's} this? It's Ravi Gupta.","{What's/Who's} this? It's an apple.","See you {later/after}.",
+   "Hello. {I'm/I} Mel.","{What's/How's} your phone number?","It's {an/a} umbrella.","It's {a/an} watch."]));
+
+  T.splice(T.indexOf(topicById('a-clen')),0,
+   {id:'a-pozdrav',sub:'aj',name:'Pozdravy a predstavovanie',desc:'Hello, Good morning, How are you? Mená a prezývky.',n:10,items:poz});
+  T.splice(T.indexOf(topicById('a-dni'))+1,0,
+   {id:'a-cisla',sub:'aj',name:'Čísla 1 – 100',desc:'Čísla slovom, telefónne čísla, príklady po anglicky.',n:10,items:cis});
+
+  addTo('a-clen',enGaps(["What's this? It's {an/a} orange.","What's this? It's {a/an} door.","What's this? It's {an/a} exercise book.",
+   "There's {a/an} picture on the wall.","She has got {an/a} apple and {a/an} pen."]));
+  var ORD=[['Open your exercise book.',['exercise / your / book / Open'],['Your open exercise book.','Open exercise your book.','Book your exercise open.']],
+   ['Pick up your pencil.',['up / pencil / Pick / your'],['Pick your up pencil.','Up pick your pencil.','Your pencil pick up.']],
+   ['Look at the picture.',['picture / Look / the / at'],['Look the at picture.','At the picture look.','Look picture at the.']],
+   ['Go to the board.',['to / Go / the / board'],['Go the to board.','To go the board.','Board go to the.']],
+   ['Put down your pencil.',['Put / your / down / pencil'],['Put your down pencil.','Down put your pencil.','Your put down pencil.']],
+   ['Write on the board.',['the / board / on / Write'],['Write the on board.','On the board write.','Board write on the.']],
+   ["Say 'Good morning'.",["morning' / Say / 'Good"],["'Good Say morning'.","Morning say 'Good'.","Say 'Morning good'."]],
+   ['Close your exercise book.',['book / exercise / your / Close'],['Close exercise your book.','Your close exercise book.','Close your book exercise.']]];
+  addTo('a-pokyn',ORD.map(function(r){ return {k:'mc',q:'Ktorý pokyn má slová v správnom poradí?',s:r[1][0],a:r[0],o:[r[0]].concat(r[2])}; })
+   .concat(enGaps(["Give {me/my} your book, please.","{Don't/Not} draw!","Close {your/you} exercise book.","Look {at/on} the picture.","Go {to/at} the board.",
+   "{Don't/Doesn't} stand up!","Pick {up/on} your pencil.","Listen {to/at} me."])));
+  addTo('a-plur',[['toothbrush','toothbrushes'],['mobile','mobiles'],['house','houses'],['orange','oranges'],['umbrella','umbrellas'],['picture','pictures'],['girl','girls']]
+   .map(function(r){ return {k:'typed',q:'Napíš množné číslo.',w:r[0],hint:'jednotné → množné číslo',a:[r[1]]}; })
+   .concat(enGaps(["There are three {women/woman}.","There are two {umbrellas/umbrella}.","There are five {children/childs}.","There are four {people/peoples}.",
+   "three {watches/watchs}","two {boxes/boxs}","three {toothbrushes/toothbrushs}","two {glasses/glass}","two {men/mans}"])));
+  var th=topicById('a-there'); delete th.later;
+  addTo('a-there',enGaps(["There {are/is} five children.","There {is/are} one man.","There {are/is} three women.","There {is/are} one glass.",
+   "There {are/is} four toothbrushes.","There {is/are} a cat under the table.","There {are/is} two desks.","There {is/are} one umbrella."])
+   .concat([
+    ['Oprav vetu podľa obrázka (na obrázku je 5 detí): There\'s one child.',"There are five children.",["There is five children.","There are five childs.","There are five child."]],
+    ['Oprav vetu podľa obrázka (na obrázku sú 3 ženy): There\'s one woman.',"There are three women.",["There are three woman.","There is three women.","There are three womans."]],
+    ['Oprav vetu podľa obrázka (na obrázku sú 2 hodinky): There\'s one watch.',"There are two watches.",["There are two watchs.","There is two watches.","There are two watch."]],
+    ['Oprav vetu podľa obrázka (na obrázku je 1 kefka): There are four toothbrushes.',"There's one toothbrush.",["There are one toothbrush.","There's one toothbrushes.","There is a toothbrushes."]]
+   ].map(mc)));
 })();
 
 var PLANETY=['Merkúr','Venuša','Zem','Mars','Jupiter','Saturn','Urán','Neptún'],
