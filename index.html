@@ -2229,6 +2229,126 @@ var D=R_DIKT.concat(R_DIKT2).map(function(r){ return {id:r[0],name:r[1],items:r[
    ['Kedy prebiehala prvá svetová vojna?','1914 – 1918',['1939 – 1945','1848 – 1849','1993 – 1995']],
    ['Kto pomáha raneným počas vojen a katastrof?','Červený kríž',['UNESCO','FIFA','NASA']]]);
 })();
+/* ---------- učivo z posledných týždňov (podľa toho, čo brali v škole) ---------- */
+(function(){
+  function add(id,sub,name,desc,items,n){ T.push({id:id,sub:sub,name:name,desc:desc,n:n||10,items:items}); }
+  var SPL=[['brat Igor','[brad igor]',['[brat igor]','[brať igor]','[prad igor]']],['les a lúka','[lez a lúka]',['[les a lúka]','[lesz a lúka]','[leš a lúka]']],
+   ['pes ide','[pez ide]',['[pes ide]','[peš ide]','[bez ide]']],['otec a mama','[otedz a mama]',['[otec a mama]','[otes a mama]','[oteč a mama]']],
+   ['chlap ide','[chlab ide]',['[chlap ide]','[chlaf ide]','[hlap ide]']],['hrach a mak','[hrah a mak]',['[hrach a mak]','[hrak a mak]','[hraš a mak]']],
+   ['kus mäsa','[kuz mäsa]',['[kus mäsa]','[kuš mäsa]','[guz mäsa]']],['s otcom','[z otcom]',['[s otcom]','[so otcom]','[š otcom]']],
+   ['k oknu','[g oknu]',['[k oknu]','[ku oknu]','[ch oknu]']],['k mame','[g mame]',['[k mame]','[ku mame]','[h mame]']],
+   ['dub a buk','[dub a buk]',['[dup a buk]','[dub a puk]','[tup a buk]'],'Na konci slova by sme b vyslovili ako p, ale pred samohláskou ostáva znelé.'],
+   ['breh rieky','[breh rieky]',['[brech rieky]','[brek rieky]','[preh rieky]']],['plot a brána','[plod a brána]',['[plot a brána]','[plod a prána]','[blod a brána]']],
+   ['môj kôš je plný','[môj kôž je plný]',['[môj kôš je plný]','[môj koš je plný]','[môj kôs je plný]']]];
+  var spl=SPL.map(function(r){ return {k:'mc',q:'Ako správne vyslovíme spojenie?',s:r[0],a:r[1],o:[r[1]].concat(r[2]),e:r[3]||'Párová spoluhláska na konci slova sa pred samohláskou alebo zvučnou spoluhláskou nasledujúceho slova vysloví znelo.'}; })
+  .concat([
+   ['Kedy nastáva splývavá (viazaná) výslovnosť?','keď sa slovo končí párovou spoluhláskou a ďalšie slovo začína samohláskou alebo zvučnou spoluhláskou',['vždy na začiatku vety','iba v otázkach','keď slovo končí samohláskou']],
+   ['Ako vyslovíme párovú spoluhlásku na konci slova pred samohláskou ďalšieho slova?','znelo',['neznelo','vôbec ju nevyslovíme','dvakrát']],
+   ['Mení sa pri splývavej výslovnosti aj písanie slova?','nie, mení sa len výslovnosť',['áno, píšeme, ako vyslovujeme','áno, ale len v diktáte','áno, slová píšeme spolu']],
+   ['Kedy sa splývavá výslovnosť neuplatní?','keď medzi slovami urobíme prestávku',['keď hovoríme rýchlo','v každom spojení dvoch slov','keď je slovo dlhé']],
+   ['V ktorom spojení sa uplatní splývavá výslovnosť?','les a lúka',['les pri ceste','pes skáče','kus papiera']],
+   ['V ktorom spojení sa uplatní splývavá výslovnosť?','brat Ondrej',['brat Peter','brat Tomáš','brat Samo']],
+   ['V ktorom spojení sa uplatní splývavá výslovnosť?','k Adamovi',['k Petrovi','k Tomášovi','k Filipovi']],
+   ['V ktorom spojení sa splývavá výslovnosť NEuplatní?','kus papiera',['kus mäsa','kus a pol','kus ovocia']],
+   ['Ktoré hlásky sú zvučné (nepárové znelé) spoluhlásky?','m, n, ň, l, ľ, r, j',['p, t, k, s','b, d, g, z','š, č, c, f']]].map(mc));
+  add('s-splyv','sj','Splývavá výslovnosť','brat Igor → [brad igor], s otcom → [z otcom].',spl);
+
+  var OT=[['Kedy prídeš domov?','otvorená'],['Prídeš domov o piatej?','zatvorená'],['Kto ti dal tú knihu?','otvorená'],['Máš rád zmrzlinu?','zatvorená'],
+   ['Prečo plačeš?','otvorená'],['Ideš s nami von?','zatvorená'],['Kde bývaš?','otvorená'],['Napísala si úlohu?','zatvorená'],['Ako sa voláš?','otvorená'],
+   ['Je dnes streda?','zatvorená'],['Čo budeš robiť cez víkend?','otvorená'],['Pomôžeš mi?','zatvorená'],['Koľko máš rokov?','otvorená'],['Bola si už v Tatrách?','zatvorená']];
+  var ot=OT.map(function(r){ return {k:'mc',fixed:true,q:'Je to otvorená alebo zatvorená otázka?',s:r[0],a:r[1],o:['otvorená','zatvorená'],
+     e:r[1]==='zatvorená'?'Na zatvorenú otázku sa dá odpovedať áno alebo nie.':'Otvorená otázka sa začína opytovacím slovom a odpovedáme na ňu celou vetou, nie áno alebo nie.'}; })
+  .concat([
+   ['Ako odpovedáme na zatvorenú otázku?','áno alebo nie',['celou vetou o tom, kde a kedy','obrázkom','vôbec sa na ňu neodpovedá']],
+   ['Čím sa zvyčajne začína otvorená otázka?','opytovacím slovom (kto, čo, kde, kedy, prečo, ako)',['slovesom','menom','slovom áno']],
+   ['Ako sa inak volá zatvorená otázka?','zisťovacia otázka',['doplňovacia otázka','rozkazovacia veta','želacia veta']],
+   ['Ako sa inak volá otvorená otázka?','doplňovacia otázka',['zisťovacia otázka','oznamovacia veta','zvolacia veta']],
+   ['Ktorá otázka je otvorená?','Kde si bola včera?',['Bola si včera v škole?','Máš psa?','Ideš von?']],
+   ['Ktorá otázka je zatvorená?','Máš súrodencov?',['Koľko máš súrodencov?','Ako sa volá tvoja sestra?','Kde bývaš?']],
+   ['Akou melódiou vyslovujeme oznamovaciu vetu?','klesavou',['stúpavou','rovnakou ako zatvorenú otázku','vôbec nemá melódiu']],
+   ['Akou melódiou vyslovujeme zatvorenú (zisťovaciu) otázku, napr. „Ideš von?“','stúpavou',['klesavou','iba šepotom','rovnakou ako oznamovaciu vetu']],
+   ['Akou melódiou vyslovujeme otvorenú (doplňovaciu) otázku, napr. „Kedy prídeš?“','klesavou',['stúpavou','šepotom','bez melódie']],
+   ['Akou melódiou vyslovujeme rozkazovaciu vetu?','klesavou',['stúpavou','šepotom','vôbec nemá melódiu']],
+   ['Čo je melódia vety?','stúpanie a klesanie hlasu pri vyslovovaní vety',['počet slov vo vete','rýchlosť čítania','pieseň o vete']],
+   ['Ktorá veta má na konci stúpavú melódiu?','Prídeš zajtra?',['Prídem zajtra.','Kedy prídeš?','Príď zajtra!']],
+   ['Ktorá veta má na konci klesavú melódiu?','Kedy prídeš?',['Prídeš zajtra?','Ideš von?','Máš čas?']]].map(mc));
+  add('s-otaz','sj','Otvorená a zatvorená otázka, melódia vety','Áno/nie alebo celou vetou? Stúpavá a klesavá melódia.',ot);
+
+  add('s-pies','sj','Piesne','Ľudová a umelá pieseň, refrén, rytmus, epiteton, zosobnenie.',[
+   ['Čo je pieseň?','básnický text určený na spievanie',['rozprávka v próze','novinový článok','divadelná hra']],
+   ['Kto je autorom ľudovej piesne?','autor nie je známy',['vždy známy skladateľ','učiteľ hudby','kráľ']],
+   ['Ako sa šírili ľudové piesne?','ústne, z generácie na generáciu',['iba cez rádio','v novinách','na internete']],
+   ['Čím sa líši umelá pieseň od ľudovej?','umelá pieseň má známeho autora',['umelá pieseň nemá melódiu','umelá pieseň sa nespieva','umelá pieseň je vždy krátka']],
+   ['Prečo existuje tá istá ľudová pieseň vo viacerých podobách (variantoch)?','každý kraj si ju pri ústnom šírení trochu zmenil',['lebo ju napísalo veľa autorov','lebo sa vytlačila s chybami','lebo ju nikto nespieval']],
+   ['Čo je refrén?','časť piesne, ktorá sa opakuje',['prvý verš piesne','názov piesne','meno autora']],
+   ['Čo je rytmus v piesni?','pravidelné opakovanie, ktoré cítime ako takt',['počet strof','meno skladateľa','koniec piesne']],
+   ['Čo je epiteton (básnický prívlastok)?','prívlastok, ktorý umelecky zdôrazňuje vlastnosť, napr. „zelený hájik“',['opakujúca sa časť piesne','zvuková zhoda na konci veršov','meno autora']],
+   ['V ktorom spojení je epiteton (básnický prívlastok)?','biela holubička',['holubička letí','letí ďaleko','pod oknom']],
+   ['Čo je personifikácia (zosobnenie)?','veci, rastliny alebo zvieratá konajú a cítia ako ľudia',['opakovanie veršov','zdrobnené slovo','koniec piesne']],
+   ['V ktorom verši je personifikácia (zosobnenie)?','Slniečko sa na nás usmieva.',['Slnko svieti na oblohe.','Išli sme do hory.','Dievča spieva pieseň.']],
+   ['Ktoré slová sú v ľudových piesňach veľmi časté?','zdrobneniny (hájiček, dievčatko, slniečko)',['cudzie slová','vedecké pojmy','skratky']],
+   ['Čo je téma piesne?','o čom pieseň je',['počet veršov','melódia','meno speváka']],
+   ['Ako sa volá ľudová pieseň, ktorou mama uspáva dieťa?','uspávanka',['koleda','pracovná pieseň','zbojnícka pieseň']],
+   ['Ako sa volá ľudová pieseň, ktorú spievame na Vianoce?','koleda',['uspávanka','regrútska pieseň','žatevná pieseň']],
+   ['O čom spievali regrútske (vojenské) piesne?','o odchode chlapcov na vojnu',['o Vianociach','o uspávaní detí','o žatve']],
+   ['Kedy sa spievali žatevné piesne?','pri práci na poli počas žatvy',['na Vianoce','pri uspávaní','na svadbe v zime']],
+   ['O kom spievajú zbojnícke piesne?','o zbojníkoch, napríklad o Jánošíkovi',['o kráľoch a princeznách','o vojakoch v meste','o zvieratách z lesa']],
+   ['Ako sa volá slovenská hymna?','Nad Tatrou sa blýska',['Kde domov můj','Tancuj, tancuj','Horela lipka']],
+   ['Kto napísal text slovenskej hymny?','Janko Matúška',['Pavol Dobšinský','Ľudovít Štúr','Andrej Sládkovič']],
+   ['Ako sa volá jeden riadok piesne?','verš',['strofa','refrén','rým']],
+   ['Ako sa volá skupina veršov (odsek) v piesni?','strofa',['verš','rým','takt']]].map(mc));
+
+  add('b-bezst','bio','Lesné bezstavovce','Hmyz, pavúkovce, mäkkýše a obrúčkavce v lese.',[
+   ['Čo nemajú bezstavovce?','chrbticu (kostru z kostí)',['nohy','oči','potravu']],
+   ['Z akých troch častí sa skladá telo hmyzu?','hlava, hruď a bruško',['hlavohruď a bruško','hlava a chvost','iba z jedného článku']],
+   ['Z akých dvoch častí sa skladá telo pavúka?','hlavohruď a bruško',['hlava, hruď a bruško','hlava a chvost','hlava a krídla']],
+   ['Koľko nôh má hmyz?','6',['8','4','10']],
+   ['Koľko nôh má pavúk?','8',['6','4','10']],
+   ['Ktorý pavúk tká v lese veľké kolesové siete?','križiak obyčajný',['kliešť obyčajný','lykožrút smrekový','mravec lesný']],
+   ['Prečo kliešť nie je hmyz?','má 8 nôh, patrí medzi pavúkovce',['nemá nohy','vie lietať','žije vo vode']],
+   ['Čím je nebezpečný kliešť?','môže prenášať choroby, napr. kliešťovú encefalitídu a boreliózu',['žerie listy stromov','ničí mravenisko','hryzie kôru']],
+   ['Čo má na chrbte slimák?','ulitu',['krovky','krídla','šupiny']],
+   ['Kam patrí slimák?','medzi mäkkýše',['medzi hmyz','medzi pavúkovce','medzi obrúčkavce']],
+   ['Kam patrí dážďovka?','medzi obrúčkavce',['medzi hmyz','medzi mäkkýše','medzi pavúkovce']],
+   ['Z čoho sa skladá telo dážďovky?','z mnohých článkov (obrúčok)',['z hlavy, hrude a bruška','z ulity a nohy','z hlavohrude a bruška']],
+   ['Prečo sú mravce v lese užitočné?','ničia škodcov a roznášajú semená',['ničia stromy','otravujú vodu','žerú huby']],
+   ['Ktorý chrobák škodí smrekom tým, že žije pod ich kôrou?','lykožrút smrekový',['lienka sedembodková','roháč obyčajný','bystruška']],
+   ['Prečo je lienka užitočná?','žerie vošky',['opeľuje smreky','ničí mravce','robí med']],
+   ['Aké je správne poradie premeny motýľa?','vajíčko – húsenica – kukla – motýľ',['húsenica – vajíčko – motýľ – kukla','kukla – motýľ – vajíčko – húsenica','vajíčko – motýľ – kukla – húsenica']],
+   ['Ako sa volá larva motýľa?','húsenica',['žubrienka','kukla','pulec']],
+   ['Ako sa volajú tvrdé predné krídla chrobákov?','krovky',['blany','plutvy','šupiny']],
+   ['Ktorý veľký chrobák má samec s veľkými „parohami“ (hryzadlami)?','roháč obyčajný',['lienka','lykožrút','mravec']],
+   ['Čo má hmyz na hlave na hmat a čuch?','tykadlá',['klepetá','chápadlá','fúzy ako mačka']]].map(mc));
+
+  addTo('d-rod',[
+   ['Čo je predok?','člen rodiny, ktorý žil pred nami (rodičia, starí rodičia…)',['najmladší člen rodiny','sused','kamarát zo školy']],
+   ['Čo je potomok?','dieťa, vnuk alebo pravnuk',['starý otec','prababka','strýko zo susedstva']],
+   ['Koľko generácií je v rodokmeni, kde som ja, moji rodičia a moji starí rodičia?','3',['2','4','6']],
+   ['Prečo je dobré napísať na zadnú stranu fotky dátum a mená?','aby sa vedelo, kedy a koho fotka zachytáva',['aby bola krajšia','aby sa nepokrčila','nie je to dobré']],
+   ['Na čo slúži rodinný album?','uchováva fotografie rodiny z rôznych období',['na zapisovanie domácich úloh','na kreslenie','na recepty']],
+   ['Čo sa môžeme dozvedieť zo starej fotografie?','ako ľudia vyzerali, ako sa obliekali a ako bývali',['čo si ľudia mysleli','ako voňali','koľko zarábali']]].map(mc));
+  addTo('d-pram',[
+   ['Aký je to prameň: rodinná fotografia?','obrazový',['písomný','hmotný']],
+   ['Aký je to prameň: obraz namaľovaný na plátne?','obrazový',['písomný','hmotný']],
+   ['Aký je to prameň: stará pohľadnica s fotkou mesta?','obrazový',['hmotný','písomný']],
+   ['Aký je to prameň: starý list od prastarej mamy?','písomný',['obrazový','hmotný']],
+   ['Aký je to prameň: meč nájdený na hrade?','hmotný',['písomný','obrazový']],
+   ['Aký je to prameň: rodný list?','písomný',['hmotný','obrazový']],
+   ['Aký je to prameň: staré drevené hračky?','hmotný',['obrazový','písomný']],
+   ['Na aké tri skupiny delíme historické pramene?','písomné, obrazové a hmotné',['staré, nové a moderné','krátke, dlhé a stredné','veselé, smutné a vážne']]].map(mc));
+})();
+GEN.os=function(){
+  var k=rnd(1,5), n, a, b;
+  if(k===1){ n=rnd(10001,999998); return Math.random()<.5?numQ('Napíš nasledovníka čísla (číslo hneď za ním).',fmt(n),n+1):numQ('Napíš predchodcu čísla (číslo tesne pred ním).',fmt(n),n-1); }
+  if(k===2){ var st=pick([1,10,100,1000]), s0=rnd(1,90)*st*10, d=rnd(1,9);
+    return numQ('Číselná os','Úsek od '+fmt(s0)+' po '+fmt(s0+10*st)+' je rozdelený na 10 rovnakých dielikov. Aké číslo je na '+d+'. dieliku od '+fmt(s0)+'?',s0+d*st,'najprv zisti, koľko je jeden dielik'); }
+  if(k===3){ a=rnd(1000,90000); b=a+2*rnd(5,5000); return numQ('Aké číslo leží na číselnej osi presne v strede medzi číslami?',fmt(a)+' a '+fmt(b),(a+b)/2); }
+  if(k===4){ a=rnd(10000,90000); b=a+rnd(10,9000); return numQ('Ako ďaleko sú od seba na číselnej osi čísla? (rozdiel)',fmt(a)+' a '+fmt(b),b-a); }
+  var arr=[rnd(10000,99999)]; while(arr.length<4){ var x=arr[0]+rnd(-900,900)*pick([1,10]); if(x>9999&&arr.indexOf(x)<0) arr.push(x); }
+  var mx=Math.max.apply(null,arr); return numQ('Ktoré číslo leží na číselnej osi najviac vpravo? Napíš ho.',arr.map(fmt).join(';  '),mx,'najväčšie číslo je najviac vpravo');
+};
+T.push({id:'m-os',sub:'mat',name:'Číselná os',desc:'Predchodca, nasledovník, dieliky a vzdialenosť na osi.',n:10,gen:GEN.os,items:[]});
+topicById('b-zivoc').later=true; /* stavovce lesa ešte len budú */
 T.concat(D).forEach(function(t){ t.items.forEach(function(it,i){ it.id=t.id+'#'+i; }); });
 
 if(typeof document==='undefined'){ module.exports={buildTest2:buildTest2,buildMathTest:buildMathTest,genAbc:genAbc,skCmp:skCmp,GEN:GEN,genRound:genRound,roman:roman,fmt:fmt,SUBJ:SUBJ,tagTokens:tagTokens,typedOk:typedOk,buildTest:buildTest,T:T,D:D,SD:SD,DET:DET,PAD:PAD,parseGaps:parseGaps,autoGap:autoGap,splitSentences:splitSentences,pickTokens:pickTokens,answerText:answerText,promptText:promptText,normItem:normItem,norm:norm,bare:bare,hlWord:hlWord,plain:plain,grade:grade}; return; }
@@ -2256,11 +2376,11 @@ function show(id){
 }
 function meta(t){ var b=best[t.id], f=freshCount(t); return (t.rev?'opakovanie zo 4. ročníka · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
 /* ---------- stav tém: preberáme teraz / už sme prebrali / dopredu (spoločné pre oba tablety) ---------- */
-var TERAZ=['sd','veta','pm','pady','predl','cisl','sl','neurc','tvar',
-  'm-rovn','m-nerov','m-dopln',
+var TERAZ=['s-splyv','s-znel','s-otaz','s-vety','s-pies',
+  'm-os','m-porov','m-rozv',
   'a-pozdrav','a-clen','a-pokyn','a-plur','a-nepr','a-abc','a-cisla','a-u1','a-there',
-  'g-pohyby','g-povrch','b-huby','b-zivoc','d-rod','d-pram'];
-function stavDef(t){ return t.later?'dopredu':TERAZ.indexOf(t.id)>-1?'teraz':'prebrate'; }
+  'g-mapa','g-pohyby','g-povrch','b-bezst','d-pram','d-rod'];
+function stavDef(t){ return TERAZ.indexOf(t.id)>-1?'teraz':t.later?'dopredu':'prebrate'; }
 var OVR=store.get('s5.stav',{}); if(!OVR||typeof OVR!=='object') OVR={};
 var editing=false;
 function stav(t){ return OVR[t.id]||stavDef(t); }
