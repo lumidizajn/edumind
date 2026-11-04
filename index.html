@@ -2433,19 +2433,19 @@ var D=R_DIKT.concat(R_DIKT2).map(function(r){ return {id:r[0],name:r[1],items:r[
    ['Aký je to prameň: staré drevené hračky?','hmotný',['obrazový','písomný']],
    ['Na aké tri skupiny delíme historické pramene?','písomné, obrazové a hmotné',['staré, nové a moderné','krátke, dlhé a stredné','veselé, smutné a vážne']]].map(mc));
 })();
-function nlineSvg(a,b,d){ var x0=30, x1=530, y=40, w=(x1-x0)/10, t='';
+function nlineSvg(a,b,d,lab){ lab=lab||'A'; var x0=30, x1=530, y=40, w=(x1-x0)/10, t='';
   for(var i=0;i<=10;i++){ var x=x0+i*w; t+='<line x1="'+x+'" y1="'+(y-(i%5?7:11))+'" x2="'+x+'" y2="'+(y+(i%5?7:11))+'" stroke="currentColor" stroke-width="2"/>'; }
   var xa=x0+d*w;
-  return '<svg class="nline" viewBox="0 0 560 96" role="img" aria-label="Číselná os od '+fmt(a)+' po '+fmt(b)+' s bodom A"><line x1="'+(x0-14)+'" y1="'+y+'" x2="'+(x1+20)+'" y2="'+y+'" stroke="currentColor" stroke-width="2.5"/><path d="M'+(x1+20)+' '+(y-6)+' L'+(x1+30)+' '+y+' L'+(x1+20)+' '+(y+6)+'" fill="currentColor"/>'+t+
+  return '<svg class="nline" viewBox="0 0 560 96" role="img" aria-label="Číselná os od '+fmt(a)+' po '+fmt(b)+' s bodom '+lab+'"><line x1="'+(x0-14)+'" y1="'+y+'" x2="'+(x1+20)+'" y2="'+y+'" stroke="currentColor" stroke-width="2.5"/><path d="M'+(x1+20)+' '+(y-6)+' L'+(x1+30)+' '+y+' L'+(x1+20)+' '+(y+6)+'" fill="currentColor"/>'+t+
    '<text x="'+x0+'" y="'+(y+34)+'" text-anchor="middle" font-size="16" fill="currentColor">'+fmt(a)+'</text><text x="'+x1+'" y="'+(y+34)+'" text-anchor="middle" font-size="16" fill="currentColor">'+fmt(b)+'</text>'+
-   '<circle cx="'+xa+'" cy="'+y+'" r="8" fill="#E0457B"/><text x="'+xa+'" y="'+(y-18)+'" text-anchor="middle" font-size="18" font-weight="700" fill="#E0457B">A</text></svg>'; }
+   '<circle cx="'+xa+'" cy="'+y+'" r="8" fill="#E0457B"/><text x="'+xa+'" y="'+(y-18)+'" text-anchor="middle" font-size="18" font-weight="700" fill="#E0457B">'+lab+'</text></svg>'; }
 GEN.os=function(){
-  var k=rnd(1,5), n, a, b;
+  var r=rnd(1,10), k=r<=5?2:r<=7?3:r===8?1:r===9?4:5, n, a, b;
   if(k===1){ n=rnd(10001,999998); return Math.random()<.5?numQ('Napíš nasledovníka čísla (číslo hneď za ním).',fmt(n),n+1):numQ('Napíš predchodcu čísla (číslo tesne pred ním).',fmt(n),n-1); }
   if(k===2){ var st=pick([1,10,100,1000]), s0=rnd(1,90)*st*10, d=rnd(1,9);
-    if(Math.random()<.6){ var q=numQ('Aké číslo je na číselnej osi označené písmenom A?','Úsek od '+fmt(s0)+' po '+fmt(s0+10*st)+' je rozdelený na 10 rovnakých dielikov.',s0+d*st,'najprv zisti, koľko je jeden dielik'); q.svg=nlineSvg(s0,s0+10*st,d); return q; }
+    if(r<=4){ var q=numQ('Aké číslo je na číselnej osi označené písmenom A?','Úsek od '+fmt(s0)+' po '+fmt(s0+10*st)+' je rozdelený na 10 rovnakých dielikov.',s0+d*st,'najprv zisti, koľko je jeden dielik'); q.svg=nlineSvg(s0,s0+10*st,d); return q; }
     return numQ('Číselná os','Úsek od '+fmt(s0)+' po '+fmt(s0+10*st)+' je rozdelený na 10 rovnakých dielikov. Aké číslo je na '+d+'. dieliku od '+fmt(s0)+'?',s0+d*st,'najprv zisti, koľko je jeden dielik'); }
-  if(k===3){ a=rnd(1000,90000); b=a+2*rnd(5,5000); return numQ('Aké číslo leží na číselnej osi presne v strede medzi číslami?',fmt(a)+' a '+fmt(b),(a+b)/2); }
+  if(k===3){ a=rnd(1000,90000); b=a+2*rnd(5,5000); var q3=numQ('Aké číslo leží na číselnej osi presne v strede medzi číslami?',fmt(a)+' a '+fmt(b),(a+b)/2,'stred = menšie číslo + polovica ich rozdielu'); q3.svg=nlineSvg(a,b,5,'?'); return q3; }
   if(k===4){ a=rnd(10000,90000); b=a+rnd(10,9000); return numQ('Ako ďaleko sú od seba na číselnej osi čísla? (rozdiel)',fmt(a)+' a '+fmt(b),b-a); }
   var arr=[rnd(10000,99999)]; while(arr.length<4){ var x=arr[0]+rnd(-900,900)*pick([1,10]); if(x>9999&&arr.indexOf(x)<0) arr.push(x); }
   var mx=Math.max.apply(null,arr); return numQ('Ktoré číslo leží na číselnej osi najviac vpravo? Napíš ho.',arr.map(fmt).join(';  '),mx,'najväčšie číslo je najviac vpravo');
