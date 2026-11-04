@@ -942,7 +942,7 @@ var R_VETY=[['Včera som nebol doma',0],['Zatvorte okno',2],['Ferko kúpil novin
  ['Babka upiekla koláč',0],['Podaj mi zošit',2],['Aby sme vyhrali zápas',3]];
 var R_ANTO=[['krátky','dlhý'],['zle','dobre'],['krásna','škaredá'],['mladý','starý'],['šťastný','nešťastný'],['veselý','smutný'],['teplý','studený'],
  ['rýchly','pomalý'],['ťažký','ľahký'],['vysoký','nízky'],['deň','noc'],['začiatok','koniec'],['otvoriť','zatvoriť'],['plný','prázdny'],['svetlý','tmavý'],
- ['hore','dole'],['chlapec','dievča'],['spať','bdieť'],['utekať','stáť'],['veľký','malý']];
+ ['hore','dole'],['chlapec','dievča'],['spať','bdieť'],['smiať sa','plakať'],['veľký','malý']];
 var R_SYNO=[['utekať','bežať'],['šťastný','veselý'],['chlapec','mladík'],['ísť','kráčať'],['spať','driemať'],['pekný','krásny'],['rozprávať','hovoriť'],
  ['veľký','obrovský'],['malý','drobný'],['rýchlo','chytro'],['auto','automobil'],['plakať','nariekať'],['smutný','zarmútený'],['jesť','papať']];
 function pairMc(arr,q,i,what){ var r=arr[i], o=[r[1]], j=1; while(o.length<4){ var x=arr[(i+j*3)%arr.length][1]; if(o.indexOf(x)<0&&x!==r[0]) o.push(x); j++; }
@@ -980,7 +980,7 @@ var R_PREDP=[['písať','napísať',['písmeno','pisár','písanka']],['robiť',
 var R_SZ=['Išla som do kina {so/zo} sestrou.','Vrátil sa {z/s} obchodu.','Prišli {zo/so} školy.','Hral sa {s/z} kamarátmi.','Natrhala jablká {zo/so} záhrady.',
  'Prečítal báseň {z/s} knihy.','Išiel na prechádzku {so/zo} psom.','Upiekla koláč {s/z} mamou.','Spadol {zo/so} stoličky.','Prišiel {z/s} lesa.',
  'Hrá šach {s/z} bratom.','Pricestovali {zo/so} Žiliny.','Rozprával sa {so/zo} Zuzkou.','Vytiahol rybu {z/s} vody.','Vybral sveter {zo/so} skrine.',
- 'Kreslila {s/z} farbičkami.','Zošit spadol {zo/so} stola.','Tancoval {so/zo} ženou.'];
+ 'Kreslila {s/z} kamarátkou.','Zošit spadol {zo/so} stola.','Tancoval {so/zo} ženou.'];
 var R_SPOD=['drevená bú{d/t}ka','kre{s/z}ba tušom','ťa{ž/š}kosti s písaním','pla{v/f}ba po Dunaji','ro{z/s}biť si koleno','pichľavý je{ž/š}ko','naša teta Zu{z/s}ka',
  'v maminej záhra{d/t}ke','vra{b/p}ce uleteli','veľká pro{s/z}ba','pru{d/t}ké pohyby','ro{z/s}právka na dobrú noc','ro{z/s}trhol si nohavice','pobo{z/s}kal princeznú',
  'kl{z/s}ký povrch','zlatá ry{b/p}ka','ťa{ž/š}ká váha','pro{s/z}ba o pomoc','školský bato{h/ch}','padá dá{ž/š}{ď/ť}','bez vá{š/ž}ho brata','sla{d/t}ký koláč',
@@ -1682,7 +1682,7 @@ var R_ZASOBA=[['Ktoré slovo je zdrobnenina slova dom?','domček',['domov','dom�
  ['Ktoré slovo je podradené slovu zelenina?','mrkva',['jahoda','čerešňa','banán']],['Ktoré slovo je podradené slovu oblečenie?','sveter',['taška','posteľ','hrnček']],
  ['Ktoré slovo je spisovné?','zemiaky',['krumple','grule','bandurky']],['Ktoré slovo je spisovné?','kamarát',['kámoš','kamoško','kamoš']],
  ['Ktoré slovo je spisovné?','uterák',['ručník','fusak','handra na ruky']],['Ktoré slovo je spisovné?','okuliare',['brýle','okulárky','brejle']],
- ['Ktoré slovo má viac významov?','koruna',['stolička','mlieko','lyžica']],['Ktoré slovo má viac významov?','kohútik',['jablko','pero do pera','vankúš']],
+ ['Ktoré slovo má viac významov?','koruna',['taška','mlieko','lyžica']],['Ktoré slovo má viac významov?','kohútik',['jablko','tanier','vankúš']],
  ['Čo znamená slovo kľúč v spojení „kľúč k úlohe“?','riešenie, návod',['predmet na zamykanie','hudobná značka','kus kovu']],
  ['Ako sa volajú slová s rovnakým alebo podobným významom?','synonymá',['antonymá','zdrobneniny','citoslovcia']],
  ['Ako sa volajú slová s opačným významom?','antonymá',['synonymá','zdrobneniny','predložky']],['Ktoré slovo je citovo zafarbené (zdrobnené)?','mamička',['mama','matka','rodič']]];
