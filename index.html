@@ -1392,12 +1392,12 @@ function enGaps(a){ return a.map(function(s){ return {k:'gaps',q:'Vyber správne
    {id:'a-abc',sub:'aj',name:'Abeceda a hláskovanie',desc:'Anglické názvy písmen a hláskovanie slov.',n:10,items:abc},
    {id:'a-dni',sub:'aj',name:'Dni, mesiace, farby, čísla',desc:'Napíš slovo po anglicky.',n:10,items:other},
    {id:'a-slov',sub:'aj',name:'Slovíčka',desc:'Rodina, škola, zvieratá, jedlo, telo, oblečenie, dom.',n:12,items:words},
-   {id:'a-be',sub:'aj',later:true,name:'Sloveso to be',desc:'am, is, are.',n:8,items:enGaps(EN.be)},
-   {id:'a-zam',sub:'aj',later:true,name:'Zámená',desc:'he, she, it, my, his, her.',n:8,items:enGaps(EN.zam)},
-   {id:'a-have',sub:'aj',later:true,name:'Have got',desc:'have got, has got.',n:8,items:enGaps(EN.have)},
-   {id:'a-ps',sub:'aj',later:true,name:'Prítomný čas',desc:'Present simple: play alebo plays, do alebo does.',n:8,items:enGaps(EN.ps)},
+   {id:'a-be',sub:'aj',rev:true,name:'Sloveso to be',desc:'am, is, are.',n:8,items:enGaps(EN.be)},
+   {id:'a-zam',sub:'aj',rev:true,name:'Zámená',desc:'he, she, it, my, his, her.',n:8,items:enGaps(EN.zam)},
+   {id:'a-have',sub:'aj',rev:true,name:'Have got',desc:'have got, has got.',n:8,items:enGaps(EN.have)},
+   {id:'a-ps',sub:'aj',rev:true,name:'Prítomný čas',desc:'Present simple: play alebo plays, do alebo does.',n:8,items:enGaps(EN.ps)},
    {id:'a-there',sub:'aj',later:true,name:'There is, there are',desc:'Čo sa kde nachádza.',n:8,items:enGaps(EN.there)},
-   {id:'a-otaz',sub:'aj',later:true,name:'Opytovacie slová',desc:'What, where, who, when, how.',n:8,items:enGaps(EN.otaz)}
+   {id:'a-otaz',sub:'aj',rev:true,name:'Opytovacie slová',desc:'What, where, who, when, how.',n:8,items:enGaps(EN.otaz)}
   );
 })();
 
@@ -1523,6 +1523,40 @@ function enGaps(a){ return a.map(function(s){ return {k:'gaps',q:'Vyber správne
     ['Oprav vetu podľa obrázka (na obrázku je 1 kefka): There are four toothbrushes.',"There's one toothbrush.",["There are one toothbrush.","There's one toothbrushes.","There is a toothbrushes."]]
    ].map(mc)));
 })();
+
+/* angličtina – opakovanie zo 4. ročníka (rozšírenie) */
+addTo('a-be',enGaps(["I {am/is/are} from Slovakia.","My cat {is/am/are} black.","You {are/is/am} my best friend.","{Is/Are/Am} it a dog?",
+ "They {aren't/isn't} at school today.","She {isn't/aren't} my sister.","I {am/is/are} not hungry.","{Are/Is/Am} we late?","My grandparents {are/is/am} old.",
+ "The apple {is/am/are} red.","Natali and Kristy {are/is/am} sisters.","Where {are/is/am} my pens?"]).concat([
+ ['Ktorý tvar je skrátený tvar „I am“?',"I'm",["I's","Im'","I're"]],['Ktorý tvar je skrátený tvar „she is“?',"she's","she'm|shes'|she're".split('|')],
+ ['Ktorý tvar je skrátený tvar „they are“?',"they're",["they's","theyr'","they'm"]],['Ktorý tvar je skrátený tvar „is not“?',"isn't",["isnt'","is'nt","in't"]],
+ ['Ako sa správne opýtaš?','Are you ten?',['You are ten?','Is you ten?','Am you ten?']],['Ako sa správne opýtaš?','Is he your brother?',['He is your brother?','Are he your brother?','Is your brother he?']]].map(mc)));
+addTo('a-zam',enGaps(["{I/Me/My} am ten years old.","This is Tom. {His/Her/He} bike is red.","This is Anna. {Her/His/She} dog is small.","We are sisters. {Our/We/Us} mum is a teacher.",
+ "Is this {your/you/yours} pen?","The cat is in {its/it/it's} basket.","Look at the boys. {They/Their/Them} are happy.","My name is Eva. What's {your/you/yours} name?",
+ "{She/Her/Hers} is my best friend.","This is my dog. {It/He/She} is very funny."]).concat([
+ ['Ktoré zámeno použiješ namiesto „Peter“?','he',['she','it','they']],['Ktoré zámeno použiješ namiesto „Mama“?','she',['he','it','we']],
+ ['Ktoré zámeno použiješ namiesto „the book“?','it',['he','she','they']],['Ktoré zámeno použiješ namiesto „Tom and Eva“?','they',['we','he','you']],
+ ['Ktoré zámeno použiješ namiesto „my sister and I“?','we',['they','you','she']],['Čo znamená „their“?','ich',['jeho','jej','náš']],
+ ['Čo znamená „her“ vo vete „This is her bag.“?','jej',['jeho','môj','ich']],['Čo znamená „our“?','náš',['váš','ich','môj']]].map(mc)));
+addTo('a-have',enGaps(["I {have/has} got two sisters.","He {has/have} got brown eyes.","{Have/Has} you got a pet?","She {hasn't/haven't} got a bike.",
+ "We {haven't/hasn't} got a car.","My grandma {has/have} got a garden.","{Has/Have} your sister got a phone?","They {have/has} got a big dog.",
+ "Kristy {has/have} got a new book.","I {haven't/hasn't} got a brother."]).concat([
+ ['Odpovedz krátko: Have you got a dog?',"Yes, I have.",["Yes, I has.","Yes, I am.","Yes, I got."]],
+ ['Odpovedz krátko: Has she got a cat?',"No, she hasn't.",["No, she haven't.","No, she isn't.","No, she hasn't got."]],
+ ['Odpovedz krátko: Have they got a car?',"Yes, they have.",["Yes, they has.","Yes, they are.","Yes, they got."]],
+ ['Ktorá veta je správna?',"He's got a red bike.",["He have got a red bike.","He got has a red bike.","He has a got red bike."]]].map(mc)));
+addTo('a-ps',enGaps(["He {likes/like} chocolate.","My sister {goes/go} to school at eight.","I {get/gets} up at seven.","She {watches/watch} cartoons.",
+ "We {play/plays} in the garden.","{Does/Do} your mum like coffee?","My dad {doesn't/don't} like fish.","They {don't/doesn't} have breakfast at school.",
+ "The cat {sleeps/sleep} on the sofa.","Kristy {reads/read} books every day.","{Do/Does} you like English?","He {does/do} his homework in the afternoon."]).concat([
+ ['Odpovedz krátko: Do you like pizza?',"Yes, I do.",["Yes, I does.","Yes, I am.","Yes, I like."]],
+ ['Odpovedz krátko: Does he play football?',"No, he doesn't.",["No, he don't.","No, he isn't.","No, he not."]],
+ ['Ktorý tvar patrí k „she“?','goes',['go','gos','going']],['Ktorý tvar patrí k „he“?','watches',['watch','watchs','watching']],
+ ['Ktorý tvar patrí k „it“?','flies',['fly','flys','flyes']],['Ktorá veta je správna?','She plays the piano.',['She play the piano.','She playes the piano.','She does plays the piano.']]].map(mc)));
+addTo('a-otaz',enGaps(["{How/What/Who} old is your sister? She is eight.","{Where/When/What} is the cat? It's under the bed.","{Who/What/Where} is your best friend? Natali.",
+ "{What/How/Where} colour is your bag? It's blue.","{When/Where/Who} do you go to bed? At nine.","{How/What/Who} many cats have you got? Two.",
+ "{Where/What/Who} do your grandparents live? In Čadca.","{What/Who/Where} is your favourite food? Pizza."]).concat([
+ ['Čo znamená „Where“?','kde',['kedy','kto','čo']],['Čo znamená „When“?','kedy',['kde','ako','prečo']],['Čo znamená „Who“?','kto',['čo','kde','koľko']],
+ ['Čo znamená „How many“?','koľko',['ako','kedy','kto']],['Čo znamená „What“?','čo',['kto','kde','ako']],['Čo znamená „How“?','ako',['koľko','kto','kedy']]].map(mc)));
 
 var PLANETY=['Merkúr','Venuša','Zem','Mars','Jupiter','Saturn','Urán','Neptún'],
     PORADIE=['prvá','druhá','tretia','štvrtá','piata','šiesta','siedma','ôsma'];
@@ -1974,7 +2008,7 @@ function show(id){
   if(id==='home') renderHome();
   window.scrollTo(0,0);
 }
-function meta(t){ var b=best[t.id], f=freshCount(t); return (t.later?'neskôr v roku · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
+function meta(t){ var b=best[t.id], f=freshCount(t); return (t.later?'neskôr v roku · ':'')+(t.rev?'opakovanie zo 4. ročníka · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
 var subject=store.get('s5.sub','sj');
 if(!SUBJ.some(function(s){return s.id===subject;})) subject='sj';
 function inSubject(t){ return t.sub===subject; }
