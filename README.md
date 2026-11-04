@@ -78,3 +78,10 @@ Podporuje svetlý aj tmavý režim a obmedzenie animácií.
 ## Stav tém
 
 V src/app.html je zoznam TERAZ (témy, ktoré sa práve preberajú). Témy s later:true sú „Dopredu“ (viditeľné, ale nie v mixe a dennej výzve), ostatné sú „Už sme prebrali“. Mix a denná výzva berú asi 60 % úloh z tém „teraz“ a 40 % z prebratých; prebraté témy s úspešnosťou nad 90 % (aspoň 20 odpovedí za 30 dní) sa vracajú len občas.
+
+## Nauč sa, cvičenie a test
+
+- LEARN v src/app.html: vysvetlenia k témam (nadpis, text, príklady). Tlačidlo Nauč sa sa ukáže len pri témach, ktoré ich majú.
+- Cvičenie: pri chybe druhý pokus (nie pri úlohách s 2 – 3 pevnými možnosťami). Do štatistík a chýb ide vždy len prvý pokus.
+- Test: jeden pokus, bez nápovedy, správnosť až na konci. V štatistikách tn/tok (počet a správne v testoch).
+- Angličtina: tlačidlo 🔊 (Web Speech API, anglický hlas tabletu).
