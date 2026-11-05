@@ -2449,6 +2449,300 @@ topicById('b-zivoc').later=true; /* stavovce lesa ešte len budú */
   addTo('b-bezst',[{k:'match',q:'Spoj živočícha so skupinou.',pairs:[['mravec','hmyz'],['križiak','pavúkovce'],['slimák','mäkkýše'],['dážďovka','obrúčkavce']],a:'mravec – hmyz, križiak – pavúkovce, slimák – mäkkýše, dážďovka – obrúčkavce'}]);
   addTo('pm',[{k:'match',q:'Spoj pád s pádovou otázkou.',pairs:[['nominatív','kto? čo?'],['genitív','(z) koho? (z) čoho?'],['datív','(ku) komu? (k) čomu?'],['inštrumentál','(s) kým? (s) čím?']],a:'nominatív – kto? čo?, genitív – (z) koho? čoho?, datív – (ku) komu? čomu?, inštrumentál – (s) kým? čím?'}]);
 })();
+/* ---------- učivo podľa zošitov 5. 11. 2026 ---------- */
+function nineqSvg(k,op){ var st=Math.max(0,k-5), x0=30, w=50, y=44, t='', i;
+  for(i=0;i<=10;i++){ var x=x0+i*w; t+='<line x1="'+x+'" y1="'+(y-7)+'" x2="'+x+'" y2="'+(y+7)+'" stroke="currentColor" stroke-width="2"/><text x="'+x+'" y="'+(y+28)+'" text-anchor="middle" font-size="15" fill="currentColor">'+(st+i)+'</text>'; }
+  var xk=x0+(k-st)*w, right=op==='>'||op==='≥', full=op==='≤'||op==='≥', col='#E0457B', ray;
+  if(right) ray='<line x1="'+xk+'" y1="'+(y-18)+'" x2="'+(x0+10*w+22)+'" y2="'+(y-18)+'" stroke="'+col+'" stroke-width="5"/><path d="M'+(x0+10*w+22)+' '+(y-26)+' L'+(x0+10*w+36)+' '+(y-18)+' L'+(x0+10*w+22)+' '+(y-10)+'" fill="'+col+'"/>';
+  else if(st>0) ray='<line x1="'+(x0-22)+'" y1="'+(y-18)+'" x2="'+xk+'" y2="'+(y-18)+'" stroke="'+col+'" stroke-width="5"/><path d="M'+(x0-22)+' '+(y-26)+' L'+(x0-36)+' '+(y-18)+' L'+(x0-22)+' '+(y-10)+'" fill="'+col+'"/>';
+  else ray='<line x1="'+x0+'" y1="'+(y-18)+'" x2="'+xk+'" y2="'+(y-18)+'" stroke="'+col+'" stroke-width="5"/>';
+  return '<svg class="nline" viewBox="-10 0 600 84" role="img" aria-label="Číselná os s vyznačenými riešeniami nerovnice"><line x1="'+(x0-14)+'" y1="'+y+'" x2="'+(x0+10*w+14)+'" y2="'+y+'" stroke="currentColor" stroke-width="2.5"/>'+t+ray+
+    '<circle cx="'+xk+'" cy="'+(y-18)+'" r="8" style="fill:'+(full?col:'var(--surface,#fff)')+'" stroke="'+col+'" stroke-width="3"/></svg>'; }
+function nline2Svg(n,labels,j,lab){ var x0=30, x1=530, w=(x1-x0)/(n-1), y=40, t='';
+  for(var i=0;i<n;i++){ var x=x0+i*w; t+='<line x1="'+x+'" y1="'+(y-8)+'" x2="'+x+'" y2="'+(y+8)+'" stroke="currentColor" stroke-width="2"/>';
+    if(labels[i]!=null) t+='<text x="'+x+'" y="'+(y+32)+'" text-anchor="middle" font-size="16" fill="currentColor">'+fmt(labels[i])+'</text>'; }
+  var xa=x0+j*w;
+  return '<svg class="nline" viewBox="0 0 560 96" role="img" aria-label="Číselná os s bodom '+lab+'"><line x1="'+(x0-14)+'" y1="'+y+'" x2="'+(x1+20)+'" y2="'+y+'" stroke="currentColor" stroke-width="2.5"/><path d="M'+(x1+20)+' '+(y-6)+' L'+(x1+30)+' '+y+' L'+(x1+20)+' '+(y+6)+'" fill="currentColor"/>'+t+
+    '<circle cx="'+xa+'" cy="'+y+'" r="8" fill="#E0457B"/><text x="'+xa+'" y="'+(y-18)+'" text-anchor="middle" font-size="18" font-weight="700" fill="#E0457B">'+lab+'</text></svg>'; }
+var OPS=['<','≤','>','≥'], OPW={'<':'menšie ako','≤':'menšie alebo rovné','>':'väčšie ako','≥':'väčšie alebo rovné'};
+function okOp(n,op,k){ return op==='<'?n<k:op==='≤'?n<=k:op==='>'?n>k:n>=k; }
+GEN.nerov0=function(){
+  var r=rnd(1,10), op=pick(OPS), k, n;
+  if(r<=3){ k=rnd(2,9);
+    var lo=function(a,b){ var o=[]; for(var i=a;i<=b;i++) o.push(i); return '{'+o.join(', ')+'}'; }, hi=function(a){ return '{'+a+', '+(a+1)+', '+(a+2)+', …}'; };
+    var all={'<':lo(0,k-1),'≤':lo(0,k),'>':hi(k+1),'≥':hi(k)}, extra=[lo(1,k-1),lo(1,k),hi(k-1)];
+    var o=[all[op]]; OPS.forEach(function(x){ if(x!==op) o.push(all[x]); });
+    if(o.length<4) o=o.concat(extra);
+    return {k:'mc',q:'Ktoré prirodzené čísla vyhovujú nerovnici?',s:'x '+op+' '+k,a:all[op],o:o.slice(0,4),e:'Prirodzené čísla začínajú nulou. Pri < a > hraničné číslo nevyhovuje, pri ≤ a ≥ vyhovuje.'}; }
+  if(r<=5){ k=rnd(2,40); n=pick([k-1,k,k,k+1]); var ok=okOp(n,op,k);
+    return {k:'mc',fixed:true,q:'Vyhovuje číslo '+n+' nerovnici?',s:'x '+op+' '+k,a:ok?'áno':'nie',o:['áno','nie'],e:'Dosaď: '+n+' '+op+' '+k+' '+(ok?'platí ✓':'neplatí ✗')+'.'}; }
+  if(r<=8){ k=rnd(5,60); var q={k:'mc',fixed:true,q:'Ktorú nerovnicu znázorňuje číselná os?',a:'x '+op+' '+k,o:OPS.map(function(x){ return 'x '+x+' '+k; }),
+      e:'Plný krúžok: číslo vyhovuje (≤, ≥). Prázdny krúžok: číslo nevyhovuje (<, >). Šípka vpravo: väčšie čísla, vľavo: menšie.'}; q.svg=nineqSvg(k,op); return q; }
+  k=rnd(20,900);
+  if(op==='<') return numQ('Napíš najväčšie prirodzené číslo, ktoré vyhovuje nerovnici.','x < '+k,k-1);
+  if(op==='≤') return numQ('Napíš najväčšie prirodzené číslo, ktoré vyhovuje nerovnici.','x ≤ '+k,k);
+  if(op==='>') return numQ('Napíš najmenšie prirodzené číslo, ktoré vyhovuje nerovnici.','x > '+k,k+1);
+  return numQ('Napíš najmenšie prirodzené číslo, ktoré vyhovuje nerovnici.','x ≥ '+k,k);
+};
+function digitsSwap(n){ var s=String(n).split(''), i=rnd(0,s.length-2), j=i+1; var t=s[i]; s[i]=s[j]; s[j]=t; if(s[0]==='0') return n+1; return +s.join(''); }
+function nearNum(len){ var a=rnd(Math.pow(10,len-1),Math.pow(10,len)-1), m=rnd(1,5), b;
+  if(m===1) b=digitsSwap(a);
+  else if(m===2){ var p=Math.pow(10,rnd(0,len-2)); b=a+pick([-1,1])*p*rnd(1,3); }
+  else if(m===3){ b=+(String(pick([8,9]))+String(a).slice(1,len-1)); }
+  else if(m===4) b=a;
+  else b=a+pick([-1,1])*rnd(1,9);
+  if(b<1) b=a+1; return [a,b]; }
+GEN.porov2=function(){
+  var r=rnd(1,10), len=rnd(4,7), p=nearNum(len), a=p[0], b=p[1];
+  if(Math.random()<.5){ var x=a; a=b; b=x; }
+  if(r<=4){ var z=a<b?'<':a>b?'>':'=';
+    return {k:'mc',fixed:true,q:'Porovnaj čísla. Ktorý znak patrí medzi ne?',s:fmt(a)+'  ☐  '+fmt(b),a:z,o:['<','>','='],e:'Najprv porovnaj počet cifier. Ak je rovnaký, porovnávaj zľava, rád po ráde.'}; }
+  if(r<=6){ var T=[['je väčšie ako',a>b],['je menšie ako',a<b],['sa nerovná',a!==b],['nie je väčšie ako',!(a>b)],['nie je menšie ako',!(a<b)]], t=pick(T);
+    return {k:'mc',fixed:true,q:'Je toto tvrdenie pravdivé?',s:fmt(a)+' '+t[0]+' '+fmt(b),a:t[1]?'pravdivé':'nepravdivé',o:['pravdivé','nepravdivé']}; }
+  if(r<=8){ var base=rnd(Math.pow(10,len-1),Math.pow(10,len)-1), arr=[base,digitsSwap(base),base+pick([-1,1])*Math.pow(10,rnd(1,len-2))];
+    if(Math.random()<.4) arr[2]=+String(base).slice(0,len-1);
+    arr=arr.filter(function(v,i,s){ return s.indexOf(v)===i&&v>0; }); while(arr.length<3) arr.push(arr[0]+rnd(1,99));
+    var up=Math.random()<.5, sorted=arr.slice().sort(function(x,y){ return up?x-y:y-x; }), sign=up?' < ':' > ';
+    var perm=function(o){ return o.map(fmt).join(sign); }, right=perm(sorted), opts=[right];
+    [[0,2,1],[1,0,2],[2,1,0],[1,2,0],[2,0,1]].forEach(function(ix){ var s=perm(ix.map(function(i){ return sorted[i]; })); if(opts.indexOf(s)<0&&opts.length<4) opts.push(s); });
+    return {k:'mc',q:'Usporiadaj čísla '+(up?'vzostupne (od najmenšieho).':'zostupne (od najväčšieho).'),s:shuffle(arr.slice()).map(fmt).join(';  '),a:right,o:opts}; }
+  var s=String(a), pos=rnd(len>4?1:0,len-1), d=+s[pos], gt=Math.random()<.5, valid=[], bad=[];
+  for(var c=0;c<=9;c++){ if(pos===0&&c===0) continue; var v=+(s.slice(0,pos)+c+s.slice(pos+1)); ((gt?a>v:a<v)?valid:bad).push(c); }
+  if(!valid.length||bad.length<3) return GEN.porov2();
+  var ans=String(pick(valid)), o2=[ans].concat(shuffle(bad).slice(0,3).map(String)), shown=s.slice(0,pos)+'_'+s.slice(pos+1);
+  var fmtU=function(t){ return t.replace(/\B(?=(.{3})+(?!.))/g,' '); };
+  return {k:'mc',q:'Ktorú číslicu môžeš doplniť, aby zápis platil?',s:fmt(a)+(gt?' > ':' < ')+fmtU(shown),a:ans,o:o2,e:'Porovnávaj rád po ráde zľava. Rozhoduje cifra na mieste, kde sa čísla líšia.'};
+};
+GEN.os2=function(){
+  var r=rnd(1,10);
+  if(r<=6){ var st=pick([1,2,3,4,5,10,20,25,50,100,1000]), n=12, s0=rnd(0,60)*st, i1=rnd(0,3), i2=i1+rnd(2,4), j;
+    do{ j=rnd(0,n-1); } while(j===i1||j===i2);
+    var L={}; L[i1]=s0+i1*st; L[i2]=s0+i2*st; var q=numQ('Číselná os má rovnaké dieliky. Aké číslo je označené písmenom B?','Medzi známymi číslami sú '+(i2-i1)+' dieliky.',s0+j*st,'rozdiel čísel vydeľ počtom dielikov – to je jeden dielik');
+    q.svg=nline2Svg(n,L,j,'B'); return q; }
+  var step=pick([4,5,20,25,32,50,100,250,1000]), down=Math.random()<.35, s1=down?rnd(step*6,step*40):rnd(1,200)*(step>=100?10:1), miss=rnd(1,3), seq=[];
+  for(var i=0;i<5;i++){ var v=down?s1-i*step:s1+i*step; seq.push(i===miss?'___':fmt(v)); }
+  return numQ('Doplň chýbajúce číslo v rade.',seq.join(', '),down?s1-miss*step:s1+miss*step,'zisti, o koľko sa čísla menia');
+};
+GEN.pisn=function(){ var r=rnd(1,3), a, b;
+  if(r===1){ a=rnd(102,989); b=rnd(2,9); return numQ('Vypočítaj písomne.',fmt(a)+' · '+b,a*b); }
+  if(r===2){ a=rnd(12,98); b=rnd(12,49); return numQ('Vypočítaj písomne.',a+' · '+b,a*b); }
+  b=rnd(2,9); var c=rnd(105,1200); return numQ('Vypočítaj písomne.',fmt(b*c)+' : '+b,c); };
+(function(){
+  function add(id,sub,name,desc,rows,later){ var t={id:id,sub:sub,name:name,desc:desc,n:10,items:rows.map(mc)}; if(later) t.later=true; T.push(t); return t; }
+  T.push({id:'m-nerov0',sub:'mat',name:'Nerovnosti na číselnej osi',desc:'x < 3, x ≥ 78 – ktoré čísla vyhovujú, plný a prázdny krúžok.',n:10,gen:GEN.nerov0,items:[]});
+  T.push({id:'m-porov2',sub:'mat',name:'Porovnávanie a usporadúvanie',desc:'<, >, =, pravdivé tvrdenia, doplň číslicu, zoraď čísla.',n:10,gen:GEN.porov2,items:[]});
+  var mos=topicById('m-os'), g1=GEN.os; mos.gen=function(){ return Math.random()<.45?GEN.os2():g1(); }; mos.desc='Dieliky, písmená na osi, chýbajúce čísla v rade, vzdialenosť.';
+  T.push({id:'m-pisn',sub:'mat',name:'Písomné násobenie a delenie',desc:'Násobenie a delenie pod sebou.',n:8,gen:GEN.pisn,items:[],later:true});
+  add('m-zlom','mat','Zlomky – časť celku','Polovica, tretina, štvrtina.',[
+   ['Pizza je rozdelená na 4 rovnaké časti. Zjedli sme 1 časť. Akú časť sme zjedli?','jednu štvrtinu (1/4)',['jednu polovicu (1/2)','jednu tretinu (1/3)','celú pizzu']],
+   ['Koláč je rozdelený na 2 rovnaké časti. Ako voláme jednu časť?','polovica',['tretina','štvrtina','celok']],
+   ['Čo je väčšie: polovica alebo štvrtina toho istého koláča?','polovica',['štvrtina','sú rovnaké','nedá sa určiť']],
+   ['Koľko štvrtín tvorí celok?','4',['2','3','10']],
+   ['Koľko je polovica zo 40?','20',['10','80','4']],
+   ['Koľko je tretina z 12 jabĺk?','4',['3','6','36']],
+   ['Koľko je štvrtina zo 100 €?','25 €',['4 €','50 €','40 €']],
+   ['Čo udáva menovateľ v zlomku 1/3?','na koľko rovnakých častí je celok rozdelený',['koľko častí sme vzali','koľko je celkov','výsledok delenia']],
+   ['Čo udáva čitateľ v zlomku 2/5?','koľko častí sme vzali',['na koľko častí je celok rozdelený','koľko je celkov','koľko častí zostalo']]],true);
+  add('m-geo2','mat','Bod, priamka, úsečka, kružnica','Základné geometrické útvary.',[
+   ['Ktorý útvar má začiatok aj koniec a dá sa zmerať?','úsečka',['priamka','polpriamka','rovina']],
+   ['Ktorý útvar nemá začiatok ani koniec?','priamka',['úsečka','polpriamka','bod']],
+   ['Ktorý útvar má začiatok, ale nemá koniec?','polpriamka',['úsečka','priamka','kružnica']],
+   ['Akým písmenom označujeme bod?','veľkým tlačeným písmenom (A, B, C)',['malým písmenom (a, b)','číslom','gréckym písmenom']],
+   ['Čo platí o rovnobežkách?','nikdy sa nepretnú',['pretnú sa v pravom uhle','pretnú sa v jednom bode','sú vždy zvislé']],
+   ['Čo platí o kolmých priamkach?','pretínajú sa a zvierajú pravý uhol',['nikdy sa nepretnú','sú vždy vodorovné','majú rovnakú dĺžku']],
+   ['Aký je rozdiel medzi kružnicou a kruhom?','kružnica je len čiara, kruh je aj s vnútrom',['nie je žiadny rozdiel','kruh je čiara, kružnica plocha','kružnica je hranatá']],
+   ['Polomer kružnice je 3 cm. Aký je jej priemer?','6 cm',['3 cm','1,5 cm','9 cm']],
+   ['Koľko strán má štvoruholník?','4',['3','5','6']],
+   ['Čo platí o štvorci?','všetky strany sú rovnako dlhé a všetky uhly pravé',['má 3 strany','iba dve strany sú rovnaké','nemá pravé uhly']],
+   ['Čo platí o obdĺžniku?','protiľahlé strany sú rovnako dlhé a všetky uhly sú pravé',['všetky strany sú vždy rovnaké','má 5 strán','nemá pravé uhly']]],true);
+  add('m-tel','mat','Kocka a kváder','Steny, hrany, vrcholy.',[
+   ['Koľko stien má kocka?','6',['4','8','12']],
+   ['Koľko hrán má kocka?','12',['6','8','4']],
+   ['Koľko vrcholov má kocka?','8',['6','12','4']],
+   ['Aký tvar majú steny kocky?','štvorce',['obdĺžniky','trojuholníky','kruhy']],
+   ['Aký tvar majú steny kvádra?','obdĺžniky (niektoré môžu byť štvorce)',['iba trojuholníky','kruhy','iba štvorce']],
+   ['Koľko stien má kváder?','6',['4','8','12']],
+   ['Ktorý predmet má tvar kvádra?','krabica od topánok',['lopta','plechovka','hracia kocka']],
+   ['Ktorý predmet má tvar kocky?','hracia kocka',['krabica od topánok','lopta','plechovka']]],true);
+
+  // ---- slovenčina: piesne – opravy a doplnenie podľa zošita
+  var sp=topicById('s-pies');
+  sp.items.forEach(function(it){
+    if(it.q==='Čo je pieseň?'){ it.a='zhudobnená báseň, ktorá patrí k poézii'; it.o=[it.a,'rozprávka v próze','novinový článok','divadelná hra']; }
+    if(it.q==='Čo je rytmus v piesni?'){ it.a='striedanie prízvučných a neprízvučných slabík'; it.o=[it.a,'zvuková zhoda slabík na konci veršov','jeden riadok básne','skupina veršov oddelená medzerou']; }
+  });
+  sp.desc='Druhy piesní, rým, rytmus, verš, strofa, personifikácia. Opakovanie na písomku.';
+  addTo('s-pies',[
+   ['Ako delíme piesne podľa autorstva?','ľudové, zľudovené a autorské (umelé)',['ľúbostné, uspávanky a koledy','lyrické, epické a dramatické','krátke a dlhé']],
+   ['Čo sú zľudovené piesne?','majú autora, ale obsahom a melódiou sú podobné ľudovej piesni',['nemajú autora','sú to piesne bez melódie','sú to len koledy']],
+   ['Ktoré piesne nemajú autora?','ľudové',['zľudovené','autorské','umelé']],
+   ['Ako sa šírili ľudové piesne?','tradovaním – ústnym podaním z generácie na generáciu',['v novinách','na internete','iba v knihách']],
+   ['Kedy zozbierali a zapísali slovenské ľudové piesne zberatelia?','v 18. a 19. storočí',['v 10. storočí','v 21. storočí','v 5. storočí']],
+   ['Kto bol významný zberateľ slovenských ľudových piesní?','Ján Kollár',['Mikuláš Schneider-Trnavský','Milan Ferko','Jozef Pavlovič']],
+   ['Kto je známy autor zľudovených piesní?','Mikuláš Schneider-Trnavský',['Ján Kollár','Pavol Dobšinský','Milan Ferko']],
+   ['Čo môžeme nájsť v piesňach?','zdrobneniny, prirovnania a personifikáciu',['iba čísla','vzorce','cudzie slová']],
+   ['V ktorom spojení je personifikácia?','skala sa rozplakala',['vysoká skala','skala pri ceste','sivá skala']],
+   ['Do ktorej skupiny patrí pieseň Povej, vetrík, povej?','ľúbostné piesne',['uspávanky','zbojnícke piesne','pracovné piesne']],
+   ['Do ktorej skupiny patrí pieseň Búvaj, že mi búvaj?','uspávanky',['koledy','zbojnícke piesne','trávnice']],
+   ['Do ktorej skupiny patrí pieseň Búvaj, dieťa krásne?','koledy (obradové piesne)',['uspávanky','zbojnícke piesne','trávnice']],
+   ['Do ktorej skupiny patrí pieseň Ej, musel to chlap byť?','zbojnícke piesne',['uspávanky','ľúbostné piesne','koledy']],
+   ['Do ktorej skupiny patrí pieseň Čie sú to kone, koníčky kone?','regrútske a vojenské piesne',['uspávanky','koledy','trávnice']],
+   ['Do ktorej skupiny patrí pieseň Po valasky od zeme?','pastierske a valašské (pracovné) piesne',['uspávanky','koledy','zbojnícke piesne']],
+   ['Do ktorej skupiny patrí pieseň Ej, slniečko horúce?','trávnice (pracovné piesne)',['uspávanky','koledy','regrútske piesne']],
+   ['Do ktorej skupiny patrí pieseň Vstávaj, Jano, hore?','banícke (pracovné) piesne',['uspávanky','ľúbostné piesne','koledy']],
+   ['O čom sú ľúbostné piesne?','o láske a zaľúbených mladých ľuďoch',['o práci v bani','o zbojníkoch','o Vianociach']],
+   ['K čomu sa viažu obradové piesne?','k sviatkom a dôležitým udalostiam (príchod jari, svadba, krst)',['k práci v bani','k odchodu na vojnu','k uspávaniu detí']],
+   ['Kto spieval koledy?','koledníci',['regrúti','baníci','valasi']],
+   ['O čom spievali regrútske piesne?','o násilnom odvádzaní chlapcov do armády',['o láske','o žatve','o Vianociach']],
+   ['Čo zobrazujú vojenské piesne?','život v kasárňach a na bojisku',['život pastierov','uspávanie detí','Vianoce']],
+   ['Kto spieval trávnice?','dievčatá pri kosení a hrabaní trávy a sušení sena',['baníci v bani','koledníci na Vianoce','vojaci v kasárňach']],
+   ['Akú melódiu majú trávnice?','ťahavú a pomalú',['rýchlu a veselú','žiadnu','pochodovú']],
+   ['O čom sú pastierske a valašské piesne?','o živote pastierov, valachov a bačov a o kráse prírody',['o živote v meste','o škole','o zbojníkoch v meste']],
+   ['Čo je rým?','zvuková zhoda slabík na konci veršov',['striedanie prízvučných a neprízvučných slabík','jeden riadok básne','názov piesne']],
+   ['Aká je schéma združeného rýmu?','aabb',['abab','abba','abcb']],
+   ['Aká je schéma striedavého rýmu?','abab',['aabb','abba','abcb']],
+   ['Aká je schéma obkročného rýmu?','abba',['aabb','abab','abcb']],
+   ['Aká je schéma prerývaného rýmu?','abcb',['aabb','abab','abba']],
+   ['Aká je schéma postupného rýmu?','abcabc',['aabb','abab','abba']],
+   ['Ako sa volá rým so schémou abba?','obkročný',['združený','striedavý','prerývaný']],
+   ['Ako sa volá rým so schémou aabb?','združený',['striedavý','obkročný','postupný']],
+   ['Ako sa volá rým so schémou abab?','striedavý',['združený','obkročný','prerývaný']],
+   ['Ako sa volá rým so schémou abcb?','prerývaný',['striedavý','obkročný','združený']]
+  ].map(mc));
+  var RYM=[['Búvajže mi, búvaj, / a sa nenadúvaj, / lepšie ti je spati, / než sa nadúvati.','združený (aabb)','ľudová uspávanka: búvaj – nenadúvaj, spati – nadúvati'],
+   ['Povej, vetrík, povej, / ej, po ovsenom klase, / každý frajer pozná / frajerku po hlase.','prerývaný (abcb)','ľudová pieseň: rýmuje sa len 2. a 4. verš (klase – hlase)'],
+   ['Za humnami stojí dom, / pri ňom rastie starý strom, / v záhrade sa hrá náš pes, / za ním šumí hustý les.','združený (aabb)','dom – strom, pes – les'],
+   ['Svieti slnko, je tu deň, / mamka spieva pri okne, / pod stromom je chladný tieň, / mačka spí a nezmokne.','striedavý (abab)','deň – tieň (1. a 3.), okne – nezmokne (2. a 4.)'],
+   ['Prišla k nám tichá noc, / hviezdy svietia nad horou, / zhasnú ráno s jasnou zorou, / slnko má zas veľkú moc.','obkročný (abba)','noc – moc (1. a 4.), horou – zorou (2. a 3.)'],
+   ['Na kopci stojí hrad, / pod ním tečie voda, / kto ho ešte nevidel, / tomu je to škoda.','prerývaný (abcb)','rýmuje sa len 2. a 4. verš: voda – škoda']];
+  var RN=['združený (aabb)','striedavý (abab)','obkročný (abba)','prerývaný (abcb)'];
+  addTo('s-pies',RYM.map(function(r){ return {k:'mc',fixed:true,q:'Aký rým je v tejto strofe? (lomka / oddeľuje verše)',s:r[0],a:r[1],o:RN,e:r[2]}; })
+   .concat(RYM.slice(0,4).map(function(r){ return {k:'mc',fixed:true,q:'Koľko veršov má táto strofa? (lomka / oddeľuje verše)',s:r[0],a:'4',o:['2','3','4','8'],e:'Verš je jeden riadok. Tu sú 4 riadky, teda 4 verše, aj keď sa niektoré opakujú.'}; }))
+   .concat([['Ktoré slovo sa rýmuje so slovom dom?','strom',['stôl','dvor','okno']],['Ktoré slovo sa rýmuje so slovom noc?','moc',['deň','ráno','hora']],
+     ['Ktoré slovo sa rýmuje so slovom voda?','škoda',['more','rieka','hora']],['Ktoré slovo sa rýmuje so slovom deň?','tieň',['noc','svet','les']]].map(mc)));
+
+  // ---- literárne formy, druhy, žánre a pojmy
+  add('s-litd','sj','Literárne formy, druhy a žánre','Poézia a próza, lyrika – epika – dráma, téma a idea, literatúra, kniha, knižnica.',[
+   ['Ako je písaná poézia?','viazanou (veršovanou) rečou',['neviazanou rečou vo vetách a odsekoch','iba v rozhovoroch','číslami']],
+   ['Ako je písaná próza?','neviazanou rečou – vo vetách a odsekoch',['vo veršoch a strofách','iba v rýmoch','v tabuľkách']],
+   ['Ako sa volá text písaný vo veršoch?','poézia',['próza','dráma','epika']],
+   ['Ako sa volá text písaný vo vetách a odsekoch?','próza',['poézia','lyrika','strofa']],
+   ['Ako sa volá autor básne?','básnik',['spisovateľ rozprávok','herec','režisér']],
+   ['Ako sa volá autorka básne?','poetka',['herečka','redaktorka','kronikárka']],
+   ['Čo je základnou jednotkou poézie?','verš',['odsek','kapitola','veta']],
+   ['Aké sú literárne druhy?','lyrika, epika a dráma',['poézia a próza','rozprávka, povesť a báseň','verš, strofa a rým']],
+   ['Aké sú literárne formy?','poézia a próza',['lyrika, epika a dráma','rozprávka a povesť','rým a rytmus']],
+   ['Ktorý literárny druh vyjadruje pocity a nálady?','lyrika',['epika','dráma','próza']],
+   ['Ktorý literárny druh rozpráva príbeh (má dej)?','epika',['lyrika','dráma','poézia']],
+   ['Ktorý literárny druh je určený na hranie v divadle?','dráma',['lyrika','epika','poézia']],
+   ['Kam patrí rozprávka?','medzi epické žánre',['medzi lyrické žánre','medzi dramatické žánre','medzi literárne formy']],
+   ['Kam patrí povesť?','medzi epické žánre',['medzi lyrické žánre','medzi dramatické žánre','medzi literárne formy']],
+   ['Kam patrí báseň?','medzi lyrické žánre',['medzi epické žánre','medzi dramatické žánre','medzi literárne druhy']],
+   ['Kam patrí pieseň?','medzi lyrické žánre',['medzi epické žánre','medzi dramatické žánre','medzi prózu']],
+   ['Kam patrí film a bábkové divadlo?','medzi dramatické žánre',['medzi lyrické žánre','medzi epické žánre','medzi poéziu']],
+   ['Ako sa volá veľká skupina literárnych diel (lyrika, epika, dráma)?','literárny druh',['literárny žáner','literárna forma','literárna postava']],
+   ['Ako sa volá skupina diel s podobnými znakmi (rozprávka, pieseň, film)?','literárny žáner',['literárny druh','literárna forma','téma']],
+   ['Ako sa volá spôsob, akým je dielo napísané (poézia, próza)?','literárna forma',['literárny druh','literárny žáner','idea']],
+   ['Rozprávka – aký je to literárny druh a forma?','epika, próza',['lyrika, poézia','dráma, próza','lyrika, próza']],
+   ['Báseň – aký je to literárny druh a forma?','lyrika, poézia',['epika, próza','dráma, poézia','epika, poézia']],
+   ['Divadelná hra – aký je to literárny druh?','dráma',['lyrika','epika','poézia']],
+   ['Čo je téma literárneho diela?','o čom dielo je, čo sa v ňom deje',['čo nám chcel autor odkázať','meno autora','počet strof']],
+   ['Čo je idea literárneho diela?','posolstvo autora – čo nám chcel dielom povedať',['o čom dielo je','miesto deja','meno hlavnej postavy']],
+   ['Je to téma alebo idea? „Rozprávka je o odvážnom chlapcovi, ktorý zachránil svoje mesto.“','téma',['idea']],
+   ['Je to téma alebo idea? „Odvaha a pomoc druhým sa vždy vyplatia.“','idea',['téma']],
+   ['Je to téma alebo idea? „Príbeh opisuje život školáka na dedine.“','téma',['idea']],
+   ['Je to téma alebo idea? „Priateľstvo je dôležitejšie ako bohatstvo.“','idea',['téma']],
+   ['Je to téma alebo idea? „Príbeh je o líške, ktorá oklamala vranu.“','téma',['idea']],
+   ['Je to téma alebo idea? „Lichotníkom netreba veriť.“','idea',['téma']],
+   ['Čo je literatúra?','súhrn literárnych (slovesných) diel',['iba knihy v knižnici','iba noviny','iba básne']],
+   ['Čo je kniha?','slovesné dielo vydané tlačou',['zbierka kníh','pravidelne vychádzajúca tlač','rozhovor dvoch ľudí']],
+   ['Čo je knižnica?','zbierka kníh, ktoré sa na určenom mieste zhromažďujú a požičiavajú',['obchod s knihami','tlačiareň','jedna veľká kniha']],
+   ['Čo sú časopisy a noviny?','pravidelne vychádzajúca tlač',['knihy rozprávok','zbierka kníh','básne']],
+   ['Ako sa volajú noviny, ktoré vychádzajú každý deň?','denník',['týždenník','mesačník','kronika']],
+   ['Aký literárny druh je rozprávka Vietor Viktor od Jozefa Pavloviča?','epika (má dej)',['lyrika','dráma','poézia']],
+   ['Aký žáner je Vietor Viktor?','moderná rozprávka',['ľudová pieseň','povesť','báseň']],
+   ['Kto je hlavná postava rozprávky Vietor Viktor?','vietor Viktor',['učiteľ','riaditeľ','inšpektor']],
+   ['Ktorá postava v rozprávke Vietor Viktor je fantastická (neskutočná)?','vietor Viktor',['deti','učiteľ','riaditeľ']],
+   ['Kde sa odohráva dej rozprávky Vietor Viktor?','v škole',['v lese','na hrade','na mori']],
+   ['Aká je idea rozprávky Vietor Viktor?','v škole sa treba správať slušne',['vietor je silný','učitelia sú prísni','počasie sa mení']],
+   ['Čo je „čierni ako kominári“?','prirovnanie',['personifikácia','rým','refrén']],
+   ['Čo znamená slovo nečas?','zlé počasie',['nedostatok času','noc','sviatok']],
+   ['Čo je hlavná postava?','postava, okolo ktorej sa točí dej',['postava, ktorá sa objaví len raz','autor diela','čitateľ']],
+   ['Čo je epický čas?','kedy sa dej odohráva',['koľko trvá čítanie','počet strán','meno autora']],
+   ['Kto bol Milan Ferko?','slovenský prozaik, dramatik, básnik, redaktor a textár 20. storočia',['zberateľ ľudových piesní z 18. storočia','autor zľudovených piesní','český spisovateľ']],
+   ['Z akej rodiny pochádzal Milan Ferko?','z drotárskej',['z baníckej','z kráľovskej','z rybárskej']],
+   ['Z ktorej knihy je báseň Milana Ferka Ako sa robia zázraky?','Krásna hra',['Slovenské rozprávky','Vietor Viktor','Ľudové piesne']],
+   ['Koľko strof má báseň Ako sa robia zázraky?','4',['2','3','6']]]);
+
+  // ---- rozprávky (nové učivo)
+  add('s-rozpr','sj','Rozprávky','Znaky rozprávky, delenie podľa autorstva, obsahu a formy, zberatelia.',[
+   ['Čo je rozprávka?','krátky epický žáner s jednoduchým dejom',['lyrická báseň','dlhý román','divadelná hra v rýmoch']],
+   ['Ako sa rozprávky najprv šírili?','ústnym podaním z pokolenia na pokolenie (tradovaním)',['v novinách','v televízii','na internete']],
+   ['Čo vyjadrujú rozprávky?','túžbu človeka po dobre a spravodlivosti',['túžbu po bohatstve','strach z prírody','návod na hru']],
+   ['Čo v rozprávke víťazí?','dobro nad zlom, krása nad škaredosťou, múdrosť nad hlúposťou',['zlo nad dobrom','silnejší nad slabším vždy','nikto']],
+   ['Kto bol najznámejší zberateľ slovenských ľudových rozprávok?','Pavol Dobšinský',['Ján Kollár','Mikuláš Schneider-Trnavský','Milan Ferko']],
+   ['Ktorá česká autorka zbierala aj slovenské rozprávky?','Božena Němcová',['Pavol Dobšinský','Ján Kollár','Jozef Pavlovič']],
+   ['Ako delíme rozprávky podľa autorstva?','ľudové (autor neznámy) a autorské (autor známy)',['čarovné a zvieracie','prozaické a veršované','krátke a dlhé']],
+   ['Aká je rozprávka, ktorej autor je neznámy?','ľudová',['autorská','dramatizovaná','veršovaná']],
+   ['Aká je rozprávka, ktorej autor je známy?','autorská',['ľudová','čarovná','zvieracia']],
+   ['V ktorých rozprávkach vystupujú strigy, ježibaby a černokňažníci a pomáhajú magické predmety?','v čarovných',['vo zvieracích','v realistických','v dramatizovaných']],
+   ['V ktorých rozprávkach sú hrdinami zvieratá s ľudskými vlastnosťami?','vo zvieracích',['v čarovných','v realistických','vo veršovaných']],
+   ['V ktorých rozprávkach sú hrdinami jednoduchí ľudia, ktorí víťazia rozumom a vtipom?','v realistických',['v čarovných','vo zvieracích','v dramatizovaných']],
+   ['Ktoré rozprávky sú pôvodom najstaršie?','čarovné',['realistické','autorské','dramatizované']],
+   ['Ako delíme rozprávky podľa formy?','prozaické, veršované a dramatizované',['ľudové a autorské','čarovné a zvieracie','dlhé a krátke']],
+   ['Aká je rozprávka napísaná vo veršoch?','veršovaná',['prozaická','dramatizovaná','realistická']],
+   ['Aká je rozprávka upravená pre divadlo, film, televíziu alebo rozhlas?','dramatizovaná',['prozaická','veršovaná','ľudová']],
+   ['Aká je rozprávka napísaná neviazanou rečou?','prozaická',['veršovaná','dramatizovaná','lyrická']],
+   ['Ktorý je najdôležitejší znak rozprávky?','dobro víťazí nad zlom',['magické číslo','ustálený začiatok','veľa postáv']],
+   ['Ktorý začiatok je typický pre rozprávku?','Kde bolo, tam bolo…',['Milý denníček…','Vážená pani riaditeľka…','Dnes ráno v správach…']],
+   ['Ktorý koniec je typický pre rozprávku?','Zazvonil zvonec a rozprávky je koniec.',['S pozdravom, Peter','Pokračovanie nabudúce.','Koniec zápasu.']],
+   ['Ktoré čísla sú v rozprávkach magické?','3, 7, 9, 12',['2, 4, 6, 8','10, 20, 30','1, 100, 1 000']],
+   ['Čo je variácia a gradácia v rozprávke?','opakovanie a stupňovanie deja',['zvuková zhoda na konci veršov','opis prírody','meno autora']],
+   ['Ktorý predmet je fantastický (rozprávkový)?','čarovný prútik',['školská taška','bicykel','hrnček']],
+   ['Ktorá postava je fantastická?','ježibaba',['kováč','pastier','mlynár']]]);
+
+  // ---- zvuková stránka reči
+  add('s-zvuk','sj','Zvuková stránka reči','Melódia, sila hlasu, dôraz, prestávka, prízvuk.',[
+   ['Čo patrí k zvukovej stránke reči?','melódia, sila hlasu, dôraz, prestávka a prízvuk',['rým, rytmus a verš','podmet a prísudok','rod, číslo a pád']],
+   ['Kde je dôraz v pokojnej reči?','na poslednom slove',['na prvom slove','na každom slove','nikde']],
+   ['„Mama PEČIE koláče.“ Prečo je dôraz na slove pečie?','lebo mama pečie, a nie varí',['lebo pečie mama, a nie babka','lebo pečie koláče, a nie chlieb','je to pokojná reč']],
+   ['„MAMA pečie koláče.“ Čo chceme dôrazom povedať?','že pečie mama, a nie babka',['že mama pečie, a nevarí','že pečie koláče, a nie chlieb','nič zvláštne']],
+   ['Čo je prestávka (pauza)?','prerušenie prúdu reči na istý čas',['zvýšenie hlasu','výraznejšie vyslovenie slabiky','zvuková zhoda slabík']],
+   ['Čo znamená v texte značka / a čo //?','/ kratšia prestávka, // dlhšia prestávka',['/ dlhšia, // kratšia','/ dôraz, // prízvuk','/ otázka, // výkričník']],
+   ['Prečo robíme prirodzenú (fyziologickú) prestávku?','potrebujeme sa nadýchnuť',['chceme niečo zdôrazniť','končí sa veta','je tam otáznik']],
+   ['Kde robíme výraznú dlhšiu prestávku?','na hranici viet, kde je . ? !',['v strede slova','pred každou predložkou','po každom slove']],
+   ['Kde ešte robíme výrazovú prestávku?','kde sú slová alebo vety oddelené čiarkou, pri priamej reči a po oslovení',['v strede slova','pred každým podstatným menom','nikde inde']],
+   ['„Peter, / čo robíš?“ Prečo je za slovom Peter prestávka?','je to oslovenie',['je to koniec vety','je tam otáznik','je to dlhé slovo']],
+   ['Čo je prízvuk?','výraznejšie vyslovenie slabiky',['prestávka v reči','stúpanie hlasu na konci vety','zvuková zhoda slabík']],
+   ['Na ktorej slabike je v slovenčine hlavný prízvuk?','na prvej',['na poslednej','na predposlednej','na každej']],
+   ['Ktoré slová majú okrem hlavného aj vedľajší prízvuk?','slová so 4 a viac slabikami',['iba jednoslabičné slová','iba slová s ä','všetky slová']],
+   ['Ktoré slovo má aj vedľajší prízvuk?','matematika',['pes','mama','škola']],
+   ['Kde je hlavný prízvuk v slove škola?','na slabike ško',['na slabike la','na oboch rovnako','nemá prízvuk']]]);
+
+  // ---- druhy viet a melódia – podľa zošita
+  var VET4=['oznamovacia','opytovacia','rozkazovacia','želacia'];
+  addTo('s-vety',[['Nech už nič neukradne!','želacia'],['Kiežby sa teraz zastavil čas!','želacia'],['Zostaň tu navždy zakliaty!','rozkazovacia'],
+    ['Ani v jednej izbe nebolo živej duše.','oznamovacia'],['Potrestal kráľovič zlého kráľa?','opytovacia'],['Aká sila viedla kráľoviča na zámok?','opytovacia'],
+    ['Dobrý deň!','želacia'],['Snáď to dopadne dobre!','želacia'],['Vyskúšajme všetky možnosti!','rozkazovacia'],['Bodaj by si mal pravdu!','želacia'],
+    ['Pani učiteľka, vysvetlíte nám to ešte raz?','opytovacia'],['Starajte sa o svoje veci!','rozkazovacia']].map(function(r){
+      return {k:'mc',fixed:true,q:'Aká je to veta podľa obsahu?',s:r[0],a:r[1],o:VET4,e:r[1]==='želacia'?'Želacie vety vyjadrujú želanie (aby, keby, kiežby, nech, bodaj). Patria sem aj pozdravy.':''}; })
+   .concat([
+    ['Čo je obsah vety?','zámer, cieľ – čo chcel hovoriaci vetou povedať',['počet slov vo vete','melódia vety','meno hovoriaceho']],
+    ['Ktorými časticami sa najčastejšie začínajú želacie vety?','aby, keby, kiežby, nech, bodaj',['kto, čo, kde','a, ale, alebo','áno, nie, asi']],
+    ['Kam patria pozdravy, napríklad Dobrý deň!?','medzi želacie vety',['medzi opytovacie vety','medzi rozkazovacie vety','medzi oznamovacie vety']],
+    ['Môže byť zvolacia každá veta?','áno, každá veta môže byť zvolacia',['nie, len oznamovacia','nie, len opytovacia','nie, žiadna']],
+    ['Akou melódiou vyslovujeme želaciu vetu?','klesavou',['stúpavou','šepotom','bez melódie']]].map(mc)));
+  var TV=[['Urobme si konečne prestávku!','oznamovacia veta',false],['Majo, ukážeš mi svoje medaily?','klesavá melódia',false],['Čo ste si na dnes pripravili?','stúpavá melódia',false],
+    ['O päť minút si urobíme prestávku.','oznamovacia veta',true],['Starajte sa o svoje veci!','rozkazovacia veta',true],['Nech sa vám vo všetkom darí!','oznamovacia veta',false],
+    ['Kedy prídeš domov?','klesavá melódia',true],['Pôjdeš s nami do kina?','stúpavá melódia',true],['Kiežby už bola sobota!','želacia veta',true],['Zavolal ťa na návštevu?','klesavá melódia',false]];
+  addTo('s-otaz',TV.map(function(r){ return {k:'mc',fixed:true,q:'Je tvrdenie o vete správne?',s:r[0]+'  →  '+r[1],a:r[2]?'áno':'nie',o:['áno','nie']}; })
+   .concat([['Pani učiteľka, vysvetlíte nám to ešte raz? – aká je to otázka a melódia?','zatvorená (zisťovacia), stúpavá ↗',['otvorená (doplňovacia), klesavá ↘','rozkazovacia veta, klesavá ↘','zatvorená (zisťovacia), klesavá ↘']],
+     ['Na ktorú otázku odpovedáme dlhšie, celou vetou?','na doplňovaciu (otvorenú)',['na zisťovaciu (zatvorenú)','na žiadnu','na obe rovnako krátko']],
+     ['Čím sa začínajú doplňovacie otázky?','opytovacím zámenom (čo, kto, kedy, prečo…)',['slovesom','časticou kiežby','pozdravom']]].map(mc)));
+  addTo('s-prejav',[['Čo je debata?','rozhovor, v ktorom sa voľne vyjadrujú názory na nejaký problém',['organizovaná výmena názorov, ktorú vedie moderátor','list kamarátovi','pozvánka na oslavu']],
+   ['Čo je diskusia?','organizovaná výmena názorov',['voľný rozhovor bez pravidiel','oznam na nástenke','rozprávka']],
+   ['Kto vedie diskusiu?','moderátor (moderátorka)',['divák','autor knihy','kronikár']]].map(mc));
+})();
 T.concat(D).forEach(function(t){ t.items.forEach(function(it,i){ it.id=t.id+'#'+i; }); });
 
 if(typeof document==='undefined'){ module.exports={buildTest2:buildTest2,buildMathTest:buildMathTest,genAbc:genAbc,skCmp:skCmp,GEN:GEN,genRound:genRound,roman:roman,fmt:fmt,SUBJ:SUBJ,tagTokens:tagTokens,typedOk:typedOk,buildTest:buildTest,T:T,D:D,SD:SD,DET:DET,PAD:PAD,parseGaps:parseGaps,autoGap:autoGap,splitSentences:splitSentences,pickTokens:pickTokens,answerText:answerText,promptText:promptText,normItem:normItem,norm:norm,bare:bare,hlWord:hlWord,plain:plain,grade:grade}; return; }
@@ -2482,8 +2776,8 @@ function show(id){
 }
 function meta(t){ var b=best[t.id], f=freshCount(t); return (t.rev?'opakovanie zo 4. ročníka · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
 /* ---------- stav tém: preberáme teraz / už sme prebrali / dopredu (spoločné pre oba tablety) ---------- */
-var TERAZ=['s-splyv','s-znel','s-otaz','s-vety','s-pies',
-  'm-os','m-porov','m-rozv',
+var TERAZ=['s-pies','s-rozpr','s-litd','s-splyv','s-znel','s-otaz','s-vety',
+  'm-os','m-nerov0','m-porov2','m-porov','m-rozv',
   'a-pozdrav','a-clen','a-pokyn','a-plur','a-nepr','a-abc','a-cisla','a-u1','a-there',
   'g-mapa','g-pohyby','g-povrch','b-bezst','d-pram','d-rod'];
 function stavDef(t){ return TERAZ.indexOf(t.id)>-1?'teraz':t.later?'dopredu':'prebrate'; }
@@ -2908,6 +3202,44 @@ Object.assign(LEARN,{
  'a-abc':[
   ['Pozor na tieto písmená','Niektoré písmená sa po anglicky čítajú inak, ako by sme čakali.',['A – ej, E – í, I – aj','G – dží, J – džej','R – ár, W – dabl jú, Y – vaj']]]
 });
+Object.assign(LEARN,{
+ 's-pies':[
+  ['Pieseň','Pieseň je zhudobnená báseň, patrí k poézii. Text a melódia sú viazané rýmom, rytmom, veršami a strofami.',['rým – zvuková zhoda slabík na konci veršov','rytmus – striedanie prízvučných a neprízvučných slabík','verš – jeden riadok básne','strofa – skupina veršov oddelená od ďalšej medzerou','refrén – časť, ktorá sa opakuje']],
+  ['Ako vznikali a šírili sa','Piesne vznikali od dávnych čias a šírili sa tradovaním (ústnym podaním) z generácie na generáciu. Slovenské ľudové piesne zozbierali a zapísali v 18. a 19. storočí zberatelia.',['významný zberateľ: Ján Kollár','známy autor zľudovených piesní: Mikuláš Schneider-Trnavský']],
+  ['Podľa autorstva','',['ľudové – nemajú autora','zľudovené – majú autora, obsahom a melódiou sú podobné ľudovej piesni','autorské (umelé) – majú autora']],
+  ['Ľudové piesne podľa obsahu','',['ľúbostné – o láske (Povej, vetrík, povej)','uspávanky – uspať dieťa (Búvaj, že mi búvaj)','obradové – k sviatkom, jari, svadbe, krstu (Fašiangy, Turíce); patria sem koledy (Búvaj, dieťa krásne)','zbojnícke – o živote zbojníkov (Ej, musel to chlap byť)','regrútske a vojenské – odvádzanie do armády, život v kasárňach (Čie sú to kone, koníčky kone)','pracovné – trávnice (Ej, slniečko horúce), banícke (Vstávaj, Jano, hore), pastierske a valašské (Po valasky od zeme)']],
+  ['Druhy rýmu','Rým zapisujeme písmenami. Rovnaké písmeno = verše sa rýmujú.',['združený – aabb','striedavý – abab','obkročný – abba','prerývaný – abcb (rýmuje sa len 2. a 4. verš)','postupný – abcabc']],
+  ['Umelecké prostriedky','',['personifikácia – prenášanie vlastností živej bytosti na neživý jav: skala sa rozplakala','zdrobneniny – dievčatko, slniečko','prirovnania – čierny ako uhol']]],
+ 's-litd':[
+  ['Literárne formy (LF)','',['poézia – verše, viazaná umelecká reč','próza – vety a odseky, neviazaná reč']],
+  ['Literárne druhy (LD)','',['lyrika – vyjadruje pocity a nálady','epika – má dej, rozpráva príbeh','dráma – na hranie v divadle, filmové scenáre']],
+  ['Literárne žánre (LŽ)','Žáner je skupina diel s podobnými znakmi.',['epické: rozprávka, povesť','lyrické: báseň, pieseň','dramatické: bábkové divadlo, film']],
+  ['Téma a idea','',['téma – o čom dielo je, čo sa v ňom deje','idea – posolstvo autora, čo nám chcel povedať']],
+  ['Pojmy','',['literatúra – súhrn literárnych (slovesných) diel','kniha – slovesné dielo vydané tlačou','knižnica – zbierka kníh, ktoré sa zhromažďujú a požičiavajú','časopisy a noviny – pravidelne vychádzajúca tlač; denné noviny = denník','autor básne – básnik, autorka – poetka']]],
+ 's-rozpr':[
+  ['Rozprávka','Rozprávka je krátky epický žáner s jednoduchým dejom. Šírila sa ústnym podaním z pokolenia na pokolenie (tradovaním). Vyjadruje túžbu po dobre a spravodlivosti.',['zberatelia: Pavol Dobšinský (najznámejší), Ján Kollár, Božena Němcová (Češka)']],
+  ['Delenie','',['podľa autorstva: ľudové (autor neznámy), autorské (autor známy)','podľa obsahu: čarovné (ježibaby, strigy, čarovné predmety), zvieracie (zvieratá s ľudskými vlastnosťami), realistické (jednoduchí ľudia víťazia rozumom a vtipom)','podľa formy: prozaické, veršované, dramatizované (divadlo, film, rozhlas)']],
+  ['Znaky rozprávky','',['ustálený začiatok a koniec: Kde bolo, tam bolo… / Zazvonil zvonec a rozprávky je koniec.','fantastické postavy, predmety a javy: ježibaba, čarovný prútik','magické čísla: 3, 7, 9, 12','variácia a gradácia: opakovanie a stupňovanie deja','dobro víťazí nad zlom – najdôležitejší znak']]],
+ 's-zvuk':[
+  ['Zvuková stránka reči','',['melódia','sila hlasu','dôraz','prestávka','prízvuk']],
+  ['Dôraz','V pokojnej reči je dôraz na poslednom slove. Iné slovo vyslovíme s dôrazom, keď ho chceme zvýrazniť.',['Mama pečie KOLÁČE. (pokojná reč)','Mama PEČIE koláče. (pečie, nevarí)','MAMA pečie koláče. (mama, nie babka)']],
+  ['Prestávka','Prestávka je prerušenie prúdu reči. / kratšia, // dlhšia.',['prirodzená – potrebujeme sa nadýchnuť','výrazová – na hranici viet (. ? !), pri čiarke, pri priamej reči, po oslovení, v dlhých vetách','Peter, / čo robíš? //']],
+  ['Prízvuk','Prízvuk je výraznejšie vyslovenie slabiky. V slovenčine je hlavný prízvuk na prvej slabike. Slová so 4 a viac slabikami majú aj vedľajší prízvuk.',['ŠKO-la','MA-te-ma-ti-ka']]],
+ 'm-nerov0':[
+  ['Znaky','',['< menší','> väčší','≤ menší alebo rovný (menší nanajvýš rovný)','≥ väčší alebo rovný','∈ patrí, leží']],
+  ['Riešenie nerovnice','Prirodzené čísla začínajú nulou.',['x < 3 → x ∈ {0, 1, 2} (3 nevyhovuje)','x ≤ 3 → x ∈ {0, 1, 2, 3}','x > 3 → x ∈ {4, 5, 6, …}','x ≥ 78 → x ∈ {78, 79, 80, …}']],
+  ['Na číselnej osi','',['prázdny krúžok – číslo nevyhovuje (<, >)','plný krúžok – číslo vyhovuje (≤, ≥)','šípka vpravo – väčšie čísla, vľavo – menšie']],
+  ['Skúška','Dosadíme číslo: 2 < 3 ✓ platí, 3 < 3 ✗ neplatí.',[]]],
+ 'm-porov2':[
+  ['Porovnávanie','',['najprv porovnaj počet cifier: číslo s viac ciframi je väčšie (88 568 < 643 219)','ak je počet cifier rovnaký, porovnávaj zľava rád po ráde (5 674 < 5 795, lebo 6 < 7 v stovkách)']],
+  ['Pozor na slová','',['„nie je väčšie ako“ = menšie alebo rovné','„nie je menšie ako“ = väčšie alebo rovné','„sa nerovná“ = je iné']],
+  ['Usporiadanie','',['vzostupne – od najmenšieho: 30 186 < 31 068 < 80 613','zostupne – od najväčšieho: 678 901 > 607 958 > 520 991']]],
+ 'm-os':[
+  ['Číselná os','Číselná os je priamka, na ktorej zobrazujeme čísla. Začiatok je obraz čísla 0. Čím je číslo väčšie, tým je ďalej vpravo.',[]],
+  ['Koľko je jeden dielik','Keď poznáš dve čísla na osi: rozdiel čísel vydeľ počtom dielikov medzi nimi.',['medzi 11 a 20 sú 3 dieliky: 20 − 11 = 9, 9 : 3 = 3 → jeden dielik je 3','medzi 17 a 33 sú 4 dieliky: 33 − 17 = 16, 16 : 4 = 4']],
+  ['Predchodca a nasledovník','',['predchodca čísla 40 000 je 39 999','nasledovník čísla 40 000 je 40 001']],
+  ['Vzdialenosť','Vzdialenosť dvoch čísel na osi je ich rozdiel.',['7 a 10 → 10 − 7 = 3','56 a 63 → 7']]]
+});
 function isEn(s){ return /[A-Za-z]/.test(s)&&!/[áäčďéíĺľňóôŕšťúýžÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽ]/.test(s); }
 var enVoice=null;
 function findEn(){ try{ var vs=speechSynthesis.getVoices(); enVoice=vs.filter(function(v){return /^en[-_]GB/i.test(v.lang);})[0]||vs.filter(function(v){return /^en/i.test(v.lang);})[0]||null; }catch(e){ enVoice=null; } }
@@ -3197,6 +3529,7 @@ var RENDER={
 function choice(it,body,finish,opts,two,prompt,expl){
   body.appendChild(el('p','prompt',prompt));
   if(it.s) body.appendChild(sentenceNode(it.s,it.s.length>110?'sent read':null));
+  if(it.svg){ var sv=el('div'); sv.innerHTML=it.svg; body.appendChild(sv); }
   var grid=el('div','opts'+(two?' two':''));
   opts.forEach(function(o){
     var v=typeof o==='string'?o:o.v, b=el('button','opt'); b.type='button'; b._v=v;
