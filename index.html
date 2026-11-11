@@ -2759,6 +2759,60 @@ GEN.pisn=function(){ var r=rnd(1,3), a, b;
    ['Čo je diskusia?','organizovaná výmena názorov',['voľný rozhovor bez pravidiel','oznam na nástenke','rozprávka']],
    ['Kto vedie diskusiu?','moderátor (moderátorka)',['divák','autor knihy','kronikár']]].map(mc));
 })();
+/* ---------- angličtina – Project 1, Unit 2A Where are you from? ---------- */
+(function(){
+  delete topicById('a-u2').later;
+  var C=[['Britain','Británia'],['the USA','USA'],['France','Francúzsko'],['China','Čína'],['Germany','Nemecko'],['Japan','Japonsko'],
+         ['Australia','Austrália'],['Brazil','Brazília'],['Italy','Taliansko'],['Russia','Rusko'],['Greece','Grécko'],['Spain','Španielsko'],['Slovakia','Slovensko']];
+  var CITY=[['Tokyo','Japan'],['Rio de Janeiro','Brazil'],['Sydney','Australia'],['Milan','Italy'],['London','Britain'],['Paris','France'],['Moscow','Russia'],
+            ['New York','the USA'],['Beijing','China'],['Berlin','Germany'],['Madrid','Spain'],['Athens','Greece'],['Bratislava','Slovakia']];
+  var CN=C.map(function(c){ return c[0]; });
+  function others(list,x,n){ return shuffle(list.filter(function(y){ return y!==x; })).slice(0,n); }
+  var it=[];
+  C.forEach(function(c){
+    it.push({k:'mc',nosay:true,q:'Ako sa po anglicky povie táto krajina?',s:c[1],a:c[0],o:[c[0]].concat(others(CN,c[0],3))});
+    it.push({k:'typed',nosay:true,q:'Napíš krajinu po anglicky.',w:c[1],hint:'pozor na veľké začiatočné písmeno',a:c[0]==='the USA'?['the USA','USA','The USA']:[c[0]]});
+  });
+  CITY.forEach(function(c){ it.push({k:'mc',q:'Where is '+c[0]+'?',s:c[0]+' is in …',a:c[1],o:[c[1]].concat(others(CN,c[1],3))}); });
+  // poprehadzované písmená ako v učebnici
+  [['paanj','Japan'],['libzar','Brazil'],['aalsrutai','Australia'],['ilyat','Italy'],['natibir','Britain'],['racnef','France'],['ssaiur','Russia'],['nahci','China'],['nymarge','Germany'],['nisap','Spain'],['eecgre','Greece']]
+   .forEach(function(r){ it.push({k:'typed',q:'Písmená sú poprehadzované. Napíš krajinu správne.',w:r[0],hint:'krajina po anglicky',a:[r[1]]}); });
+  it=it.concat(matchItems(C.slice(0,12).map(function(c){ return [c[0],c[1]]; }),'Spoj krajinu s jej slovenským názvom.'));
+  it=it.concat([
+   ['Ako sa spýtaš „Odkiaľ si?“',"Where are you from?",["Where you are from?","Where is you from?","What are you from?"]],
+   ['Odpovedz: Where are you from?',"I'm from Slovakia.",["I'm Slovakia.","I from Slovakia.","I'm in Slovakia from."]],
+   ['Ako sa spýtaš „Odkiaľ je ona?“',"Where is she from?",["Where she is from?","Where are she from?","Where is from she?"]],
+   ['Ako sa spýtaš „Odkiaľ sú oni?“',"Where are they from?",["Where is they from?","Where they are from?","Who are they from?"]],
+   ['Odpovedz: Where is Max from?',"He's from the USA.",["She's from the USA.","He from the USA.","He's the USA."]],
+   ['Ako sa spýtaš „Koľko máš rokov?“',"How old are you?",["How old you are?","How many years are you?","How old is you?"]],
+   ['Odpovedz: How old are you?',"I'm eleven.",["I have eleven.","I'm eleven years.","I eleven."]],
+   ['Čo znamená „Internet friends“?','kamaráti z internetu',['kamaráti zo školy','susedia','rodina']]
+  ].map(mc));
+  T.push({id:'a-2a',sub:'aj',name:'2A Where are you from?',desc:'Krajiny, mestá, Where are you from? I\'m from…',n:12,items:it});
+
+  var be=[];
+  be=be.concat(enGaps(["This is Rosa. She {is/am/are} from Italy.","She {is/are/am} eleven.","I {am/is/are} from Spain.","My name {is/are/am} Manuel.",
+   "We {are/is/am} from Australia.","We {are/is/am} from Sydney.","This is Hans. He {is/are/am} eleven.","He {is/are/am} from Germany.",
+   "They {are/is/am} from Russia.","Max and Lauren {are/is/am} from the USA.","I {am/is/are} not Mel.","Lauren {isn't/aren't} twelve.",
+   "We {aren't/isn't} from Britain.","Max {isn't/aren't} twelve.","She{'s/'re/'m} thirteen.","They{'re/'s/'m} from the USA.","I{'m/'s/'re} from Slovakia."]));
+  [["I'm from France.","I'm not from France.",["I isn't from France.","I'm no from France.","I don't from France."]],
+   ["She's twelve.","She isn't twelve.",["She aren't twelve.","She not twelve.","She's twelve not."]],
+   ["They're from London.","They aren't from London.",["They isn't from London.","They not from London.","They're from London not."]],
+   ["He's my friend.","He isn't my friend.",["He aren't my friend.","He not my friend.","He's not friend my."]],
+   ["We're from Greece.","We aren't from Greece.",["We isn't from Greece.","We not from Greece.","We'm not from Greece."]],
+   ["I'm eleven.","I'm not eleven.",["I isn't eleven.","I aren't eleven.","I'm eleven not."]],
+   ["My name's Joe.","My name isn't Joe.",["My name aren't Joe.","My name not Joe.","My name's not is Joe."]],
+   ["Your friends are here.","Your friends aren't here.",["Your friends isn't here.","Your friends not here.","Your friends are here not."]]]
+   .forEach(function(r){ it2(r,r[2]); });
+  function it2(r,bad){ be.push({k:'mc',q:'Napíš vetu v zápore (Make the sentences negative).',s:r[0],a:r[1],o:[r[1]].concat(bad.slice(0,3))}); }
+  be=be.concat([
+   ['Ktorý skrátený tvar patrí k „I am not“?',"I'm not",["I amn't","I isn't","I aren't"]],
+   ['Ktorý skrátený tvar patrí k „is not“?',"isn't",["is'nt","aren't","not's"]],
+   ['Ktorý skrátený tvar patrí k „we are not“?',"we aren't",["we isn't","we'm not","we not are"]],
+   ['Doplň: Hello. My name\'s Peter. I\'m eleven and I\'m from Čadca in …','Slovakia',['Slovak','Slovakian','the Slovakia']]].map(mc));
+  addTo('a-be',be);
+  addTo('a-zam',enGaps(["This is my sister. {Her/His/She} name is Anna.","This is Tom. {His/Her/He} bag is blue.","We are from Italy. {Our/We/Us} house is big.","They are from Spain. {Their/They/There} dog is small."]));
+})();
 T.concat(D).forEach(function(t){ t.items.forEach(function(it,i){ it.id=t.id+'#'+i; }); });
 
 if(typeof document==='undefined'){ module.exports={buildTest2:buildTest2,buildMathTest:buildMathTest,genAbc:genAbc,skCmp:skCmp,GEN:GEN,genRound:genRound,roman:roman,fmt:fmt,SUBJ:SUBJ,tagTokens:tagTokens,typedOk:typedOk,buildTest:buildTest,T:T,D:D,SD:SD,DET:DET,PAD:PAD,parseGaps:parseGaps,autoGap:autoGap,splitSentences:splitSentences,pickTokens:pickTokens,answerText:answerText,promptText:promptText,normItem:normItem,norm:norm,bare:bare,hlWord:hlWord,plain:plain,grade:grade}; return; }
@@ -2794,7 +2848,7 @@ function meta(t){ var b=best[t.id], f=freshCount(t); return (t.rev?'opakovanie z
 /* ---------- stav tém: preberáme teraz / už sme prebrali / dopredu (spoločné pre oba tablety) ---------- */
 var TERAZ=['s-pies','s-rozpr','s-litd','s-splyv','s-znel','s-otaz','s-vety',
   'm-os','m-nerov0','m-porov2','m-porov','m-rozv',
-  'a-pozdrav','a-clen','a-pokyn','a-plur','a-nepr','a-abc','a-cisla','a-u1','a-there',
+  'a-2a','a-u2','a-be','a-zam',
   'g-mapa','g-pohyby','g-povrch','b-bezst','d-pram','d-rod'];
 function stavDef(t){ return TERAZ.indexOf(t.id)>-1?'teraz':t.later?'dopredu':'prebrate'; }
 var OVR=store.get('s5.stav',{}); if(!OVR||typeof OVR!=='object') OVR={};
@@ -3265,6 +3319,7 @@ function sayBtn(text,label){ var b=el('button','say',label||'🔊 Vypočuť'); b
 var canSay=('speechSynthesis' in window);
 function itemSub(it){ var t=topicById(tidOf(it)); return t?t.sub:''; }
 function enPrompt(it){
+  if(it.nosay) return '';
   if(it.k==='gaps'||/poprehadzov/i.test(it.q||'')) return '';
   var c=[]; if(it.s) c.push(plain(it.s)); var m=(it.q||'').match(/„([^“]+)“/); if(m) c.push(m[1]); if(it.k==='typed'&&it.w) c.push(it.w);
   for(var i=0;i<c.length;i++){ if(c[i]&&isEn(c[i])&&c[i].indexOf('___')<0) return c[i]; }
@@ -3869,6 +3924,6 @@ initShared();
 })();
 </script>
 
-<script>window.EDU_VER="5. 11. 2026 16:03";if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(function(){});});}</script>
+<script>window.EDU_VER="11. 11. 2026 19:49";if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).catch(function(){});});}</script>
 </body>
 </html>
