@@ -137,6 +137,7 @@ h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.15}
 .mchip.m2{background:rgba(224,168,0,.2);border-color:#E0A800}
 .mchip.m1{background:var(--bad-bg);border-color:var(--bad)}
 .mchip.m0{background:var(--surface);border-color:var(--rule);color:var(--ink-soft)}
+.ftree{width:100%;max-width:640px;height:auto;display:block;margin:6px 0 4px;color:var(--ink)}
 .nline{width:100%;max-width:560px;height:auto;display:block;margin:6px 0 4px;color:var(--ink)}
 .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:12px;margin-top:14px}
 .mode{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px 18px;border:2px solid var(--rule);border-radius:20px;background:var(--surface);text-align:left;box-shadow:var(--shadow);color:var(--ink)}
@@ -2797,6 +2798,170 @@ GEN.pisn=function(){ var r=rnd(1,3), a, b;
   addTo('a-be',be);
   addTo('a-zam',enGaps(["This is my sister. {Her/His/She} name is Anna.","This is Tom. {His/Her/He} bag is blue.","We are from Italy. {Our/We/Us} house is big.","They are from Spain. {Their/They/There} dog is small."]));
 })();
+/* ---------- učivo 25. 11. 2026 ---------- */
+(function(){
+  function add(id,sub,name,desc,rows){ var t={id:id,sub:sub,name:name,desc:desc,n:10,items:rows.map(function(r){ return r.k?r:mc(r); })}; T.push(t); return t; }
+  // ===== SJ: príslovia, porekadlá, pranostiky, prirovnania
+  var P4=['príslovie','porekadlo','pranostika','prirovnanie'];
+  var KL=[['Kto druhému jamu kope, sám do nej padne.','príslovie'],['Bez práce nie sú koláče.','príslovie'],['Ráno je múdrejšie ako večer.','príslovie'],
+   ['Lepší vrabec v hrsti ako holub na streche.','príslovie'],['Aký otec, taký syn.','príslovie'],['Darovanému koňovi na zuby nehľaď.','príslovie'],
+   ['Kto skoro ráno vstáva, tomu Pán Boh pomáha.','príslovie'],['Jablko nepadá ďaleko od stromu.','príslovie'],
+   ['mať maslo na hlave','porekadlo'],['robiť z komára somára','porekadlo'],['chodiť okolo horúcej kaše','porekadlo'],['hádzať hrach na stenu','porekadlo'],
+   ['kúpiť mačku vo vreci','porekadlo'],['pchať nos do cudzích vecí','porekadlo'],['dostať sa z blata do kaluže','porekadlo'],
+   ['Medardova kvapka štyridsať dní kvapká.','pranostika'],['Svätý Martin prichádza na bielom koni.','pranostika'],['Na Katarínu po blate, na Vianoce po ľade.','pranostika'],
+   ['Lucia noci upíja, ale dňa nepridá.','pranostika'],
+   ['pracovitý ako včielka','prirovnanie'],['hladný ako vlk','prirovnanie'],['zdravý ako buk','prirovnanie'],['biely ako sneh','prirovnanie'],
+   ['pomalý ako slimák','prirovnanie'],['mlčí ako ryba','prirovnanie'],['silný ako medveď','prirovnanie'],['tichý ako myška','prirovnanie']];
+  var it=KL.map(function(r){ return {k:'mc',fixed:true,q:'Čo je to?',s:r[0],a:r[1],o:P4}; });
+  it=it.concat([
+   ['Čo je príslovie?','krátka ľudová múdrosť v celej vete, ktorá obsahuje ponaučenie',['ľudová predpoveď počasia','porovnanie dvoch vecí pomocou slova ako','dlhý príbeh o zvieratách']],
+   ['Čo je porekadlo?','ustálené obrazné spojenie s preneseným významom, bez ponaučenia',['ľudová predpoveď počasia','rozprávka','báseň o prírode']],
+   ['Čo je pranostika?','ľudová predpoveď počasia, často viazaná na určitý deň alebo mesiac',['ponaučenie v celej vete','porovnanie pomocou slova ako','vtip']],
+   ['Čo je prirovnanie?','porovnanie vlastností dvoch vecí, najčastejšie pomocou slova ako',['ľudová predpoveď počasia','ponaučenie v celej vete','hádanka']],
+   ['Ktoré slovo je typické pre prirovnanie?','ako',['ale','lebo','keď']],
+   ['Odkiaľ pochádzajú príslovia, porekadlá a pranostiky?','vytvoril ich ľud a šírili sa ústnym podaním',['napísal ich jeden známy spisovateľ','vymysleli ich v škole','sú z internetu']],
+   ['Čo znamená „mať maslo na hlave“?','mať niečo zlé na svedomí',['mať špinavé vlasy','byť hladný','byť veselý']],
+   ['Čo znamená „robiť z komára somára“?','zveličovať, robiť z maličkosti veľkú vec',['chovať zvieratá','byť lenivý','klamať o zvieratách']],
+   ['Čo znamená „chodiť okolo horúcej kaše“?','vyhýbať sa tomu podstatnému, nepovedať priamo',['variť obed','byť hladný','ponáhľať sa']],
+   ['Čo znamená „hádzať hrach na stenu“?','hovoriť zbytočne, nikto nepočúva',['sadiť hrach','upratovať','hrať sa s loptou']],
+   ['Čo znamená „kúpiť mačku vo vreci“?','kúpiť niečo bez toho, aby sme to videli',['kúpiť si mačku','dostať darček','byť šetrný']],
+   ['Čo znamená „Bez práce nie sú koláče“?','kto chce niečo dosiahnuť, musí pracovať',['koláče sa nepečú v práci','v práci sa neje','pečenie je ťažké']],
+   ['Čo znamená „Kto druhému jamu kope, sám do nej padne“?','kto chce ublížiť druhým, nakoniec ublíži sebe',['kopať jamy je nebezpečné','treba pomáhať pri kopaní','v záhrade sú jamy']],
+   ['Čo znamená „Lepší vrabec v hrsti ako holub na streche“?','lepšie je mať istú malú vec ako čakať na neistú veľkú',['vrabce sú lepšie ako holuby','holuby žijú na strechách','vtáky treba chytať']],
+   ['Čo znamená „Jablko nepadá ďaleko od stromu“?','deti sa podobajú na rodičov',['jablká padajú pod strom','stromy sú nízke','treba zbierať ovocie']],
+   ['Kedy je Medard, o ktorom hovorí pranostika?','8. júna',['8. januára','25. decembra','1. mája']],
+   ['Čo predpovedá pranostika „Svätý Martin prichádza na bielom koni“?','okolo 11. novembra môže napadnúť prvý sneh',['v novembri bude teplo','koníky budú biele','na Martina bude pršať']],
+   ['O ktorom dni je pranostika „Na Katarínu po blate, na Vianoce po ľade“?','25. november',['24. december','1. január','8. jún']],
+   ['Čo hovorí pranostika „Lucia noci upíja, ale dňa nepridá“?','okolo Lucie (13. decembra) sú noci dlhé a dni krátke',['Lucia rada pije','v decembri sú dni dlhé','v lete je krátka noc']],
+   ['Doplň prirovnanie: biely ako …','sneh',['uhoľ','tráva','krv']],['Doplň prirovnanie: hladný ako …','vlk',['myška','ryba','slimák']],
+   ['Doplň prirovnanie: pomalý ako …','slimák',['zajac','vietor','blesk']],['Doplň prirovnanie: pracovitý ako …','včielka',['lenivec','kameň','oblak']],
+   ['Doplň prirovnanie: mlčí ako …','ryba',['papagáj','rádio','vrabec']],['Doplň prirovnanie: zdravý ako …','buk',['chrípka','papier','sklo']],
+   ['Doplň príslovie: Bez práce nie sú …','koláče',['peniaze','prázdniny','kamaráti']],['Doplň príslovie: Aký otec, taký …','syn',['dom','pes','stôl']],
+   ['Doplň pranostiku: Medardova kvapka … dní kvapká.','štyridsať',['sedem','tri','sto']]].map(mc));
+  it=it.concat(matchItems([['mať maslo na hlave','mať niečo na svedomí'],['robiť z komára somára','zveličovať'],['hádzať hrach na stenu','hovoriť zbytočne'],['kúpiť mačku vo vreci','kúpiť bez pozretia']],'Spoj porekadlo s jeho významom.'));
+  add('s-prisl','sj','Príslovia, porekadlá, pranostiky, prirovnania','Ľudová múdrosť, predpoveď počasia, prirovnania s „ako“.',it);
+
+  // ===== BIO: lesné vtáky a cicavce, potrava
+  var POT=['bylinožravec','mäsožravec','všežravec'];
+  var PZ=[['srnec hôrny','bylinožravec'],['jeleň lesný','bylinožravec'],['zajac poľný','bylinožravec'],['veverica stromová','bylinožravec'],
+   ['vlk dravý','mäsožravec'],['rys ostrovid','mäsožravec'],['líška hrdzavá','mäsožravec'],['jastrab veľký','mäsožravec'],['sova lesná','mäsožravec'],
+   ['diviak lesný','všežravec'],['medveď hnedý','všežravec'],['ježko východoeurópsky','hmyzožravec']];
+  var b=PZ.map(function(r){ return {k:'mc',fixed:true,q:'Čím sa živí tento živočích?',s:r[0],a:r[1],o:r[1]==='hmyzožravec'?['hmyzožravec','bylinožravec','všežravec']:POT,
+    e:r[1]==='hmyzožravec'?'Ježko sa živí najmä hmyzom, dážďovkami a slimákmi – je hmyzožravec.':r[0]==='líška hrdzavá'?'Líška loví hlavne hlodavce, ale zje aj ovocie – v škole ju zaraďujeme medzi mäsožravé šelmy.':''}; });
+  b=b.concat([
+   ['Kto je bylinožravec?','živočích, ktorý sa živí rastlinami',['živočích, ktorý loví iné živočíchy','živočích, ktorý je všetko','živočích, ktorý sa živí hmyzom']],
+   ['Kto je mäsožravec?','živočích, ktorý sa živí inými živočíchmi',['živočích, ktorý sa živí trávou','živočích, ktorý neje nič','živočích, ktorý je iba ovocie']],
+   ['Kto je všežravec?','živočích, ktorý sa živí rastlinami aj živočíchmi',['živočích, ktorý je iba mäso','živočích, ktorý je iba trávu','živočích, ktorý neje v zime']],
+   ['Aké zuby majú mäsožravce (šelmy)?','ostré a veľké špicáky na trhanie koristi',['iba ploché stoličky na trávu','žiadne zuby','zobák']],
+   ['Aké zuby majú bylinožravce?','široké stoličky na rozomieľanie rastlín',['veľké ostré špicáky','zobák','jedovaté zuby']],
+   ['Ako sa volajú mäsožravé cicavce, ktoré lovia korisť (vlk, rys, líška)?','šelmy',['párnokopytníky','hlodavce','plazy']],
+   ['Ako voláme samca, samicu a mláďa jeleňa?','jeleň, jelenica, jelenča',['srnec, srna, srnča','kanec, diviačica, prasiatko','vlk, vlčica, vĺča']],
+   ['Ako voláme samca, samicu a mláďa srnca?','srnec, srna, srnča',['jeleň, jelenica, jelenča','kanec, sviňa, ciciak','baran, ovca, jahňa']],
+   ['Ako voláme samca, samicu a mláďa diviaka?','diviak (kanec), diviačica, prasiatko',['jeleň, jelenica, jelenča','srnec, srna, srnča','vlk, vlčica, vĺča']],
+   ['Čo majú na hlave samce jeleňa a srnca a každý rok im odpadnú?','parohy',['rohy, ktoré nikdy neodpadnú','ulitu','perie']],
+   ['Ktorý cicavec lieta?','netopier',['veverica','jež','krt']],
+   ['Ktorý lesný cicavec cez zimu spí zimným spánkom?','jež a medveď',['srnec','vlk','zajac']],
+   ['Ako sa volá hniezdo veverice?','hajno',['brloh','nora','úľ']],
+   ['Kde prespáva zimu medveď?','v brlohu',['v hajne','v hniezde na strome','vo vode']],
+   ['Ktorý vták buší zobákom do kôry a vyťahuje hmyz?','ďateľ',['sova','kukučka','sojka']],
+   ['Ktorý vták kladie vajíčka do hniezd iných vtákov?','kukučka',['ďateľ','drozd','sýkorka']],
+   ['Ktorý vták loví v noci a vidí v tme?','sova',['ďateľ','sýkorka','kukučka']],
+   ['Prečo je ďateľ „lekárom lesa“?','vyberá zo stromov hmyz, ktorý im škodí',['lieči zvieratá','sadí stromy','stavia hniezda pre iných']],
+   ['Ktorý vták je spevavec?','drozd čierny',['jastrab','sova','bažant']],
+   ['Ktorý vták je dravec?','jastrab',['sýkorka','drozd','ďateľ']],
+   ['Čo majú dravce na lov koristi?','ostré pazúry a zahnutý zobák',['plávacie blany','ploché zuby','dlhé uši']],
+   ['Ktorý vták u nás na zimu odlieta?','kukučka',['sýkorka','ďateľ','sojka']],
+   ['Ktorá sojka je známa tým, že na zimu skrýva žalude?','sojka obyčajná',['sova lesná','drozd čierny','kukučka jarabá']],
+   ['Kam patria vtáky a cicavce?','medzi stavovce',['medzi bezstavovce','medzi hmyz','medzi rastliny']],
+   ['Čím sa líšia cicavce od ostatných živočíchov?','mláďatá sajú materské mlieko',['majú perie','kladú vajíčka do vody','majú šupiny']],
+   ['Čím je pokryté telo vtákov?','perím',['srsťou','šupinami','holou kožou']],
+   ['Ako sa rozmnožujú vtáky?','kladú vajíčka a zahrievajú ich v hniezde',['rodia živé mláďatá, ktoré sajú mlieko','delia sa','výtrusmi']]].map(mc));
+  b=b.concat(matchItems([['vlk','mäsožravec'],['srnec','bylinožravec'],['diviak','všežravec'],['ježko','hmyzožravec']],'Spoj živočícha s tým, čím sa živí.'));
+  add('b-cicav','bio','Lesné vtáky a cicavce','Mäsožravce, bylinožravce, všežravce, šelmy, ďateľ, sova, kukučka.',b);
+
+  // ===== AJ: rodinný strom
+  var FAM={George:{s:'m'},Rose:{s:'f'},Peter:{s:'m'},Anna:{s:'f'},Lucy:{s:'f'},Tom:{s:'m'},Tim:{s:'m'},Kate:{s:'f'},Sam:{s:'m'},Emma:{s:'f'}};
+  var REL={
+   Tim:{Peter:'father',Anna:'mother',Kate:'sister',George:'grandfather',Rose:'grandmother',Lucy:'aunt',Tom:'uncle',Sam:'cousin',Emma:'cousin'},
+   Kate:{Peter:'father',Anna:'mother',Tim:'brother',George:'grandfather',Rose:'grandmother',Lucy:'aunt',Tom:'uncle',Sam:'cousin',Emma:'cousin'},
+   Sam:{Tom:'father',Lucy:'mother',Emma:'sister',George:'grandfather',Rose:'grandmother',Anna:'aunt',Peter:'uncle',Tim:'cousin',Kate:'cousin'},
+   Emma:{Tom:'father',Lucy:'mother',Sam:'brother',George:'grandfather',Rose:'grandmother',Anna:'aunt',Peter:'uncle',Tim:'cousin',Kate:'cousin'},
+   Rose:{Peter:'son',Lucy:'daughter'},George:{Peter:'son',Lucy:'daughter'},
+   Peter:{Lucy:'sister',Tim:'son',Kate:'daughter',George:'father',Rose:'mother'},Lucy:{Peter:'brother',Sam:'son',Emma:'daughter',George:'father',Rose:'mother'}};
+  var SK={father:'otec',mother:'mama',sister:'sestra',brother:'brat',grandfather:'starý otec',grandmother:'stará mama',aunt:'teta',uncle:'ujo, strýko',cousin:'bratranec / sesternica',son:'syn',daughter:'dcéra'};
+  var SVG='<svg class="ftree" viewBox="0 0 640 290" role="img" aria-label="Rodinný strom: George a Rose majú deti Petra a Lucy. Peter a Anna majú Tima a Kate. Lucy a Tom majú Sama a Emmu.">'+
+   '<g stroke="currentColor" stroke-width="2" fill="none"><path d="M305 52 H335 M320 52 V88 H180 V120 M320 88 H460 V120"/><path d="M105 140 H135 M505 140 H535"/>'+
+   '<path d="M120 140 V182 H80 V205 M120 182 H180 V205"/><path d="M520 140 V182 H460 V205 M520 182 H580 V205"/></g>';
+  function box(x,y,n,s,lab){ var c=s==='m'?'#3B7DD8':'#E0457B'; return '<g><rect x="'+(x-45)+'" y="'+(y-20)+'" width="90" height="40" rx="12" fill="var(--surface,#fff)" stroke="'+c+'" stroke-width="3"/><text x="'+x+'" y="'+(y+6)+'" text-anchor="middle" font-size="17" font-weight="700" fill="currentColor">'+n+'</text>'+(lab?'<text x="'+x+'" y="'+(y+38)+'" text-anchor="middle" font-size="12" fill="currentColor">'+lab+'</text>':'')+'</g>'; }
+  SVG+=box(260,52,'George','m')+box(380,52,'Rose','f')+box(180,140,'Peter','m')+box(60,140,'Anna','f')+box(460,140,'Lucy','f')+box(580,140,'Tom','m')
+     +box(80,225,'Tim','m')+box(180,225,'Kate','f')+box(460,225,'Sam','m')+box(580,225,'Emma','f')
+     +'<text x="320" y="282" text-anchor="middle" font-size="12" fill="currentColor">modrá = muž/chlapec · ružová = žena/dievča · vodorovná čiara = manželia</text></svg>';
+  var WORDS=['father','mother','sister','brother','grandfather','grandmother','aunt','uncle','cousin','son','daughter'];
+  var f=[];
+  Object.keys(REL).forEach(function(x){ Object.keys(REL[x]).forEach(function(y){ var r=REL[x][y];
+    var wrong=shuffle(WORDS.filter(function(w){ return w!==r&&!(r==='cousin'&&false); })).slice(0,3);
+    var q1={k:'mc',q:'Look at the family tree. Complete the sentence.',s:y+' is '+x+"'s ___.",a:r,o:[r].concat(wrong),e:y+' je pre '+x+'a: '+SK[r]+'.'}; q1.svg=SVG; f.push(q1);
+    var cand=Object.keys(REL[x]).filter(function(z){ return REL[x][z]===r; });
+    if(cand.length===1){ var others=shuffle(Object.keys(FAM).filter(function(z){ return z!==y&&z!==x; })).slice(0,3);
+      var q2={k:'mc',q:'Look at the family tree. Answer the question.',s:'Who is '+x+"'s "+r+'?',a:y,o:[y].concat(others),e:y+' je pre '+x+'a: '+SK[r]+'.'}; q2.svg=SVG; f.push(q2); }
+  }); });
+  f=f.concat([
+   ['Čo znamená „aunt“?','teta',['ujo','sesternica','stará mama']],['Čo znamená „uncle“?','ujo, strýko',['teta','bratranec','starý otec']],
+   ['Čo znamená „cousin“?','bratranec alebo sesternica',['brat','synovec','sused']],['Čo znamená „grandparents“?','starí rodičia',['rodičia','vnúčatá','súrodenci']],
+   ['Čo znamená „grandchildren“?','vnúčatá',['starí rodičia','bratranci','deti']],['Čo znamená „family tree“?','rodokmeň (rodinný strom)',['strom v záhrade','rodinná fotka','les']],
+   ['Kto je tvoja aunt?','sestra tvojej mamy alebo tvojho otca',['dcéra tvojej sestry','tvoja stará mama','tvoja sesternica']],
+   ['Kto je tvoj uncle?','brat tvojej mamy alebo tvojho otca',['tvoj starý otec','syn tvojho brata','tvoj bratranec']],
+   ['Kto je tvoj cousin?','dieťa tvojej tety alebo tvojho uja',['tvoj brat','brat tvojej mamy','tvoj starý otec']],
+   ['Ktoré slovo platí pre chlapca aj dievča?','cousin',['aunt','uncle','sister']],
+   ["Čo znamená „Tim's sister“?",'Timova sestra',['Tim je sestra','sestra je Tim','sestry Tima a Kate']],
+   ["Ako po anglicky povieš „mamina sestra“?","my mum's sister",["my sister's mum","mum sister","my mum sister's"]]].map(mc));
+  f=f.concat(enGaps(["Kate is Tim{'s/s'/s} sister.","This is {my/me/I} grandmother.","Peter is {his/her/its} father. (Tim)","Lucy is {her/his/their} mother. (Emma)",
+   "Sam and Emma are {their/they/there} children.","George and Rose are {our/we/us} grandparents."]));
+  var gz=[
+   ['Kto sa v roku 1492 doplavil do Ameriky?','Krištof Kolumbus',['Vasco da Gama','Ferdinand Magellan','Marco Polo'],'Kolumbus hľadal cestu do Indie na západ cez oceán a doplavil sa k ostrovom pri Amerike. Myslel si, že je v Indii – preto Indiáni.'],
+   ['V ktorom roku sa Kolumbus doplavil do Ameriky?','1492',['1969','1911','1000']],
+   ['Kam chcel Kolumbus doplávať, keď objavil Ameriku?','do Indie',['do Ameriky','do Afriky','na severný pól']],
+   ['Kto sa do Ameriky dostal už okolo roku 1000, skôr ako Kolumbus?','Vikingovia (Leif Eriksson)',['Rimania','Egypťania','Slovania']],
+   ['Podľa koho dostala Amerika meno?','Amerigo Vespucci',['Krištof Kolumbus','Ferdinand Magellan','James Cook'],'Amerigo Vespucci ako prvý tvrdil, že ide o nový svetadiel, nie o Indiu.'],
+   ['Kto našiel námornú cestu do Indie okolo Afriky?','Vasco da Gama',['Krištof Kolumbus','Marco Polo','Roald Amundsen']],
+   ['Ktorá výprava sa ako prvá plavila okolo celej Zeme?','výprava Ferdinanda Magellana',['výprava Krištofa Kolumbusa','výprava Vasca da Gamu','výprava Apollo 11'],'Magellan na ceste zahynul, plavbu dokončil Juan Sebastián Elcano (1519 – 1522). Dokázalo sa, že Zem je guľatá.'],
+   ['Čo dokázala Magellanova plavba okolo sveta?','že Zem je guľatá',['že Zem je plochá','že Amerika je India','že Mesiac je blízko']],
+   ['Ktorý cestovateľ putoval do Číny a opísal ju Európanom?','Marco Polo',['Krištof Kolumbus','Neil Armstrong','Edmund Hillary']],
+   ['Kto ako prvý dosiahol južný pól?','Roald Amundsen',['Robert Scott','Robert Peary','Neil Armstrong'],'Nór Roald Amundsen bol na južnom póle 14. 12. 1911, Angličan Robert Scott o mesiac neskôr a na spiatočnej ceste zahynul.'],
+   ['Kto sa považuje za prvého človeka na severnom póle?','Robert Peary',['Roald Amundsen','Krištof Kolumbus','Jurij Gagarin'],'Američan Robert Peary ohlásil, že severný pól dosiahol v roku 1909. Niektorí vedci o tom dnes pochybujú.'],
+   ['Kto sa ako prvý ponoril na dno Mariánskej priekopy?','Jacques Piccard a Don Walsh',['Neil Armstrong a Buzz Aldrin','Roald Amundsen','Edmund Hillary a Tenzing Norgay'],'V roku 1960 sa ponorili v batyskafe Trieste. V roku 2012 tam sám zostúpil režisér James Cameron.'],
+   ['V čom sa ponorili na dno Mariánskej priekopy v roku 1960?','v batyskafe Trieste',['v raketovej lodi','v ponorke Titanic','v potápačskom obleku']],
+   ['Kde leží Mariánska priekopa?','v Tichom oceáne',['v Atlantickom oceáne','v Indickom oceáne','v Severnom ľadovom oceáne']],
+   ['Aká hlboká je Mariánska priekopa?','takmer 11 km',['asi 1 km','asi 100 m','asi 50 km'],'Je to najhlbšie miesto na Zemi.'],
+   ['Kto ako prvý vystúpil na Mount Everest?','Edmund Hillary a Tenzing Norgay',['Neil Armstrong','Roald Amundsen','Jacques Piccard'],'Stalo sa to v roku 1953.'],
+   ['Ktorý je najvyšší vrch sveta?','Mount Everest',['Gerlachovský štít','Mont Blanc','Kilimandžáro']],
+   ['Kto bol prvý človek vo vesmíre?','Jurij Gagarin',['Neil Armstrong','Ivan Bella','Buzz Aldrin'],'Jurij Gagarin obletel Zem 12. apríla 1961 v lodi Vostok 1.'],
+   ['Kto ako prvý vystúpil na Mesiac?','Neil Armstrong',['Jurij Gagarin','Buzz Aldrin','Michael Collins'],'20. júla 1969, misia Apollo 11. Druhý na Mesiac vystúpil Buzz Aldrin, Michael Collins čakal na obežnej dráhe.'],
+   ['V ktorom roku pristál človek na Mesiaci?','1969',['1492','1961','2000']],
+   ['Ako sa volala misia, ktorá priviezla ľudí na Mesiac?','Apollo 11',['Vostok 1','Titanic','Trieste']],
+   ['Kto bol druhý človek na Mesiaci?','Buzz Aldrin',['Neil Armstrong','Jurij Gagarin','Michael Collins']],
+   ['Kto bola prvá žena vo vesmíre?','Valentina Tereškovová',['Marie Curie','Amelia Earhart','Sally Ride'],'Letela v roku 1963.'],
+   ['Kto bol prvý Slovák vo vesmíre?','Ivan Bella',['Jurij Gagarin','Milan Rastislav Štefánik','Móric Beňovský'],'Ivan Bella letel v roku 1999 na vesmírnu stanicu Mir.'],
+   ['Ktorý slovenský cestovateľ sa preslávil na ostrove Madagaskar?','Móric Beňovský',['Ivan Bella','Krištof Kolumbus','Marco Polo']],
+   ['Ktorý svetadiel bol objavený ako posledný?','Antarktída',['Amerika','Austrália','Afrika']],
+   ['Prečo sa výpravy v 15. a 16. storočí nazývajú „zámorské objavy“?','moreplavci sa plavili cez more (oceán) a objavovali nové krajiny',['ľudia sa vtedy prvýkrát dostali do vesmíru','objavovali sa nové zámky','cestovalo sa po púšti']]].map(mc);
+  gz=gz.concat(matchItems([['Krištof Kolumbus','Amerika 1492'],['Roald Amundsen','južný pól 1911'],['Neil Armstrong','Mesiac 1969'],['Jacques Piccard a Don Walsh','Mariánska priekopa 1960']],'Spoj objaviteľa s jeho objavom.'));
+  gz=gz.concat(matchItems([['Jurij Gagarin','prvý človek vo vesmíre'],['Edmund Hillary','Mount Everest'],['Ferdinand Magellan','plavba okolo sveta'],['Vasco da Gama','cesta do Indie']],'Spoj objaviteľa s jeho objavom.'));
+  add('g-objav','geo','Objavovanie Zeme','Kolumbus, Magellan, póly, Mariánska priekopa, Mount Everest, Mesiac.',gz);
+  add('a-rod','aj','Rodinný strom (family tree)','Aunt, uncle, cousin, grandparents – kto je kto v rodine.',f);
+
+  // ===== MAT: rímske číslice – viac typov úloh
+  var mr=topicById('m-rim'), g0=mr.gen;
+  mr.gen=function(){ var r=rnd(1,10);
+    if(r<=5) return g0();
+    if(r===6){ var n=rnd(1,49), w=[roman(n)], bad=shuffle(['IIII','VV','XXXX','IL','IC','VX','LL','IIX','XXXXX','VIIII']).slice(0,3); return {k:'mc',q:'Ktorý zápis rímskymi číslicami je SPRÁVNY?',a:w[0],o:[w[0]].concat(bad),e:'Rovnaká číslica môže byť za sebou najviac 3-krát. Odčítať sa dá len I (pred V, X), X (pred L, C) a C (pred D, M). V, L, D sa neopakujú.'}; }
+    if(r===7){ var y=rnd(1990,2030); return numQ('Ktorý rok je zapísaný rímskymi číslicami?',roman(y),y); }
+    if(r===8){ var a=rnd(1,39), c=rnd(1,39); return numQ('Vypočítaj a výsledok zapíš arabskými číslicami.',roman(a)+' + '+roman(c),a+c); }
+    if(r===9){ var x=rnd(1,99), z=rnd(1,99); if(x===z) z++; var k={k:'mc',fixed:true,q:'Ktoré číslo je väčšie?',a:roman(Math.max(x,z)),o:[roman(x),roman(z)]}; return k; }
+    var L=[['I',1],['V',5],['X',10],['L',50],['C',100],['D',500],['M',1000]], p=pick(L);
+    return {k:'mc',q:'Akú hodnotu má rímska číslica?',s:p[0],a:String(p[1]),o:shuffle(L.filter(function(q){ return q!==p; })).slice(0,3).map(function(q){ return String(q[1]); }).concat([String(p[1])])}; };
+  mr.desc='Čítanie a zápis, roky, chybné zápisy, porovnávanie.';
+})();
 T.concat(D).forEach(function(t){ t.items.forEach(function(it,i){ it.id=t.id+'#'+i; }); });
 
 if(typeof document==='undefined'){ module.exports={buildTest2:buildTest2,buildMathTest:buildMathTest,genAbc:genAbc,skCmp:skCmp,GEN:GEN,genRound:genRound,roman:roman,fmt:fmt,SUBJ:SUBJ,tagTokens:tagTokens,typedOk:typedOk,buildTest:buildTest,T:T,D:D,SD:SD,DET:DET,PAD:PAD,parseGaps:parseGaps,autoGap:autoGap,splitSentences:splitSentences,pickTokens:pickTokens,answerText:answerText,promptText:promptText,normItem:normItem,norm:norm,bare:bare,hlWord:hlWord,plain:plain,grade:grade}; return; }
@@ -2830,10 +2995,10 @@ function show(id){
 }
 function meta(t){ var b=best[t.id], f=freshCount(t); return (t.rev?'opakovanie zo 4. ročníka · ':'')+(t.gen?'stále nové príklady':(f===t.items.length?t.items.length+' úloh':f?f+' nových z '+t.items.length:'všetkých '+t.items.length+' prejdených'))+(b?' · najlepšie '+b.p+' %':''); }
 /* ---------- stav tém: preberáme teraz / už sme prebrali / dopredu (spoločné pre oba tablety) ---------- */
-var TERAZ=['s-pies','s-rozpr','s-litd','s-splyv','s-znel','s-otaz','s-vety',
-  'm-os','m-nerov0','m-porov2','m-porov','m-rozv',
-  'a-2a','a-u2','a-be','a-zam',
-  'g-mapa','g-pohyby','g-povrch','b-bezst','d-pram','d-rod'];
+var TERAZ=['s-prisl','s-znel','s-rozpr','s-pies',
+  'm-rim','m-os','m-porov2',
+  'a-rod','a-zam','a-u2','a-2a',
+  'g-objav','g-mapa','g-pohyby','g-povrch','b-cicav','b-vtaky','b-zivoc','d-pram','d-rod'];
 function stavDef(t){ return TERAZ.indexOf(t.id)>-1?'teraz':t.later?'dopredu':'prebrate'; }
 var OVR=store.get('s5.stav',{}); if(!OVR||typeof OVR!=='object') OVR={};
 var editing=false;
@@ -3293,6 +3458,27 @@ Object.assign(LEARN,{
   ['Koľko je jeden dielik','Keď poznáš dve čísla na osi: rozdiel čísel vydeľ počtom dielikov medzi nimi.',['medzi 11 a 20 sú 3 dieliky: 20 − 11 = 9, 9 : 3 = 3 → jeden dielik je 3','medzi 17 a 33 sú 4 dieliky: 33 − 17 = 16, 16 : 4 = 4']],
   ['Predchodca a nasledovník','',['predchodca čísla 40 000 je 39 999','nasledovník čísla 40 000 je 40 001']],
   ['Vzdialenosť','Vzdialenosť dvoch čísel na osi je ich rozdiel.',['7 a 10 → 10 − 7 = 3','56 a 63 → 7']]]
+});
+Object.assign(LEARN,{
+ 's-prisl':[
+  ['Príslovie','Krátka ľudová múdrosť v celej vete. Obsahuje ponaučenie, často má rým.',['Bez práce nie sú koláče.','Kto druhému jamu kope, sám do nej padne.','Lepší vrabec v hrsti ako holub na streche.']],
+  ['Porekadlo','Ustálené obrazné spojenie s preneseným významom. Nemá ponaučenie, je to časť vety.',['mať maslo na hlave – mať niečo na svedomí','robiť z komára somára – zveličovať','hádzať hrach na stenu – hovoriť zbytočne']],
+  ['Pranostika','Ľudová predpoveď počasia, často viazaná na meno svätca alebo mesiac.',['Medardova kvapka štyridsať dní kvapká. (8. 6.)','Svätý Martin prichádza na bielom koni. (11. 11.)','Na Katarínu po blate, na Vianoce po ľade. (25. 11.)','Lucia noci upíja, ale dňa nepridá. (13. 12.)']],
+  ['Prirovnanie','Porovnáva vlastnosti dvoch vecí, najčastejšie pomocou slova ako.',['biely ako sneh','hladný ako vlk','pracovitý ako včielka','pomalý ako slimák']],
+  ['Ako ich rozlíšiť','',['je to celá veta s ponaučením → príslovie','je to o počasí → pranostika','je tam „ako“ a porovnanie → prirovnanie','je to obrazné spojenie bez ponaučenia → porekadlo']]],
+ 'b-cicav':[
+  ['Podľa potravy','',['bylinožravce – rastliny: srnec, jeleň, zajac, veverica','mäsožravce – iné živočíchy: vlk, rys, líška, jastrab, sova','všežravce – rastliny aj živočíchy: diviak, medveď','hmyzožravce – hmyz: jež, netopier']],
+  ['Zuby','',['šelmy (mäsožravce) – veľké ostré špicáky','bylinožravce – široké stoličky na rozomieľanie']],
+  ['Lesné cicavce','Mláďatá cicavcov sajú materské mlieko, telo majú pokryté srsťou.',['jeleň – jelenica – jelenča; srnec – srna – srnča; diviak – diviačica – prasiatko','samce jeleňa a srnca majú parohy, každý rok ich zhodia','medveď spí v brlohu, veverica má hajno','jež a medveď prespia zimu']],
+  ['Lesné vtáky','Vtáky majú perie, zobák a kladú vajíčka.',['ďateľ – „lekár lesa“, vyberá hmyz z kôry','sova – loví v noci','kukučka – kladie vajíčka do cudzích hniezd, na zimu odlieta','jastrab – dravec s pazúrmi a zahnutým zobákom','drozd – spevavec, sojka – skrýva žalude']]],
+ 'g-objav':[
+  ['Zámorské objavy','Moreplavci hľadali novú cestu do Indie za korením a zlatom.',['1492 – Krištof Kolumbus sa doplavil do Ameriky (myslel si, že je v Indii)','Amerika má meno podľa Ameriga Vespucciho; Vikingovia tam boli už okolo roku 1000','1498 – Vasco da Gama: cesta do Indie okolo Afriky','1519 – 1522 – Magellanova výprava prvýkrát okolo sveta → Zem je guľatá']],
+  ['Póly a hlbiny','',['severný pól – Robert Peary (1909, dnes sa o tom pochybuje)','južný pól – Roald Amundsen (1911), Robert Scott o mesiac neskôr','Mariánska priekopa (Tichý oceán, takmer 11 km) – Jacques Piccard a Don Walsh, batyskaf Trieste (1960)','Mount Everest – Edmund Hillary a Tenzing Norgay (1953)']],
+  ['Vesmír','',['1961 – Jurij Gagarin, prvý človek vo vesmíre','1963 – Valentina Tereškovová, prvá žena vo vesmíre','20. 7. 1969 – Neil Armstrong a Buzz Aldrin na Mesiaci (Apollo 11)','1999 – Ivan Bella, prvý Slovák vo vesmíre']]],
+ 'a-rod':[
+  ['Family tree – rodinný strom','Na vrchu sú starí rodičia, pod nimi ich deti a dole vnúčatá.',['grandfather – starý otec, grandmother – stará mama (grandparents)','father – otec, mother – mama (parents)','brother – brat, sister – sestra','son – syn, daughter – dcéra']],
+  ['Teta, ujo, bratranec','',["aunt – sestra mamy alebo otca (Lucy is Tim's aunt)","uncle – brat mamy alebo otca, aj tetin manžel (Tom is Tim's uncle)","cousin – dieťa tety alebo uja; chlapec aj dievča (Sam is Tim's cousin)"]],
+  ["Privlastňovacie 's",'Komu niekto patrí, vyjadríme pomocou \'s.',["Tim's sister – Timova sestra","my mum's brother – brat mojej mamy = my uncle"]]]
 });
 function isEn(s){ return /[A-Za-z]/.test(s)&&!/[áäčďéíĺľňóôŕšťúýžÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽ]/.test(s); }
 var enVoice=null;
